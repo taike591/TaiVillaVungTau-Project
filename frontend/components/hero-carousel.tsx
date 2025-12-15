@@ -1,0 +1,481 @@
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useTranslations } from 'next-intl';
+import { ChevronLeft, ChevronRight, MapPin, Play, Pause, Bed, Users } from 'lucide-react';
+import { Button } from './ui/button';
+import { WishlistButton } from './wishlist';
+import { getMainImage } from '@/lib/error-handling';
+
+interface PropertyImage {
+  id: number;
+  imageUrl: string;
+  isThumbnail?: boolean;
+}
+
+interface Villa {
+  id: number;
+  name: string;
+  code: string;
+  description?: string;
+  images?: PropertyImage[] | string[];
+  area?: string;
+  address?: string;
+  bedroomCount?: number;
+  maxGuests?: number;
+  priceWeekday?: number;
+}
+
+function getShortAddress(address?: string): string {
+  if (!address) return '';
+  const commaIndex = address.indexOf(',');
+  return commaIndex > 0 ? address.substring(0, commaIndex).trim() : address.trim();
+}
+
+function formatPrice(price?: number): string {
+  if (!price) return '';
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+interface HeroCarouselProps {
+  villas: Villa[];
+}
+
+export function HeroCarousel({ villas }: HeroCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const t = useTranslations('common');
+  const tHero = useTranslations('hero');
+  const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<number>(0);
+
+  const SLIDE_DURATION = 6000;
+
+  // Progress animation
+  useEffect(() => {
+    if (!isAutoPlaying || villas.length === 0 || isHovered) {
+      return;
+    }
+
+    const startTime = Date.now();
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      setProgress(newProgress);
+      
+      if (newProgress < 100) {
+        progressRef.current = requestAnimationFrame(animate);
+      } else {
+        setCurrentIndex((prev) => (prev + 1) % villas.length);
+        setProgress(0);
+      }
+    };
+
+    progressRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(progressRef.current);
+  }, [isAutoPlaying, villas.length, currentIndex, isHovered]);
+
+  const goToSlide = useCallback((index: number) => {
+    if (index === currentIndex) return;
+    setCurrentIndex(index);
+    setProgress(0);
+  }, [currentIndex]);
+
+  const goToPrevious = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + villas.length) % villas.length);
+    setProgress(0);
+  }, [villas.length]);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % villas.length);
+    setProgress(0);
+  }, [villas.length]);
+
+  const toggleAutoPlay = useCallback(() => {
+    setIsAutoPlaying((prev) => !prev);
+    setProgress(0);
+  }, []);
+
+  if (villas.length === 0) return null;
+
+  const currentVilla = villas[currentIndex];
+  const currentImage = getMainImage(currentVilla.images);
+  const backgroundImage = currentImage || 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&q=80';
+
+  return (
+    <div 
+      ref={containerRef} 
+      className="relative h-screen w-full overflow-hidden bg-slate-900"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Background Images with Ken Burns Effect */}
+      {villas.map((villa, index) => {
+        const image = getMainImage(villa.images) || backgroundImage;
+        const isActive = index === currentIndex;
+        
+        return (
+          <div
+            key={villa.id}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{
+              opacity: isActive ? 1 : 0,
+              zIndex: isActive ? 1 : 0,
+            }}
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url('${image}')`,
+                animation: isActive ? 'kenBurns 20s ease-in-out infinite alternate' : 'none',
+              }}
+            />
+          </div>
+        );
+      })}
+
+      {/* Gradient Overlays - Lighter for clearer image */}
+      <div className="absolute inset-0 z-[2]">
+        {/* Bottom gradient for content readability - reduced opacity */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        {/* Top gradient for navbar - lighter */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+        {/* Side gradient for thumbnails - lighter */}
+        <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-transparent hidden lg:block" />
+        {/* Animated color overlay - reduced opacity */}
+        <div 
+          className="absolute inset-0 opacity-15 mix-blend-overlay"
+          style={{
+            background: 'linear-gradient(135deg, #0ea5e9 0%, #14b8a6 50%, #0891b2 100%)',
+          }}
+        />
+      </div>
+
+      {/* Floating Particles Effect */}
+      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white/20"
+            style={{
+              width: `${3 + (i % 4) * 2}px`,
+              height: `${3 + (i % 4) * 2}px`,
+              left: `${5 + i * 8}%`,
+              animation: `floatParticle ${10 + i * 2}s ease-in-out infinite`,
+              animationDelay: `${i * 0.7}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div className="absolute inset-0 z-[5] flex items-end">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-24 lg:pb-28">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+            {/* Left Content */}
+            <div className="flex-1 max-w-3xl">
+              {/* Location Badge */}
+              <div 
+                key={`loc-${currentIndex}`}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6 animate-fade-in-up"
+              >
+                <MapPin className="h-4 w-4 text-cyan-400" />
+                <span className="text-sm font-medium text-white/90">
+                  {currentVilla.area || 'Vũng Tàu, Vietnam'}
+                </span>
+              </div>
+
+              {/* Villa Code */}
+              <div 
+                key={`code-${currentIndex}`}
+                className="inline-block px-3 py-1 rounded-lg bg-cyan-500/20 backdrop-blur-sm border border-cyan-400/30 mb-4 animate-fade-in-up"
+                style={{ animationDelay: '100ms' }}
+              >
+                <span className="text-cyan-300 text-sm font-bold tracking-wider">
+                  {currentVilla.code}
+                </span>
+              </div>
+
+              {/* Villa Name - Premium Typography */}
+              <h1 
+                key={`name-${currentIndex}`}
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight uppercase tracking-tight animate-fade-in-up"
+                style={{ 
+                  animationDelay: '150ms',
+                  textShadow: '0 2px 10px rgba(14, 165, 233, 0.4), 0 4px 20px rgba(20, 184, 166, 0.3), 0 8px 40px rgba(0,0,0,0.5)',
+                  fontFamily: 'var(--font-heading), "Playfair Display", serif',
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                {currentVilla.name}
+              </h1>
+
+              {/* Address */}
+              {currentVilla.address && (
+                <div 
+                  key={`addr-${currentIndex}`}
+                  className="flex items-center gap-2 text-white/70 mb-4 animate-fade-in-up"
+                  style={{ animationDelay: '200ms' }}
+                >
+                  <MapPin className="h-4 w-4 text-teal-400 shrink-0" />
+                  <span className="text-sm sm:text-base">{getShortAddress(currentVilla.address)}</span>
+                </div>
+              )}
+
+              {/* Property Stats */}
+              <div 
+                key={`stats-${currentIndex}`}
+                className="flex flex-wrap items-center gap-4 mb-6 animate-fade-in-up"
+                style={{ animationDelay: '250ms' }}
+              >
+                {currentVilla.bedroomCount && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                    <Bed className="h-4 w-4 text-cyan-400" />
+                    <span className="text-white text-sm font-medium">{currentVilla.bedroomCount} {t('beds')}</span>
+                  </div>
+                )}
+                {currentVilla.maxGuests && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                    <Users className="h-4 w-4 text-teal-400" />
+                    <span className="text-white text-sm font-medium">{currentVilla.maxGuests} {t('guests')}</span>
+                  </div>
+                )}
+                {currentVilla.priceWeekday && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/20 backdrop-blur-sm border border-amber-400/30">
+                    <span className="text-amber-300 text-sm font-bold">{formatPrice(currentVilla.priceWeekday)}/{t('perNight')}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Description */}
+              <p 
+                key={`desc-${currentIndex}`}
+                className="text-white/80 text-sm sm:text-base max-w-xl mb-8 leading-relaxed line-clamp-2 animate-fade-in-up"
+                style={{ animationDelay: '300ms' }}
+              >
+                {currentVilla.description || tHero('discoverVacation')}
+              </p>
+
+              {/* Action Buttons */}
+              <div 
+                className="flex items-center gap-4 animate-fade-in-up"
+                style={{ animationDelay: '350ms' }}
+              >
+                <Button
+                  asChild
+                  size="lg"
+                  className="group relative overflow-hidden bg-white text-slate-900 hover:bg-white rounded-full px-8 py-6 font-bold text-base shadow-2xl shadow-white/20 transition-all duration-300 hover:scale-105 hover:shadow-white/30"
+                >
+                  <Link href={`/properties/${currentVilla.id}`} suppressHydrationWarning>
+                    <span className="relative z-10 flex items-center gap-2">
+                      {t('viewDetails')}
+                      <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                    <span className="absolute inset-0 bg-gradient-to-r from-cyan-100 to-teal-100 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                  </Link>
+                </Button>
+                
+                
+                <WishlistButton
+                  property={{
+                    id: currentVilla.id,
+                    code: currentVilla.code,
+                    name: currentVilla.name,
+                    image: currentImage || '',
+                    priceWeekday: currentVilla.priceWeekday || 0,
+                    bedroomCount: currentVilla.bedroomCount || 0,
+                  }}
+                  size="lg"
+                  className="!w-14 !h-14 !bg-white/10 !backdrop-blur-md !border !border-white/20 hover:!bg-white/20"
+                />
+              </div>
+            </div>
+
+            {/* Right Side - Thumbnail Navigation */}
+            <div className="hidden lg:block">
+              <div className="flex flex-col gap-3">
+                {villas.slice(0, 4).map((villa, index) => {
+                  const isActive = index === currentIndex;
+                  const thumbImage = getMainImage(villa.images) || backgroundImage;
+                  
+                  return (
+                    <button
+                      key={villa.id}
+                      onClick={() => goToSlide(index)}
+                      className={`group relative w-44 h-28 rounded-2xl overflow-hidden transition-all duration-500 ${
+                        isActive 
+                          ? 'scale-105 ring-2 ring-cyan-400 ring-offset-2 ring-offset-transparent shadow-2xl shadow-cyan-500/30' 
+                          : 'opacity-60 hover:opacity-100 hover:scale-102'
+                      }`}
+                    >
+                      {/* Thumbnail Image */}
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                        style={{ backgroundImage: `url('${thumbImage}')` }}
+                      />
+                      
+                      {/* Overlay */}
+                      <div className={`absolute inset-0 transition-all duration-300 ${
+                        isActive 
+                          ? 'bg-gradient-to-t from-cyan-900/80 via-transparent to-transparent' 
+                          : 'bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:from-black/80'
+                      }`} />
+                      
+                      {/* Content */}
+                      <div className="absolute inset-0 p-3 flex flex-col justify-end">
+                        <div className="flex items-center gap-1 mb-1">
+                          <MapPin className="h-3 w-3 text-cyan-400" />
+                          <span className="text-[10px] text-white/80 font-medium">
+                            {villa.area || 'Vũng Tàu'}
+                          </span>
+                        </div>
+                        <p className="text-sm font-bold text-white line-clamp-1">
+                          {villa.name.split(' ').slice(0, 3).join(' ')}
+                        </p>
+                      </div>
+                      
+                      {/* Active Indicator */}
+                      {isActive && (
+                        <div className="absolute top-2 right-2">
+                          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-lg shadow-cyan-400/50" />
+                        </div>
+                      )}
+                      
+                      {/* Progress bar for active thumbnail */}
+                      {isActive && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                          <div 
+                            className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-100"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Controls - Compact */}
+      <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10">
+        <button
+          onClick={goToPrevious}
+          className="group w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center hover:bg-white/25 hover:scale-105 transition-all duration-300"
+          aria-label={tHero('previousSlide')}
+        >
+          <ChevronLeft className="h-4 w-4 text-white group-hover:-translate-x-0.5 transition-transform" />
+        </button>
+      </div>
+      
+      <div className="absolute right-2 sm:right-3 lg:right-52 top-1/2 -translate-y-1/2 z-10">
+        <button
+          onClick={goToNext}
+          className="group w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center hover:bg-white/25 hover:scale-105 transition-all duration-300"
+          aria-label={tHero('nextSlide')}
+        >
+          <ChevronRight className="h-4 w-4 text-white group-hover:translate-x-0.5 transition-transform" />
+        </button>
+      </div>
+
+      {/* Bottom Controls - Responsive */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3">
+        {/* Slide Indicators */}
+        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+          {villas.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`relative h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                index === currentIndex ? 'w-6 sm:w-8 bg-cyan-400' : 'w-1.5 sm:w-2 bg-white/40 hover:bg-white/60'
+              }`}
+              aria-label={tHero('goToSlide', { num: index + 1 })}
+            >
+              {index === currentIndex && (
+                <span 
+                  className="absolute inset-0 rounded-full bg-white/50"
+                  style={{ 
+                    width: `${progress}%`,
+                    transition: 'width 100ms linear'
+                  }}
+                />
+              )}
+            </button>
+          ))}
+        </div>
+        
+        {/* Play/Pause Button */}
+        <button
+          onClick={toggleAutoPlay}
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300"
+          aria-label={isAutoPlaying ? tHero('pause') : tHero('play')}
+        >
+          {isAutoPlaying ? (
+            <Pause className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+          ) : (
+            <Play className="h-3 w-3 sm:h-4 sm:w-4 text-white ml-0.5" />
+          )}
+        </button>
+        
+        {/* Slide Counter */}
+        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+          <span className="text-white text-xs sm:text-sm font-medium">
+            {String(currentIndex + 1).padStart(2, '0')} / {String(villas.length).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes kenBurns {
+          0% { transform: scale(1) translate(0, 0); }
+          100% { transform: scale(1.1) translate(-1%, -1%); }
+        }
+        
+        @keyframes floatParticle {
+          0%, 100% { 
+            transform: translateY(100vh) translateX(0);
+            opacity: 0;
+          }
+          10% { opacity: 0.5; }
+          50% { 
+            transform: translateY(50vh) translateX(20px);
+            opacity: 0.3;
+          }
+          90% { opacity: 0.5; }
+          100% { 
+            transform: translateY(-10vh) translateX(-10px);
+            opacity: 0;
+          }
+        }
+        
+        .animate-fade-in-up {
+          animation: fadeInUp 0.6s ease-out forwards;
+          opacity: 0;
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+    </div>
+  );
+}

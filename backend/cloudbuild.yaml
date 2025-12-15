@@ -1,0 +1,57 @@
+steps:
+  # Step 1: Run tests
+  - name: "maven:3.9.6-eclipse-temurin-17"
+    entrypoint: "mvn"
+    args: ["test"]
+    dir: "backend"
+
+  # Step 2: Build JAR
+  - name: "maven:3.9.6-eclipse-temurin-17"
+    entrypoint: "mvn"
+    args: ["clean", "package", "-DskipTests"]
+    dir: "backend"
+
+  # Step 3: Build Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:$COMMIT_SHA"
+      - "-t"
+      - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:latest"
+      - "."
+    dir: "backend"
+
+  # Step 4: Push to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "--all-tags",
+        "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend",
+      ]
+
+  # Step 5: Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "taivilla-backend"
+      - "--image=asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:$COMMIT_SHA"
+      - "--region=asia-southeast1"
+      - "--platform=managed"
+      - "--allow-unauthenticated"
+      - "--memory=512Mi"
+      - "--cpu=1"
+      - "--min-instances=0"
+      - "--max-instances=2"
+
+images:
+  - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:$COMMIT_SHA"
+  - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:latest"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: "1200s"

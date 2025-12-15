@@ -1,0 +1,13 @@
+0000000000000000000000000000000000000000 5b1a3168eff52966c4d8bfb5c0b5691d2b38f6d6 Keo Tai <taikeo591@gmail.com> 1763721807 +0700	commit (initial): Initial commit
+5b1a3168eff52966c4d8bfb5c0b5691d2b38f6d6 5b1a3168eff52966c4d8bfb5c0b5691d2b38f6d6 Keo Tai <taikeo591@gmail.com> 1763722053 +0700	Branch: renamed refs/heads/master to refs/heads/main
+5b1a3168eff52966c4d8bfb5c0b5691d2b38f6d6 ceb4586e2c00e0a2cc0719514ae262f109019412 Keo Tai <taikeo591@gmail.com> 1763902034 +0700	commit: chill
+ceb4586e2c00e0a2cc0719514ae262f109019412 f3c0a2c339a713fd1c636512e837f8079a2b5daf Keo Tai <taikeo591@gmail.com> 1763995463 +0700	commit: chill
+f3c0a2c339a713fd1c636512e837f8079a2b5daf d379f2f77233007531003222c5962fca4b91b39e Keo Tai <taikeo591@gmail.com> 1764004607 +0700	commit: chill
+d379f2f77233007531003222c5962fca4b91b39e 51251fe041b5e7c615f3c7cf8aaa67b636d1ef35 Keo Tai <taikeo591@gmail.com> 1764041857 +0700	commit: Remove application.properties from repository for security
+51251fe041b5e7c615f3c7cf8aaa67b636d1ef35 16a2d619df78861700bce2fea64e698a3e7b677e Keo Tai <taikeo591@gmail.com> 1764042104 +0700	commit: chill
+16a2d619df78861700bce2fea64e698a3e7b677e 9cea0461147e0aa1caa59f0e42097153b62a9a26 Keo Tai <taikeo591@gmail.com> 1764058447 +0700	commit: Dockerize project
+9cea0461147e0aa1caa59f0e42097153b62a9a26 63557f8389fb5e10671bc54caab395a6cc53eecc Keo Tai <taikeo591@gmail.com> 1764217302 +0700	commit: Add CI/CD workflow
+63557f8389fb5e10671bc54caab395a6cc53eecc 8133e8edaa9d8ae8230e381529ca48653aa04f34 Keo Tai <taikeo591@gmail.com> 1764217804 +0700	commit: Move .github to root and fix path
+8133e8edaa9d8ae8230e381529ca48653aa04f34 34f51e723cfe42d3ce686b26030dd39d712e013a Keo Tai <taikeo591@gmail.com> 1764218264 +0700	commit: Move .github to root and fix path
+34f51e723cfe42d3ce686b26030dd39d712e013a c71c77965eecb07c76c9ede15a1f4f24d6580ff3 Keo Tai <taikeo591@gmail.com> 1764533914 +0700	commit: fix bug latenight
+c71c77965eecb07c76c9ede15a1f4f24d6580ff3 925976ea3b8807d18f03b96925befa5d24212126 Keo Tai <taikeo591@gmail.com> 1764565657 +0700	commit: fix poml

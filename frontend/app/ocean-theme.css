@@ -1,0 +1,460 @@
+/* ========================================
+   OCEAN/BEACH THEME - Color Override
+   Replaces Tropical Sunset with Ocean Colors
+   ======================================== */
+
+@theme inline {
+  /* Ocean Blue Colors (replaces Tropical Orange) */
+  --color-ocean-blue-50: #E0F2FE;
+  --color-ocean-blue-100: #BAE6FD;
+  --color-ocean-blue-200: #7DD3FC;
+  --color-ocean-blue-300: #38BDF8;
+  --color-ocean-blue-400: #0EA5E9;
+  --color-ocean-blue-500: #0284C7;
+  --color-ocean-blue-600: #0369A1;
+  --color-ocean-blue-700: #075985;
+  --color-ocean-blue-800: #0C4A6E;
+  --color-ocean-blue-900: #0A3A52;
+  
+  /* Ocean Teal Colors (keep as secondary) */
+  --color-ocean-teal-50: #E0F7FA;
+  --color-ocean-teal-100: #B2EBF2;
+  --color-ocean-teal-200: #80DEEA;
+  --color-ocean-teal-300: #4DD0E1;
+  --color-ocean-teal-400: #26C6DA;
+  --color-ocean-teal-500: #00BCD4;
+  --color-ocean-teal-600: #00ACC1;
+  --color-ocean-teal-700: #0097A7;
+  --color-ocean-teal-800: #00838F;
+  --color-ocean-teal-900: #006064;
+  
+  /* Sea Green Colors (replaces Tropical Yellow) */
+  --color-sea-green-50: #ECFDF5;
+  --color-sea-green-100: #D1FAE5;
+  --color-sea-green-200: #A7F3D0;
+  --color-sea-green-300: #6EE7B7;
+  --color-sea-green-400: #34D399;
+  --color-sea-green-500: #10B981;
+  --color-sea-green-600: #059669;
+  --color-sea-green-700: #047857;
+  --color-sea-green-800: #065F46;
+  --color-sea-green-900: #064E3B;
+}
+
+:root {
+  /* Override Shadcn Theme Colors with Ocean Palette */
+  --primary: oklch(0.55 0.15 220); /* ocean-blue-500 */
+  --primary-foreground: oklch(1 0 0);
+  
+  --secondary: oklch(0.7 0.12 210); /* ocean-teal-500 */
+  --secondary-foreground: oklch(1 0 0);
+  
+  --accent: oklch(0.7 0.14 160); /* sea-green-500 */
+  --accent-foreground: oklch(0.2 0.01 30);
+  
+  --ring: oklch(0.55 0.15 220); /* ocean-blue-500 */
+  
+  /* Charts with ocean colors */
+  --chart-1: oklch(0.55 0.15 220); /* ocean-blue-500 */
+  --chart-2: oklch(0.7 0.12 210); /* ocean-teal-500 */
+  --chart-3: oklch(0.7 0.14 160); /* sea-green-500 */
+  --chart-4: oklch(0.6 0.16 215); /* ocean-blue-400 */
+  --chart-5: oklch(0.6 0.14 200); /* ocean-teal-600 */
+  
+  --sidebar-primary: oklch(0.55 0.15 220); /* ocean-blue-500 */
+  --sidebar-ring: oklch(0.55 0.15 220);
+
+  /* Ocean Color Palette Variables */
+  --ocean-blue-50: #E0F2FE;
+  --ocean-blue-100: #BAE6FD;
+  --ocean-blue-200: #7DD3FC;
+  --ocean-blue-300: #38BDF8;
+  --ocean-blue-400: #0EA5E9;
+  --ocean-blue-500: #0284C7;
+  --ocean-blue-600: #0369A1;
+  --ocean-blue-700: #075985;
+  --ocean-blue-800: #0C4A6E;
+  --ocean-blue-900: #0A3A52;
+  
+  --ocean-teal-50: #E0F7FA;
+  --ocean-teal-100: #B2EBF2;
+  --ocean-teal-200: #80DEEA;
+  --ocean-teal-300: #4DD0E1;
+  --ocean-teal-400: #26C6DA;
+  --ocean-teal-500: #00BCD4;
+  --ocean-teal-600: #00ACC1;
+  --ocean-teal-700: #0097A7;
+  --ocean-teal-800: #00838F;
+  --ocean-teal-900: #006064;
+  
+  --sea-green-50: #ECFDF5;
+  --sea-green-100: #D1FAE5;
+  --sea-green-200: #A7F3D0;
+  --sea-green-300: #6EE7B7;
+  --sea-green-400: #34D399;
+  --sea-green-500: #10B981;
+  --sea-green-600: #059669;
+  --sea-green-700: #047857;
+  --sea-green-800: #065F46;
+  --sea-green-900: #064E3B;
+  
+  /* Legacy color mappings - override with ocean colors */
+  --color-primary: var(--ocean-blue-500);
+  --color-primary-dark: var(--ocean-blue-600);
+  --color-primary-light: var(--ocean-blue-400);
+  --color-accent: var(--sea-green-500);
+  --color-warning: var(--sea-green-600);
+
+  /* Cool Shadows with Blue Tint (replaces warm orange shadows) */
+  --shadow-sm: 0 1px 2px rgba(2, 132, 199, 0.05);
+  --shadow-md: 0 4px 6px rgba(2, 132, 199, 0.1);
+  --shadow-lg: 0 10px 15px rgba(2, 132, 199, 0.1);
+  --shadow-xl: 0 20px 25px rgba(2, 132, 199, 0.1);
+  --shadow-2xl: 0 25px 50px rgba(2, 132, 199, 0.15);
+  
+  /* Ocean Cool Shadows */
+  --shadow-cool-sm: 0 1px 2px rgba(2, 132, 199, 0.08);
+  --shadow-cool-md: 0 4px 6px rgba(2, 132, 199, 0.12);
+  --shadow-cool-lg: 0 10px 15px rgba(2, 132, 199, 0.15);
+  --shadow-cool-xl: 0 20px 25px rgba(2, 132, 199, 0.18);
+  --shadow-cool-2xl: 0 25px 50px rgba(2, 132, 199, 0.25);
+  
+  /* Ocean Glow Shadows */
+  --shadow-glow-blue: 0 0 20px rgba(2, 132, 199, 0.3);
+  --shadow-glow-teal: 0 0 20px rgba(0, 188, 212, 0.3);
+  --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Ocean Gradients (replaces tropical gradients) */
+:root {
+  /* Ocean Wave Gradient (Primary) - replaces sunset */
+  --gradient-ocean-wave: linear-gradient(135deg, #0284C7 0%, #00BCD4 50%, #10B981 100%);
+  --gradient-ocean-wave-vertical: linear-gradient(180deg, #0284C7 0%, #00BCD4 50%, #10B981 100%);
+  
+  /* Deep Sea Gradient - replaces ocean breeze */
+  --gradient-deep-sea: linear-gradient(135deg, #0369A1 0%, #0284C7 100%);
+  --gradient-deep-sea-vertical: linear-gradient(180deg, #0369A1 0%, #0284C7 100%);
+  
+  /* Cool Breeze Gradient - replaces warm glow */
+  --gradient-cool-breeze: linear-gradient(180deg, rgba(2,132,199,0.1) 0%, rgba(16,185,129,0.05) 100%);
+  
+  /* Ocean Overlay (for images) - replaces tropical overlay */
+  --gradient-ocean-overlay: linear-gradient(180deg, rgba(2,132,199,0.3) 0%, transparent 60%);
+  --gradient-ocean-overlay-dark: linear-gradient(180deg, rgba(2,132,199,0.5) 0%, transparent 70%);
+  
+  /* Text Gradients */
+  --gradient-text-ocean: linear-gradient(135deg, #0284C7, #00BCD4);
+  --gradient-text-sea: linear-gradient(135deg, #00BCD4, #10B981);
+  
+  /* Override old gradient names for backward compatibility */
+  --gradient-sunset: var(--gradient-ocean-wave);
+  --gradient-sunset-vertical: var(--gradient-ocean-wave-vertical);
+  --gradient-ocean: var(--gradient-deep-sea);
+  --gradient-ocean-vertical: var(--gradient-deep-sea-vertical);
+  --gradient-warm-glow: var(--gradient-cool-breeze);
+  --gradient-tropical-overlay: var(--gradient-ocean-overlay);
+  --gradient-tropical-overlay-dark: var(--gradient-ocean-overlay-dark);
+  --gradient-text-sunset: var(--gradient-text-ocean);
+}
+
+/* Ocean Glow Pulse Animation (replaces tropical glow) */
+@keyframes oceanGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(2, 132, 199, 0.4);
+  }
+}
+
+/* Ocean Shimmer (replaces tropical shimmer) */
+@keyframes oceanShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Cool Float Animation (replaces warm float) */
+@keyframes coolFloat {
+  0%, 100% {
+    transform: translateY(0px);
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    transform: translateY(-10px);
+    filter: brightness(1.05) saturate(1.15);
+  }
+}
+
+@layer utilities {
+  /* Ocean Gradient Backgrounds */
+  .bg-gradient-ocean-wave {
+    background: var(--gradient-ocean-wave);
+  }
+  
+  .bg-gradient-ocean-wave-vertical {
+    background: var(--gradient-ocean-wave-vertical);
+  }
+  
+  .bg-gradient-deep-sea {
+    background: var(--gradient-deep-sea);
+  }
+  
+  .bg-gradient-deep-sea-vertical {
+    background: var(--gradient-deep-sea-vertical);
+  }
+  
+  .bg-gradient-cool-breeze {
+    background: var(--gradient-cool-breeze);
+  }
+  
+  /* Override old gradient classes */
+  .bg-gradient-sunset {
+    background: var(--gradient-ocean-wave);
+  }
+  
+  .bg-gradient-sunset-vertical {
+    background: var(--gradient-ocean-wave-vertical);
+  }
+  
+  /* Ocean Text Gradients */
+  .text-gradient-ocean {
+    background: var(--gradient-text-ocean);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-sea {
+    background: var(--gradient-text-sea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Override old text gradient classes */
+  .text-gradient-sunset {
+    background: var(--gradient-text-ocean);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Cool Shadow Utilities */
+  .shadow-cool-sm {
+    box-shadow: var(--shadow-cool-sm);
+  }
+  
+  .shadow-cool-md {
+    box-shadow: var(--shadow-cool-md);
+  }
+  
+  .shadow-cool-lg {
+    box-shadow: var(--shadow-cool-lg);
+  }
+  
+  .shadow-cool-xl {
+    box-shadow: var(--shadow-cool-xl);
+  }
+  
+  .shadow-cool-2xl {
+    box-shadow: var(--shadow-cool-2xl);
+  }
+  
+  /* Override warm shadow classes */
+  .shadow-warm-sm {
+    box-shadow: var(--shadow-cool-sm);
+  }
+  
+  .shadow-warm-md {
+    box-shadow: var(--shadow-cool-md);
+  }
+  
+  .shadow-warm-lg {
+    box-shadow: var(--shadow-cool-lg);
+  }
+  
+  .shadow-warm-xl {
+    box-shadow: var(--shadow-cool-xl);
+  }
+  
+  .shadow-warm-2xl {
+    box-shadow: var(--shadow-cool-2xl);
+  }
+  
+  /* Ocean Glow Effects */
+  .glow-blue {
+    box-shadow: var(--shadow-glow-blue);
+  }
+  
+  .glow-teal {
+    box-shadow: var(--shadow-glow-teal);
+  }
+  
+  .glow-green {
+    box-shadow: var(--shadow-glow-green);
+  }
+  
+  /* Override old glow classes */
+  .glow-orange {
+    box-shadow: var(--shadow-glow-blue);
+  }
+  
+  .glow-cyan {
+    box-shadow: var(--shadow-glow-teal);
+  }
+  
+  .glow-yellow {
+    box-shadow: var(--shadow-glow-green);
+  }
+  
+  /* Ocean Glow Hover Utilities */
+  .hover-glow-blue {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-blue:hover {
+    box-shadow: var(--shadow-glow-blue);
+  }
+  
+  .hover-glow-teal {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-teal:hover {
+    box-shadow: var(--shadow-glow-teal);
+  }
+  
+  .hover-glow-green {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-green:hover {
+    box-shadow: var(--shadow-glow-green);
+  }
+  
+  /* Override old hover glow classes */
+  .hover-glow-orange {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-orange:hover {
+    box-shadow: var(--shadow-glow-blue);
+  }
+  
+  .hover-glow-cyan {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-cyan:hover {
+    box-shadow: var(--shadow-glow-teal);
+  }
+  
+  .hover-glow-yellow {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-yellow:hover {
+    box-shadow: var(--shadow-glow-green);
+  }
+  
+  /* Ocean Glow with Lift Effect */
+  .hover-glow-lift-blue {
+    transition: transform var(--transition-normal) var(--transition-timing),
+                box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-lift-blue:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-blue), var(--shadow-cool-lg);
+  }
+  
+  .hover-glow-lift-teal {
+    transition: transform var(--transition-normal) var(--transition-timing),
+                box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-lift-teal:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-teal), 0 10px 15px rgba(0, 188, 212, 0.15);
+  }
+  
+  /* Override old lift classes */
+  .hover-glow-lift-orange {
+    transition: transform var(--transition-normal) var(--transition-timing),
+                box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-lift-orange:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-blue), var(--shadow-cool-lg);
+  }
+  
+  .hover-glow-lift-cyan {
+    transition: transform var(--transition-normal) var(--transition-timing),
+                box-shadow var(--transition-normal) var(--transition-timing);
+  }
+  
+  .hover-glow-lift-cyan:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-teal), 0 10px 15px rgba(0, 188, 212, 0.15);
+  }
+
+  /* Ocean Animation Utilities */
+  .animate-ocean-glow-pulse {
+    animation: oceanGlowPulse 2s ease-in-out infinite;
+  }
+  
+  .animate-ocean-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(2, 132, 199, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: oceanShimmer 2s linear infinite;
+  }
+  
+  .animate-cool-float {
+    animation: coolFloat 3s ease-in-out infinite;
+  }
+  
+  /* Override old animation classes */
+  .animate-glow-pulse {
+    animation: oceanGlowPulse 2s ease-in-out infinite;
+  }
+  
+  .animate-tropical-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(2, 132, 199, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: oceanShimmer 2s linear infinite;
+  }
+  
+  .animate-warm-float {
+    animation: coolFloat 3s ease-in-out infinite;
+  }
+}
+
+/* Link Styles - Override with ocean colors */
+@layer base {
+  a {
+    color: var(--ocean-blue-500);
+  }
+  
+  a:hover {
+    color: var(--ocean-blue-600);
+  }
+  
+  a.link-underline::after {
+    background: linear-gradient(90deg, var(--ocean-blue-500), var(--ocean-blue-600));
+  }
+}

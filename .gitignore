@@ -1,0 +1,28 @@
+# Root Project .gitignore
+# This file should be placed at the root of the project (d:\Taivillavungtau\.gitignore)
+
+# IDE and Editor
+.vscode/
+.idea/
+.kiro/
+*.swp
+*.swo
+
+# Local History (VS Code extension)
+History/
+
+# Debug/Utility Scripts
+debug_*.py
+delete_*.py
+fetch_*.py
+repair_*.py
+scan_*.py
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment Files
+.env
+.env.*
+!.env.example

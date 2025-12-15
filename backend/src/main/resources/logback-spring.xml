@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 1. Console Appender (Cho môi trường Dev) -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Pattern có màu sắc để dễ đọc -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%blue(%thread)] %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 2. File Appender (Cho môi trường Prod) -->
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- Chính sách xoay vòng log (Rolling Policy) -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Tạo file mới mỗi ngày: logs/app-2023-11-27.log -->
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            
+            <!-- Giữ log trong 30 ngày -->
+            <maxHistory>30</maxHistory>
+            
+            <!-- Tổng dung lượng log không quá 3GB -->
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 3. Cấu hình Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="Console" />
+        <appender-ref ref="File" />
+    </root>
+
+    <!-- 4. Cấu hình riêng cho package của dự án (Muốn xem debug thì đổi thành DEBUG) -->
+    <logger name="com.taivillavungtau.backend" level="INFO" />
+
+</configuration>

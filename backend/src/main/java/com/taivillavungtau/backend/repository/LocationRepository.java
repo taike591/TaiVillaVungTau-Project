@@ -1,0 +1,16 @@
+package com.taivillavungtau.backend.repository;
+
+import com.taivillavungtau.backend.entity.Location;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface LocationRepository extends JpaRepository<Location, Long> {
+    Optional<Location> findBySlug(String slug);
+
+    boolean existsByName(String name);
+
+    boolean existsBySlug(String slug);
+}

@@ -1,0 +1,2324 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./ocean-theme.css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* Shadcn Theme Colors with Ocean Palette - Requirements 1.1, 1.2, 1.3 */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0.05 260); /* Navy Slate 900 */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.05 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.05 260);
+
+  /* Primary: Ocean Blue */
+  --primary: oklch(0.62 0.16 250); /* ocean-blue-500 */
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary: Teal Water */
+  --secondary: oklch(0.7 0.14 180); /* teal-water-500 */
+  --secondary-foreground: oklch(1 0 0);
+
+  /* Muted: Navy Slate */
+  --muted: oklch(0.96 0.01 250); /* navy-slate-100 */
+  --muted-foreground: oklch(0.4 0.06 260); /* navy-slate-600 */
+
+  /* Accent: Sand Gold */
+  --accent: oklch(0.85 0.17 90); /* sand-gold-400 */
+  --accent-foreground: oklch(0.15 0.05 260);
+
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* Borders with cool tint */
+  --border: oklch(0.92 0.01 250); /* navy-slate-200 */
+  --input: oklch(0.92 0.01 250);
+  --ring: oklch(0.62 0.16 250); /* ocean-blue-500 */
+
+  /* Charts with Ocean colors */
+  --chart-1: oklch(0.62 0.16 250); /* ocean-blue-500 */
+  --chart-2: oklch(0.7 0.14 180); /* teal-water-500 */
+  --chart-3: oklch(0.85 0.17 90); /* sand-gold-400 */
+  --chart-4: oklch(0.62 0.16 250); /* ocean-blue-500 */
+  --chart-5: oklch(0.7 0.14 180); /* teal-water-500 */
+
+  /* Sidebar with tropical theme */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.2 0.01 30);
+  --sidebar-primary: oklch(0.65 0.18 40); /* tropical-orange-500 */
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.005 30);
+  --sidebar-accent-foreground: oklch(0.2 0.01 30);
+  --sidebar-border: oklch(0.92 0.005 30);
+  --sidebar-ring: oklch(0.65 0.18 40);
+
+  /* Ocean Tourism Palette - Requirements 1.1, 1.2, 1.3 */
+
+  /* Primary: Ocean Blue Colors (Replacing Tropical Orange) */
+  --ocean-blue-50: #f0f9ff;
+  --ocean-blue-100: #e0f2fe;
+  --ocean-blue-200: #bae6fd;
+  --ocean-blue-300: #7dd3fc;
+  --ocean-blue-400: #38bdf8;
+  --ocean-blue-500: #0ea5e9;
+  --ocean-blue-600: #0284c7;
+  --ocean-blue-700: #0369a1;
+  --ocean-blue-800: #075985;
+  --ocean-blue-900: #0c4a6e;
+
+  /* Secondary: Teal Water Colors (Replacing Tropical Cyan) */
+  --teal-water-50: #f0fdfa;
+  --teal-water-100: #ccfbf1;
+  --teal-water-200: #99f6e4;
+  --teal-water-300: #5eead4;
+  --teal-water-400: #2dd4bf;
+  --teal-water-500: #14b8a6;
+  --teal-water-600: #0d9488;
+  --teal-water-700: #0f766e;
+  --teal-water-800: #115e59;
+  --teal-water-900: #134e4a;
+
+  /* Accent: Sand Gold Colors (Replacing Tropical Yellow) */
+  --sand-gold-50: #fffbeb;
+  --sand-gold-100: #fef3c7;
+  --sand-gold-200: #fde68a;
+  --sand-gold-300: #fcd34d;
+  --sand-gold-400: #fbbf24;
+  --sand-gold-500: #f59e0b;
+  --sand-gold-600: #d97706;
+  --sand-gold-700: #b45309;
+  --sand-gold-800: #92400e;
+  --sand-gold-900: #78350f;
+
+  /* Neutral: Navy Slate Colors (Replacing Warm Gray) - Higher Contrast */
+  --navy-slate-50: #f8fafc;
+  --navy-slate-100: #f1f5f9;
+  --navy-slate-200: #e2e8f0;
+  --navy-slate-300: #cbd5e1;
+  --navy-slate-400: #94a3b8;
+  --navy-slate-500: #64748b;
+  --navy-slate-600: #475569;
+  --navy-slate-700: #334155;
+  --navy-slate-800: #1e293b;
+  --navy-slate-900: #0f172a;
+
+  /* Legacy color mappings re-routed to Ocean theme */
+  --color-primary: var(--ocean-blue-600);
+  --color-primary-dark: var(--ocean-blue-700);
+  --color-primary-light: var(--ocean-blue-400);
+  --color-accent: var(--sand-gold-400);
+  --color-success: #10b981;
+  --color-warning: var(--sand-gold-500);
+  --color-error: #ef4444;
+  --color-gray-50: var(--navy-slate-50);
+  --color-gray-100: var(--navy-slate-100);
+  --color-gray-200: var(--navy-slate-200);
+  --color-gray-300: var(--navy-slate-300);
+  --color-gray-400: var(--navy-slate-400);
+  --color-gray-500: var(--navy-slate-500);
+  --color-gray-600: var(--navy-slate-600);
+  --color-gray-700: var(--navy-slate-700);
+  --color-gray-800: var(--navy-slate-800);
+  --color-gray-900: var(--navy-slate-900);
+
+  /* Spacing Scale - Requirements 5.1, 5.2, 5.4 */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  --spacing-3xl: 6rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows - Cool Ocean Tints */
+  --shadow-sm: 0 1px 2px rgba(14, 165, 233, 0.05);
+  --shadow-md: 0 4px 6px rgba(14, 165, 233, 0.1);
+  --shadow-lg: 0 10px 15px rgba(14, 165, 233, 0.1);
+  --shadow-xl: 0 20px 25px rgba(14, 165, 233, 0.1);
+  --shadow-2xl: 0 25px 50px rgba(14, 165, 233, 0.15);
+
+  /* Ocean Warm Shadows (renamed concept but keeping var name for compat) */
+  --shadow-warm-sm: 0 1px 2px rgba(14, 165, 233, 0.08);
+  --shadow-warm-md: 0 4px 6px rgba(14, 165, 233, 0.12);
+  --shadow-warm-lg: 0 10px 15px rgba(14, 165, 233, 0.15);
+  --shadow-warm-xl: 0 20px 25px rgba(14, 165, 233, 0.18);
+  --shadow-warm-2xl: 0 25px 50px rgba(14, 165, 233, 0.25);
+
+  /* Ocean Glow Shadows */
+  --shadow-glow-orange: 0 0 20px rgba(14, 165, 233, 0.3); /* Mapped to Blue */
+  --shadow-glow-cyan: 0 0 20px rgba(20, 184, 166, 0.3); /* Mapped to Teal */
+  --shadow-glow-yellow: 0 0 20px rgba(251, 191, 36, 0.3); /* Mapped to Gold */
+
+  /* Transition Durations - Requirements 4.1 */
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 500ms;
+  --transition-timing: ease-in-out;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body), "Inter", system-ui, sans-serif;
+  }
+
+  /* Premium Typography - Coastal Luxury Design System */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading), 'Lora', Georgia, serif;
+    color: var(--navy-slate-900);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: 3rem; /* 48px */
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  h2 {
+    font-size: 2.25rem; /* 36px */
+    font-weight: var(--font-weight-bold);
+  }
+
+  h3 {
+    font-size: 1.875rem; /* 30px */
+    font-weight: var(--font-weight-bold);
+  }
+
+  h4 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: var(--font-weight-semibold);
+  }
+
+  h5 {
+    font-size: 1.25rem; /* 20px */
+    font-weight: var(--font-weight-semibold);
+  }
+
+  h6 {
+    font-size: 1rem; /* 16px */
+    font-weight: var(--font-weight-semibold);
+  }
+
+  p {
+    color: var(--navy-slate-700);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: 1rem;
+  }
+
+  /* Link Styles - Requirements 5.5 */
+  a {
+    color: var(--ocean-blue-600);
+    text-decoration: none;
+    position: relative;
+    transition: color var(--transition-normal) var(--transition-timing);
+  }
+
+  a:hover {
+    color: var(--ocean-blue-700);
+  }
+
+  /* Link with underline animation - Requirements 5.5 */
+  a.link-underline {
+    position: relative;
+  }
+
+  a.link-underline::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--tropical-orange-500),
+      var(--tropical-orange-600)
+    );
+    transition: width var(--transition-normal) var(--transition-timing);
+  }
+
+  a.link-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Text color utilities with Navy Slate - Requirements 5.4 */
+  .text-primary {
+    color: var(--navy-slate-900);
+  }
+
+  .text-secondary {
+    color: var(--navy-slate-600);
+  }
+
+  .text-tertiary {
+    color: var(--navy-slate-500);
+  }
+
+  .text-inverse {
+    color: #ffffff;
+  }
+}
+
+/* Ocean Gradients - Requirements 1.4 */
+:root {
+  /* Main Ocean Gradient (Primary) */
+  --gradient-sunset: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  --gradient-sunset-vertical: linear-gradient(180deg, #0ea5e9 0%, #0284c7 100%);
+
+  /* Teal/Lagoon Gradient */
+  --gradient-ocean: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  --gradient-ocean-vertical: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+
+  /* Cool Mist Gradient */
+  --gradient-warm-glow: linear-gradient(
+    180deg,
+    rgba(14, 165, 233, 0.1) 0%,
+    rgba(20, 184, 166, 0.05) 100%
+  );
+
+  /* Ocean Overlay (for images) */
+  --gradient-tropical-overlay: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.4) 0%,
+    transparent 60%
+  );
+  --gradient-tropical-overlay-dark: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.6) 0%,
+    transparent 70%
+  );
+
+  /* Text Gradients */
+  --gradient-text-sunset: linear-gradient(135deg, #0ea5e9, #0284c7);
+  --gradient-text-ocean: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+/* Animation Keyframes - Requirements 4.2, 4.3, 4.4 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Tropical Fade In with Warm Tint - Requirements 9.1 */
+@keyframes fadeInWarm {
+  from {
+    opacity: 0;
+    filter: brightness(1.1) saturate(1.2);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1) saturate(1);
+  }
+}
+
+/* Tropical Glow Pulse - Requirements 9.3 */
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 107, 53, 0.4);
+  }
+}
+
+/* Tropical Shimmer - Requirements 9.1 */
+@keyframes tropicalShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Warm Float Animation - Requirements 9.1 */
+@keyframes warmFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    transform: translateY(-10px);
+    filter: brightness(1.05) saturate(1.1);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ripple Effect Animation - Requirements 4.3 */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Button Press Animation - Requirements 4.3 */
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Utility Classes for Animations - Requirements 4.1, 4.2, 4.3 */
+@layer utilities {
+  /* Tropical Gradient Backgrounds - Requirements 1.4 */
+  .bg-gradient-sunset {
+    background: var(--gradient-sunset);
+  }
+
+  .bg-gradient-sunset-vertical {
+    background: var(--gradient-sunset-vertical);
+  }
+
+  .bg-gradient-ocean {
+    background: var(--gradient-ocean);
+  }
+
+  .bg-gradient-ocean-vertical {
+    background: var(--gradient-ocean-vertical);
+  }
+
+  .bg-gradient-warm-glow {
+    background: var(--gradient-warm-glow);
+  }
+
+  /* Tropical Overlay Utilities */
+  .overlay-tropical {
+    position: relative;
+  }
+
+  .overlay-tropical::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-tropical-overlay);
+    pointer-events: none;
+  }
+
+  .overlay-tropical-dark::before {
+    background: var(--gradient-tropical-overlay-dark);
+  }
+
+  /* Tropical Text Gradients */
+  .text-gradient-sunset {
+    background: var(--gradient-text-sunset);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-ocean {
+    background: var(--gradient-text-ocean);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Warm Shadow Utilities - Requirements 1.5 */
+  .shadow-warm-sm {
+    box-shadow: var(--shadow-warm-sm);
+  }
+
+  .shadow-warm-md {
+    box-shadow: var(--shadow-warm-md);
+  }
+
+  .shadow-warm-lg {
+    box-shadow: var(--shadow-warm-lg);
+  }
+
+  .shadow-warm-xl {
+    box-shadow: var(--shadow-warm-xl);
+  }
+
+  .shadow-warm-2xl {
+    box-shadow: var(--shadow-warm-2xl);
+  }
+
+  /* Tropical Glow Effects - Requirements 9.3 */
+  .glow-orange {
+    box-shadow: var(--shadow-glow-orange);
+  }
+
+  .glow-cyan {
+    box-shadow: var(--shadow-glow-cyan);
+  }
+
+  .glow-yellow {
+    box-shadow: var(--shadow-glow-yellow);
+  }
+
+  /* Warm Glow Hover Utilities - Requirements 9.3 */
+  .hover-glow-orange {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+
+  .hover-glow-orange:hover {
+    box-shadow: var(--shadow-glow-orange);
+  }
+
+  .hover-glow-cyan {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+
+  .hover-glow-cyan:hover {
+    box-shadow: var(--shadow-glow-cyan);
+  }
+
+  .hover-glow-yellow {
+    transition: box-shadow var(--transition-normal) var(--transition-timing);
+  }
+
+  .hover-glow-yellow:hover {
+    box-shadow: var(--shadow-glow-yellow);
+  }
+
+  /* Warm Glow with Lift Effect - Requirements 9.3 */
+  .hover-glow-lift-orange {
+    transition: transform var(--transition-normal) var(--transition-timing),
+      box-shadow var(--transition-normal) var(--transition-timing);
+  }
+
+  .hover-glow-lift-orange:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-orange), var(--shadow-warm-lg);
+  }
+
+  .hover-glow-lift-cyan {
+    transition: transform var(--transition-normal) var(--transition-timing),
+      box-shadow var(--transition-normal) var(--transition-timing);
+  }
+
+  .hover-glow-lift-cyan:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow-cyan), 0 10px 15px rgba(0, 188, 212, 0.15);
+  }
+
+  /* Animation Classes */
+  .animate-fade-in {
+    animation: fadeIn var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fade-in-warm {
+    animation: fadeInWarm var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fade-in-scale {
+    animation: fadeInScale var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-zoom-in {
+    animation: zoomIn var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-slide-down {
+    animation: slideDown var(--transition-normal) var(--transition-timing);
+  }
+
+  /* Tropical Animation Utilities - Requirements 9.1, 9.3 */
+  .animate-glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+
+  .animate-tropical-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 107, 53, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: tropicalShimmer 2s linear infinite;
+  }
+
+  .animate-warm-float {
+    animation: warmFloat 3s ease-in-out infinite;
+  }
+
+  /* Transition Utilities - Requirements 4.1 */
+  .transition-fast {
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .transition-normal {
+    transition: all var(--transition-normal) var(--transition-timing);
+  }
+
+  .transition-slow {
+    transition: all var(--transition-slow) var(--transition-timing);
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    transition: transform var(--transition-normal) var(--transition-timing),
+      box-shadow var(--transition-normal) var(--transition-timing);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .hover-zoom {
+    overflow: hidden;
+  }
+
+  .hover-zoom img {
+    transition: transform var(--transition-slow) var(--transition-timing);
+  }
+
+  .hover-zoom:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Shadow Utilities */
+  .shadow-custom-sm {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-custom-md {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-custom-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-custom-xl {
+    box-shadow: var(--shadow-xl);
+  }
+
+  .shadow-custom-2xl {
+    box-shadow: var(--shadow-2xl);
+  }
+
+  /* Border Radius Utilities */
+  .rounded-custom-sm {
+    border-radius: var(--radius-sm);
+  }
+
+  .rounded-custom-md {
+    border-radius: var(--radius-md);
+  }
+
+  .rounded-custom-lg {
+    border-radius: var(--radius-lg);
+  }
+
+  .rounded-custom-xl {
+    border-radius: var(--radius-xl);
+  }
+
+  .rounded-custom-2xl {
+    border-radius: var(--radius-2xl);
+  }
+
+  /* Spacing Utilities - Requirements 5.1, 5.2, 5.4 */
+  .section-padding {
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
+  }
+
+  .container-custom {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  /* Performance Optimization - Requirements 4.4, Task 17 */
+  /* Will-change utilities for animated elements */
+  .will-animate {
+    will-change: transform, opacity;
+  }
+
+  .will-animate-transform {
+    will-change: transform;
+  }
+
+  .will-animate-opacity {
+    will-change: opacity;
+  }
+
+  .will-animate-shadow {
+    will-change: box-shadow;
+  }
+
+  .will-animate-colors {
+    will-change: background-color, color;
+  }
+
+  .will-animate-all {
+    will-change: transform, opacity, box-shadow;
+  }
+
+  /* Remove will-change after animation completes to free resources */
+  .will-animate-auto {
+    will-change: auto;
+  }
+
+  /* Apply will-change to frequently animated elements */
+  .hover-lift,
+  .hover-glow-lift-orange,
+  .hover-glow-lift-cyan,
+  .card-fade-in,
+  .animate-fade-in,
+  .animate-fade-in-warm,
+  .animate-fade-in-scale,
+  .animate-fade-in-up {
+    will-change: transform, opacity;
+  }
+
+  /* Optimize image transforms */
+  .hover-zoom img {
+    will-change: transform;
+  }
+
+  /* Optimize gradient animations */
+  .animate-tropical-shimmer {
+    will-change: background-position;
+  }
+
+  /* Optimize glow animations */
+  .animate-glow-pulse,
+  .hover-glow-orange:hover,
+  .hover-glow-cyan:hover,
+  .hover-glow-yellow:hover {
+    will-change: box-shadow;
+  }
+
+  /* CSS Containment for better performance - Task 17 */
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
+
+  .contain-size {
+    contain: size;
+  }
+
+  .contain-strict {
+    contain: strict;
+  }
+
+  .contain-content {
+    contain: content;
+  }
+
+  /* Apply containment to cards and independent components */
+  .property-card,
+  .card-fade-in {
+    contain: layout style paint;
+  }
+
+  /* GPU acceleration for transforms */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Apply GPU acceleration to animated elements */
+  .hover-lift,
+  .hover-zoom,
+  .animate-fade-in-scale,
+  .animate-zoom-in {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Smooth Scroll Animation Utilities - Requirements 9.5 */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  .scroll-auto {
+    scroll-behavior: auto;
+  }
+
+  /* Respect user's motion preferences - Task 17 */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* Disable will-change for reduced motion */
+    .will-animate,
+    .will-animate-transform,
+    .will-animate-opacity,
+    .will-animate-shadow,
+    .will-animate-colors,
+    .will-animate-all {
+      will-change: auto !important;
+    }
+
+    /* Disable transforms for reduced motion */
+    .hover-lift:hover,
+    .hover-zoom:hover img,
+    .animate-fade-in-scale,
+    .animate-zoom-in {
+      transform: none !important;
+    }
+  }
+
+  /* ========================================
+     RESPONSIVE DESIGN WITH BRAND CONSISTENCY
+     Requirements: 11.1, 11.2, 11.3, 11.4, 11.5
+     ======================================== */
+
+  /* Mobile-First: Tropical Colors Maintained - Requirement 11.1 */
+  @media (max-width: 639px) {
+    /* Ensure tropical colors are vibrant on mobile */
+    .text-gradient-sunset,
+    .text-gradient-ocean {
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Mobile-optimized spacing */
+    .section-padding {
+      padding-top: var(--spacing-lg);
+      padding-bottom: var(--spacing-lg);
+    }
+
+    .container-custom {
+      padding-left: var(--spacing-sm);
+      padding-right: var(--spacing-sm);
+    }
+
+    /* Touch-friendly button sizes - Requirement 11.5 */
+    button,
+    a.btn,
+    .btn {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.75rem 1.5rem;
+    }
+
+    /* Mobile-optimized shadows with tropical tint */
+    .shadow-warm-md {
+      box-shadow: 0 2px 4px rgba(255, 107, 53, 0.12);
+    }
+
+    .shadow-warm-lg {
+      box-shadow: 0 4px 8px rgba(255, 107, 53, 0.15);
+    }
+
+    /* Mobile card animations - Requirement 11.5 */
+    .card-fade-in {
+      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    }
+
+    /* Reduce animation intensity on mobile for performance */
+    .hover-lift:hover {
+      transform: translateY(-4px);
+    }
+
+    /* Mobile-friendly gradients */
+    .bg-gradient-sunset,
+    .bg-gradient-ocean {
+      background-attachment: scroll; /* Better performance on mobile */
+    }
+  }
+
+  /* Tablet: Adjusted Spacing with Brand Colors - Requirement 11.2 */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    /* Tablet-optimized spacing */
+    .section-padding {
+      padding-top: var(--spacing-xl);
+      padding-bottom: var(--spacing-xl);
+    }
+
+    .container-custom {
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+    }
+
+    /* Tablet grid adjustments */
+    .grid-responsive {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Tablet shadows maintain tropical warmth */
+    .shadow-warm-md {
+      box-shadow: 0 4px 6px rgba(255, 107, 53, 0.12);
+    }
+
+    .shadow-warm-lg {
+      box-shadow: 0 8px 12px rgba(255, 107, 53, 0.15);
+    }
+
+    /* Smooth transitions at tablet breakpoint - Requirement 11.4 */
+    * {
+      transition-property: padding, margin, font-size, width, height;
+      transition-duration: 0.3s;
+      transition-timing-function: ease-in-out;
+    }
+
+    /* Tablet hover effects with tropical colors */
+    .hover-lift:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 20px rgba(255, 107, 53, 0.18);
+    }
+  }
+
+  /* Desktop: Full Brand Display - Requirement 11.3 */
+  @media (min-width: 1024px) {
+    /* Desktop-optimized spacing */
+    .section-padding {
+      padding-top: var(--spacing-2xl);
+      padding-bottom: var(--spacing-2xl);
+    }
+
+    .container-custom {
+      max-width: 1280px;
+      padding-left: var(--spacing-lg);
+      padding-right: var(--spacing-lg);
+    }
+
+    /* Desktop grid with full brand display */
+    .grid-responsive {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    /* Enhanced shadows for desktop */
+    .shadow-warm-md {
+      box-shadow: 0 4px 6px rgba(255, 107, 53, 0.12),
+        0 2px 4px rgba(255, 107, 53, 0.08);
+    }
+
+    .shadow-warm-lg {
+      box-shadow: 0 10px 15px rgba(255, 107, 53, 0.15),
+        0 4px 6px rgba(255, 107, 53, 0.1);
+    }
+
+    .shadow-warm-xl {
+      box-shadow: 0 20px 25px rgba(255, 107, 53, 0.18),
+        0 10px 10px rgba(255, 107, 53, 0.12);
+    }
+
+    /* Desktop hover effects with full tropical glow */
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 30px rgba(255, 107, 53, 0.2),
+        0 10px 15px rgba(255, 107, 53, 0.15);
+    }
+
+    /* Desktop gradient overlays */
+    .overlay-tropical::before {
+      background: linear-gradient(
+        180deg,
+        rgba(255, 107, 53, 0.35) 0%,
+        transparent 65%
+      );
+    }
+
+    /* Enhanced glow effects on desktop */
+    .hover-glow-orange:hover {
+      box-shadow: 0 0 30px rgba(255, 107, 53, 0.4),
+        0 0 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .hover-glow-cyan:hover {
+      box-shadow: 0 0 30px rgba(0, 188, 212, 0.4),
+        0 0 15px rgba(0, 188, 212, 0.3);
+    }
+
+    .hover-glow-yellow:hover {
+      box-shadow: 0 0 30px rgba(253, 184, 19, 0.4),
+        0 0 15px rgba(253, 184, 19, 0.3);
+    }
+  }
+
+  /* Smooth Transitions at Breakpoints - Requirement 11.4 */
+  @media (prefers-reduced-motion: no-preference) {
+    /* Smooth color transitions across breakpoints */
+    .bg-gradient-sunset,
+    .bg-gradient-ocean,
+    .text-gradient-sunset,
+    .text-gradient-ocean {
+      transition: background-position 0.5s ease-in-out, filter 0.3s ease-in-out;
+    }
+
+    /* Smooth shadow transitions */
+    .shadow-warm-md,
+    .shadow-warm-lg,
+    .shadow-warm-xl {
+      transition: box-shadow 0.3s ease-in-out;
+    }
+
+    /* Smooth spacing transitions */
+    .section-padding,
+    .container-custom {
+      transition: padding 0.3s ease-in-out;
+    }
+
+    /* Smooth grid transitions */
+    .grid-responsive {
+      transition: grid-template-columns 0.3s ease-in-out, gap 0.3s ease-in-out;
+    }
+  }
+
+  /* Touch-Friendly Animations for Mobile - Requirement 11.5 */
+  @media (hover: none) and (pointer: coarse) {
+    /* Touch device optimizations */
+
+    /* Larger touch targets */
+    button,
+    a,
+    input,
+    select,
+    textarea {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Touch-friendly tap animations */
+    .btn-ripple:active,
+    .btn-ripple-orange:active,
+    .btn-ripple-cyan:active,
+    .btn-ripple-yellow:active {
+      transform: scale(0.97);
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Touch feedback with tropical colors */
+    button:active,
+    a.btn:active {
+      background-color: rgba(255, 107, 53, 0.1);
+      transition: background-color 0.1s ease-out;
+    }
+
+    /* Disable hover effects on touch devices */
+    .hover-lift:hover {
+      transform: none;
+    }
+
+    /* Touch-optimized card interactions */
+    .card-fade-in:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Touch-friendly glow effects */
+    .hover-glow-orange:active {
+      box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .hover-glow-cyan:active {
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+    }
+
+    .hover-glow-yellow:active {
+      box-shadow: 0 0 15px rgba(253, 184, 19, 0.3);
+    }
+
+    /* Smooth scroll on touch devices */
+    html {
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    /* Touch-optimized transitions */
+    * {
+      -webkit-tap-highlight-color: rgba(255, 107, 53, 0.1);
+    }
+  }
+
+  /* Landscape Orientation Adjustments */
+  @media (max-width: 1023px) and (orientation: landscape) {
+    /* Reduce vertical spacing in landscape */
+    .section-padding {
+      padding-top: var(--spacing-md);
+      padding-bottom: var(--spacing-md);
+    }
+
+    /* Optimize hero sections for landscape */
+    .hero-section {
+      min-height: 70vh;
+    }
+  }
+
+  /* High DPI Displays - Maintain Color Vibrancy */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Enhanced gradients for retina displays */
+    .bg-gradient-sunset {
+      background: linear-gradient(
+        135deg,
+        #ff6b35 0%,
+        #f7931e 40%,
+        #fdb813 100%
+      );
+    }
+
+    .bg-gradient-ocean {
+      background: linear-gradient(
+        135deg,
+        #00bcd4 0%,
+        #26c6da 50%,
+        #4dd0e1 100%
+      );
+    }
+
+    /* Sharper shadows on high DPI */
+    .shadow-warm-md {
+      box-shadow: 0 4px 6px rgba(255, 107, 53, 0.14),
+        0 1px 3px rgba(255, 107, 53, 0.08);
+    }
+  }
+
+  /* Print Styles - Maintain Brand Colors */
+  @media print {
+    /* Preserve tropical colors in print */
+    .bg-gradient-sunset,
+    .bg-gradient-ocean {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Simplify shadows for print */
+    .shadow-warm-md,
+    .shadow-warm-lg,
+    .shadow-warm-xl {
+      box-shadow: none;
+      border: 1px solid var(--tropical-orange-200);
+    }
+  }
+
+  /* Scroll Fade In Animation - Requirements 9.5 */
+  .scroll-fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity var(--transition-slow) var(--transition-timing),
+      transform var(--transition-slow) var(--transition-timing);
+  }
+
+  .scroll-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Scroll Fade In with Warm Tint - Requirements 9.1, 9.5 */
+  .scroll-fade-in-warm {
+    opacity: 0;
+    transform: translateY(30px);
+    filter: brightness(1.1) saturate(1.2);
+    transition: opacity var(--transition-slow) var(--transition-timing),
+      transform var(--transition-slow) var(--transition-timing),
+      filter var(--transition-slow) var(--transition-timing);
+  }
+
+  .scroll-fade-in-warm.visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: brightness(1) saturate(1);
+  }
+
+  /* Scroll Scale In - Requirements 9.5 */
+  .scroll-scale-in {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity var(--transition-slow) var(--transition-timing),
+      transform var(--transition-slow) var(--transition-timing);
+  }
+
+  .scroll-scale-in.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Scroll Slide In from Left - Requirements 9.5 */
+  .scroll-slide-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity var(--transition-slow) var(--transition-timing),
+      transform var(--transition-slow) var(--transition-timing);
+  }
+
+  .scroll-slide-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Scroll Slide In from Right - Requirements 9.5 */
+  .scroll-slide-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity var(--transition-slow) var(--transition-timing),
+      transform var(--transition-slow) var(--transition-timing);
+  }
+
+  .scroll-slide-in-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Button Animations with Tropical Colors - Requirements 9.2 */
+  .btn-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-ripple::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(253, 184, 19, 0.5); /* tropical yellow */
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .btn-ripple:active::after {
+    width: 300px;
+    height: 300px;
+    transition: width 0s, height 0s;
+    animation: ripple 0.6s ease-out;
+  }
+
+  /* Tropical Ripple Variants - Requirements 9.2 */
+  .btn-ripple-orange {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-ripple-orange::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 107, 53, 0.5); /* tropical orange */
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .btn-ripple-orange:active::after {
+    width: 300px;
+    height: 300px;
+    transition: width 0s, height 0s;
+    animation: ripple 0.6s ease-out;
+  }
+
+  .btn-ripple-cyan {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-ripple-cyan::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(0, 188, 212, 0.5); /* tropical cyan */
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .btn-ripple-cyan:active::after {
+    width: 300px;
+    height: 300px;
+    transition: width 0s, height 0s;
+    animation: ripple 0.6s ease-out;
+  }
+
+  .btn-ripple-yellow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-ripple-yellow::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(253, 184, 19, 0.5); /* tropical yellow */
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .btn-ripple-yellow:active::after {
+    width: 300px;
+    height: 300px;
+    transition: width 0s, height 0s;
+    animation: ripple 0.6s ease-out;
+  }
+
+  .btn-scale {
+    transition: transform var(--transition-fast) var(--transition-timing);
+  }
+
+  .btn-scale:active {
+    transform: scale(0.95);
+  }
+
+  .btn-scale:hover {
+    transform: scale(1.02);
+  }
+
+  /* Smooth Transitions for Interactive Elements - Requirements 4.1 */
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    transition: all var(--transition-normal) var(--transition-timing);
+  }
+
+  /* Card Fade In Animation - Requirements 4.2 */
+  .card-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity var(--transition-slow) var(--transition-timing),
+      transform var(--transition-slow) var(--transition-timing);
+  }
+
+  .card-fade-in.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered Animation Delays - Requirements 4.2 */
+  .card-fade-in:nth-child(1) {
+    transition-delay: 0ms;
+  }
+  .card-fade-in:nth-child(2) {
+    transition-delay: 100ms;
+  }
+  .card-fade-in:nth-child(3) {
+    transition-delay: 200ms;
+  }
+  .card-fade-in:nth-child(4) {
+    transition-delay: 300ms;
+  }
+  .card-fade-in:nth-child(5) {
+    transition-delay: 400ms;
+  }
+  .card-fade-in:nth-child(6) {
+    transition-delay: 500ms;
+  }
+  .card-fade-in:nth-child(7) {
+    transition-delay: 600ms;
+  }
+  .card-fade-in:nth-child(8) {
+    transition-delay: 700ms;
+  }
+
+  /* Typography Utilities - Requirements 5.1, 5.2, 5.3, 5.4, 5.5 */
+
+  /* Font Weight Utilities - Requirements 5.1 */
+  .font-light {
+    font-weight: var(--font-weight-light);
+  }
+
+  .font-normal {
+    font-weight: var(--font-weight-normal);
+  }
+
+  .font-medium {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .font-semibold {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .font-bold {
+    font-weight: var(--font-weight-bold);
+  }
+
+  .font-extrabold {
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  /* Line Height Utilities - Requirements 5.2 */
+  .leading-tight {
+    line-height: var(--line-height-tight);
+  }
+
+  .leading-relaxed {
+    line-height: var(--line-height-relaxed);
+  }
+
+  .leading-loose {
+    line-height: var(--line-height-loose);
+  }
+
+  .leading-extra-loose {
+    line-height: var(--line-height-extra-loose);
+  }
+
+  /* Letter Spacing Utilities - Requirements 5.3 */
+  .tracking-tight {
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .tracking-normal {
+    letter-spacing: var(--letter-spacing-normal);
+  }
+
+  .tracking-wide {
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  .tracking-wider {
+    letter-spacing: var(--letter-spacing-wider);
+  }
+
+  .tracking-widest {
+    letter-spacing: var(--letter-spacing-widest);
+  }
+
+  /* Warm Gray Text Colors - Requirements 5.4 */
+  .text-warm-gray-50 {
+    color: var(--warm-gray-50);
+  }
+
+  .text-warm-gray-100 {
+    color: var(--warm-gray-100);
+  }
+
+  .text-warm-gray-200 {
+    color: var(--warm-gray-200);
+  }
+
+  .text-warm-gray-300 {
+    color: var(--warm-gray-300);
+  }
+
+  .text-warm-gray-400 {
+    color: var(--warm-gray-400);
+  }
+
+  .text-warm-gray-500 {
+    color: var(--warm-gray-500);
+  }
+
+  .text-warm-gray-600 {
+    color: var(--warm-gray-600);
+  }
+
+  .text-warm-gray-700 {
+    color: var(--warm-gray-700);
+  }
+
+  .text-warm-gray-800 {
+    color: var(--warm-gray-800);
+  }
+
+  .text-warm-gray-900 {
+    color: var(--warm-gray-900);
+  }
+
+  /* Link Utilities with Orange/Coral Colors - Requirements 5.5 */
+  .link-tropical {
+    color: var(--tropical-orange-500);
+    text-decoration: none;
+    transition: color var(--transition-normal) var(--transition-timing);
+  }
+
+  .link-tropical:hover {
+    color: var(--tropical-orange-600);
+  }
+
+  .link-coral {
+    color: var(--tropical-orange-400);
+    text-decoration: none;
+    transition: color var(--transition-normal) var(--transition-timing);
+  }
+
+  .link-coral:hover {
+    color: var(--tropical-orange-500);
+  }
+
+  /* Link with Hover Underline Animation - Requirements 5.5 */
+  .link-underline-animated {
+    position: relative;
+    display: inline-block;
+  }
+
+  .link-underline-animated::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--tropical-orange-500),
+      var(--tropical-orange-600)
+    );
+    transition: width var(--transition-normal) var(--transition-timing);
+  }
+
+  .link-underline-animated:hover::after {
+    width: 100%;
+  }
+
+  /* Link with Coral Underline */
+  .link-underline-coral::after {
+    background: linear-gradient(
+      90deg,
+      var(--tropical-orange-400),
+      var(--tropical-orange-500)
+    );
+  }
+
+  /* Typography Preset Classes */
+  .text-display {
+    font-size: 4rem; /* 64px */
+    line-height: 1.1;
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--warm-gray-900);
+  }
+
+  .text-heading-1 {
+    font-size: 3rem; /* 48px */
+    line-height: 1.2;
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--warm-gray-900);
+  }
+
+  .text-heading-2 {
+    font-size: 2.25rem; /* 36px */
+    line-height: 1.3;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--warm-gray-900);
+  }
+
+  .text-heading-3 {
+    font-size: 1.875rem; /* 30px */
+    line-height: 1.4;
+    font-weight: var(--font-weight-bold);
+    color: var(--warm-gray-900);
+  }
+
+  .text-heading-4 {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.5;
+    font-weight: var(--font-weight-semibold);
+    color: var(--warm-gray-900);
+  }
+
+  .text-body-large {
+    font-size: 1.125rem; /* 18px */
+    line-height: var(--line-height-relaxed);
+    color: var(--warm-gray-700);
+  }
+
+  .text-body {
+    font-size: 1rem; /* 16px */
+    line-height: var(--line-height-relaxed);
+    color: var(--warm-gray-700);
+  }
+
+  .text-body-small {
+    font-size: 0.875rem; /* 14px */
+    line-height: var(--line-height-relaxed);
+    color: var(--warm-gray-600);
+  }
+
+  .text-caption {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.5;
+    color: var(--warm-gray-500);
+  }
+
+  /* Reduced Motion Support - Requirements 4.5 */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0ms !important;
+    }
+
+    .card-fade-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .will-animate,
+    .will-animate-transform,
+    .will-animate-opacity {
+      will-change: auto;
+    }
+  }
+
+  /* Desktop Enhanced Glow Effects */
+  @media (min-width: 1024px) {
+    .hover-glow-orange:hover {
+      box-shadow: 0 0 30px rgba(255, 107, 53, 0.4),
+        0 0 15px rgba(255, 107, 53, 0.3);
+    }
+
+    .hover-glow-cyan:hover {
+      box-shadow: 0 0 30px rgba(0, 188, 212, 0.4),
+        0 0 15px rgba(0, 188, 212, 0.3);
+    }
+  }
+
+  /* Smooth Transitions at Breakpoints - Requirement 11.4 */
+  @media (min-width: 640px) {
+    * {
+      transition-property: padding, margin, font-size, width, height,
+        background-color;
+      transition-duration: 0.3s;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  /* Touch-Friendly Animations for Mobile - Requirement 11.5 */
+  @media (max-width: 639px) {
+    /* Active state feedback for touch */
+    button:active,
+    a.btn:active,
+    .btn:active {
+      transform: scale(0.95);
+      transition: transform 0.1s ease-out;
+    }
+
+    /* Touch ripple effect */
+    .touch-ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .touch-ripple::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 107, 53, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .touch-ripple:active::after {
+      width: 200px;
+      height: 200px;
+    }
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY STYLES
+   Task 18: Accessibility Implementation
+   ======================================== */
+
+/* Skip Links - Hidden until focused */
+.skip-links {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--tropical-orange-700);
+  color: white;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--tropical-yellow-500);
+  outline-offset: 2px;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Enhanced Focus Indicators with Tropical Styling */
+*:focus-visible {
+  outline: 3px solid var(--tropical-orange-500);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Specific focus styles for interactive elements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 3px solid var(--tropical-orange-500);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+}
+
+/* Focus styles for buttons with tropical gradient */
+button.bg-gradient-sunset:focus-visible,
+button.bg-gradient-ocean:focus-visible {
+  outline: 3px solid var(--tropical-yellow-500);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(253, 184, 19, 0.2);
+}
+
+/* Focus styles for cards and interactive containers */
+.property-card:focus-within,
+.card:focus-within {
+  outline: 2px solid var(--tropical-orange-500);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(255, 107, 53, 0.1);
+}
+
+/* Keyboard navigation indicators */
+.keyboard-nav-active *:focus {
+  outline: 3px solid var(--tropical-orange-500);
+  outline-offset: 2px;
+}
+
+/* Remove focus outline for mouse users */
+.mouse-nav-active *:focus {
+  outline: none;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline-width: 4px;
+    outline-color: currentColor;
+  }
+
+  .text-gradient-sunset,
+  .text-gradient-ocean {
+    -webkit-text-fill-color: currentColor;
+    background: none;
+  }
+
+  /* Ensure sufficient contrast in high contrast mode */
+  .bg-gradient-sunset,
+  .bg-gradient-ocean {
+    background: var(--tropical-orange-700);
+  }
+}
+
+/* Color Blindness Considerations */
+/* Ensure patterns and icons supplement color information */
+.status-indicator {
+  position: relative;
+}
+
+.status-indicator::before {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+/* Add patterns for color-blind users */
+.status-success::before {
+  background: var(--color-success);
+  border: 2px solid var(--color-success);
+}
+
+.status-warning::before {
+  background: var(--tropical-yellow-500);
+  border: 2px dashed var(--tropical-yellow-700);
+}
+
+.status-error::before {
+  background: var(--color-error);
+  border: 2px solid var(--color-error);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* ARIA Live Regions */
+[aria-live="polite"],
+[aria-live="assertive"] {
+  position: relative;
+}
+
+/* Accessible Tooltips */
+[role="tooltip"] {
+  position: absolute;
+  z-index: 1000;
+  padding: 0.5rem 0.75rem;
+  background: var(--warm-gray-900);
+  color: white;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+/* Accessible Modal/Dialog */
+[role="dialog"],
+[role="alertdialog"] {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[role="dialog"] [aria-modal="true"],
+[role="alertdialog"] [aria-modal="true"] {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Accessible Form Labels */
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--warm-gray-700);
+}
+
+label[for] {
+  cursor: pointer;
+}
+
+/* Required field indicator */
+label.required::after {
+  content: " *";
+  color: var(--color-error);
+  font-weight: bold;
+}
+
+/* Form error messages */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  color: var(--color-error);
+  font-size: 0.875rem;
+}
+
+.error-message::before {
+  content: "⚠";
+  font-size: 1rem;
+}
+
+/* Accessible Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  text-align: left;
+  font-weight: 600;
+  background: var(--warm-gray-100);
+  padding: 0.75rem;
+  border-bottom: 2px solid var(--warm-gray-300);
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--warm-gray-200);
+}
+
+/* Accessible Image Placeholders */
+img[alt=""],
+img:not([alt]) {
+  border: 2px dashed var(--tropical-orange-300);
+}
+
+/* Loading State Accessibility */
+.loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--tropical-orange-200);
+  border-top-color: var(--tropical-orange-600);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner[aria-label]::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: -9999px;
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Keep focus indicators visible */
+  *:focus-visible {
+    outline: 3px solid var(--tropical-orange-500);
+    outline-offset: 2px;
+  }
+
+  /* Disable parallax and transform effects */
+  .parallax,
+  .hover-lift,
+  .hover-zoom,
+  .animate-fade-in-scale,
+  .animate-zoom-in {
+    transform: none !important;
+  }
+
+  /* Keep loading indicators but simplify */
+  .loading-spinner {
+    animation: none;
+    border-top-color: var(--tropical-orange-600);
+  }
+}
+
+/* Print Styles for Accessibility */
+@media print {
+  /* Ensure good contrast for printing */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  /* Show URLs for links */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  /* Hide non-essential elements */
+  nav,
+  .skip-links,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure images print */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Page breaks */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+  }
+
+  table,
+  figure {
+    page-break-inside: avoid;
+  }
+}
+
+/* Touch Target Size (WCAG 2.5.5) */
+@media (pointer: coarse) {
+  /* Ensure minimum 44x44px touch targets */
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.75rem;
+  }
+
+  /* Increase spacing between interactive elements */
+  button + button,
+  a + a {
+    margin-left: 0.5rem;
+  }
+}
+
+/* Keyboard Navigation Helpers */
+.keyboard-only:focus {
+  outline: 3px solid var(--tropical-orange-500);
+  outline-offset: 2px;
+}
+
+/* Focus trap for modals */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap::before,
+.focus-trap::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Accessible Disclosure Widgets */
+[aria-expanded="false"] + * {
+  display: none;
+}
+
+[aria-expanded="true"] + * {
+  display: block;
+}
+
+/* Accessible Progress Indicators */
+[role="progressbar"] {
+  position: relative;
+  height: 0.5rem;
+  background: var(--warm-gray-200);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+[role="progressbar"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--tropical-orange-500),
+    var(--tropical-orange-600)
+  );
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* Accessible Tabs */
+[role="tablist"] {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--warm-gray-200);
+}
+
+[role="tab"] {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+[role="tab"]:hover {
+  background: var(--tropical-orange-50);
+}
+
+[role="tab"][aria-selected="true"] {
+  border-bottom-color: var(--tropical-orange-500);
+  color: var(--tropical-orange-600);
+  font-weight: 600;
+}
+
+[role="tabpanel"] {
+  padding: 1.5rem 0;
+}
+
+[role="tabpanel"][hidden] {
+  display: none;
+}
+
+/* Accessible Alerts */
+[role="alert"],
+[role="status"] {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid;
+}
+
+[role="alert"] {
+  background: rgba(239, 68, 68, 0.1);
+  border-left-color: var(--color-error);
+  color: #991b1b;
+}
+
+[role="status"] {
+  background: rgba(16, 185, 129, 0.1);
+  border-left-color: var(--color-success);
+  color: #065f46;
+}
+
+/* Accessible Breadcrumbs */
+[aria-label="Breadcrumb"] ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+[aria-label="Breadcrumb"] li:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.5rem;
+  color: var(--warm-gray-400);
+}
+
+[aria-label="Breadcrumb"] [aria-current="page"] {
+  color: var(--warm-gray-600);
+  font-weight: 600;
+}
