@@ -28,16 +28,17 @@ steps:
       - "--image=asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:latest"
       - "--region=asia-southeast1"
       - "--platform=managed"
-      - "--allow-unauthenticated" # Public API
+      - "--allow-unauthenticated"
       - "--port=8080"
-      - "--memory=512Mi" # Tiết kiệm chi phí (Free Tier friendly)
+      - "--memory=512Mi"
       - "--cpu=1"
-      # Environment Variables (Secrets will be injected via Cloud Run Console later for better security)
+      # Kết nối Cloud SQL (Quan trọng!)
+      - "--add-cloudsql-instances=$PROJECT_ID:asia-southeast1:taivilla-db"
       - "--set-env-vars=SPRING_PROFILES_ACTIVE=prod"
 
 images:
   - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:latest"
 
-# Fix for "service account log bucket" error
+# Logs config
 options:
   logging: CLOUD_LOGGING_ONLY
