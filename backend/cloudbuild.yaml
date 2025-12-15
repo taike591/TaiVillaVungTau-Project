@@ -37,3 +37,7 @@ steps:
 
 images:
   - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/taivilla-repo/backend:latest"
+
+# Fix for "service account log bucket" error
+options:
+  logging: CLOUD_LOGGING_ONLY
