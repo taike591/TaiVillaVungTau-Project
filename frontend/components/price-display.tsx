@@ -36,7 +36,7 @@ export function PriceDisplay({
 
   if (variant === 'compact') {
     return (
-      <div className={`space-y-2 ${className}`}>
+      <div className={`space-y-2 ${className}`} suppressHydrationWarning>
         {/* Weekday Price - Requirements 12.1, 12.2 */}
         <div className="flex items-baseline gap-2">
           <span className="text-xl font-extrabold text-gradient-sunset min-h-[3.5rem] flex items-center">
@@ -51,7 +51,7 @@ export function PriceDisplay({
   }
 
   return (
-    <Card className={`bg-gradient-warm-glow border-[var(--tropical-orange-100)] flex flex-col ${className}`}>
+    <Card className={`bg-gradient-warm-glow border-[var(--tropical-orange-100)] flex flex-col ${className}`} suppressHydrationWarning>
       <CardContent className="p-3 flex flex-col flex-grow justify-between">
         {/* Weekday Price - Requirements 12.1, 12.2 */}
         <div className="mb-2">

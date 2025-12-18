@@ -67,7 +67,7 @@ export function isValidPhone(phone: string): boolean {
 /**
  * Validate image file
  * @param file - File to validate
- * @param maxSizeInMB - Maximum file size in MB (default: 5)
+ * @param maxSizeInMB - Maximum file size in MB (default: 10)
  * @returns Object with isValid flag and error message if invalid
  */
 export function validateImageFile(

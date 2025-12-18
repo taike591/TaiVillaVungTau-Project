@@ -49,6 +49,7 @@ export interface Amenity {
 }
 
 export interface PropertyFilters {
+  keyword?: string; // Search by name, address, code
   locationId?: number; // Filter by Location entity ID
   propertyTypeId?: number; // Filter by Property Type ID
   minGuests?: number;
@@ -78,6 +79,7 @@ export function useProperties(filters?: PropertyFilters) {
     queryFn: async () => {
       const params = new URLSearchParams();
       
+      if (filters?.keyword) params.append('keyword', filters.keyword);
       if (filters?.locationId) params.append('locationId', filters.locationId.toString());
       if (filters?.propertyTypeId) params.append('propertyTypeId', filters.propertyTypeId.toString());
       if (filters?.minGuests) params.append('minGuests', filters.minGuests.toString());

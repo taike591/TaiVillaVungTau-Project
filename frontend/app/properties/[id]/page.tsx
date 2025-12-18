@@ -250,6 +250,26 @@ export default function PropertyDetailPage() {
                   variant="outline"
                   size="icon"
                   className="rounded-full w-10 h-10"
+                  onClick={async () => {
+                    const shareData = {
+                      title: property.name,
+                      text: `${property.name} - ${property.code} | Tài Villa Vũng Tàu`,
+                      url: window.location.href,
+                    };
+                    
+                    try {
+                      if (navigator.share) {
+                        await navigator.share(shareData);
+                      } else {
+                        // Fallback: copy URL to clipboard
+                        await navigator.clipboard.writeText(window.location.href);
+                        alert('Đã sao chép link vào clipboard!');
+                      }
+                    } catch (err) {
+                      // User cancelled or error - silent fail
+                      console.log('Share cancelled or failed:', err);
+                    }
+                  }}
                 >
                   <Share2 className="w-5 h-5 text-slate-400" />
                 </Button>

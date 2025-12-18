@@ -58,7 +58,7 @@ public class PropertySearchRequest {
     private Integer page = 0; // Mặc định trang đầu
 
     @Min(value = 1, message = "Kích thước trang phải >= 1")
-    @Max(value = 100, message = "Kích thước trang tối đa là 100")
+    @Max(value = 500, message = "Kích thước trang tối đa là 500")
     private Integer size = 10; // Mặc định 10 căn/trang
 
     @Override

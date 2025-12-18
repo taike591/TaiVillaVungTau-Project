@@ -69,17 +69,19 @@ public class Property {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Quan hệ 1-N với hình ảnh
+    // Quan hệ 1-N với hình ảnh (Batch loading to fix N+1)
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 50)
     private Set<PropertyImage> images = new HashSet<>();
 
-    // Quan hệ N-N với tiện ích
+    // Quan hệ N-N với tiện ích (Batch loading to fix N+1)
     @ManyToMany
     @JoinTable(name = "property_amenities", joinColumns = @JoinColumn(name = "property_id"), inverseJoinColumns = @JoinColumn(name = "amenity_id"))
     @Builder.Default
     @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 50)
     private Set<Amenity> amenities = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
@@ -111,6 +113,10 @@ public class Property {
     @Column(name = "is_featured")
     @Builder.Default
     private Boolean isFeatured = false;
+
+    // Virtual column for sorting by image count
+    @org.hibernate.annotations.Formula("(SELECT count(*) FROM property_images pi WHERE pi.property_id = id)")
+    private Integer imageCount;
 
     // --- SEO META DATA ---
     @Column(name = "meta_title")

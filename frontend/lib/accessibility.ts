@@ -105,7 +105,6 @@ export const ariaLabels = {
 export const skipLinks = [
   { href: '#main-content', label: 'Skip to main content' },
   { href: '#navigation', label: 'Skip to navigation' },
-  { href: '#footer', label: 'Skip to footer' },
 ] as const;
 
 /**

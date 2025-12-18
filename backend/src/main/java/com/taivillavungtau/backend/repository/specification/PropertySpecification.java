@@ -152,6 +152,22 @@ public class PropertySpecification {
                     query.orderBy(
                             criteriaBuilder.asc(criteriaBuilder.length(root.get("code"))),
                             criteriaBuilder.asc(root.get("code")));
+                } else if ("updatedAt_desc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.desc(root.get("updatedAt")));
+                } else if ("updatedAt_asc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.asc(root.get("updatedAt")));
+                } else if ("name_asc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.asc(root.get("name")));
+                } else if ("name_desc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.desc(root.get("name")));
+                } else if ("price_asc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.asc(root.get("priceWeekday")));
+                } else if ("price_desc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.desc(root.get("priceWeekday")));
+                } else if ("status_asc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.asc(root.get("status")));
+                } else if ("status_desc".equalsIgnoreCase(sort)) {
+                    query.orderBy(criteriaBuilder.desc(root.get("status")));
                 }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

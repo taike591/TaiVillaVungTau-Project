@@ -49,7 +49,11 @@ export function HeroSection({ villas }: HeroSectionProps) {
   };
 
   return (
-    <div className="relative" suppressHydrationWarning>
+    <section 
+      className="relative" 
+      aria-label="Hero section - Villa showcases" 
+      suppressHydrationWarning
+    >
       {/* Brand Intro Slide - Shows first with auto-advance */}
       {showIntro && (
         <BrandIntroSlide 
@@ -63,9 +67,10 @@ export function HeroSection({ villas }: HeroSectionProps) {
         className={`transition-opacity duration-700 ease-in-out ${
           showCarousel ? 'opacity-100' : 'opacity-0'
         }`}
+        aria-hidden={!showCarousel}
       >
         <HeroCarousel villas={villas} />
       </div>
-    </div>
+    </section>
   );
 }

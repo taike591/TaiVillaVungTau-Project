@@ -1,6 +1,20 @@
+import { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { HomePageContent } from "@/components/home/HomePageContent";
+
+export const metadata: Metadata = {
+  title: "Taivillavungtau - Villa & Homestay Cao Cấp Vũng Tàu",
+  description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ hoàn hảo của bạn với hơn 100+ villa view biển đẹp nhất.",
+  keywords: "villa vũng tàu, cho thuê villa, homestay vũng tàu, nhà nghỉ vũng tàu, villa view biển",
+  openGraph: {
+    title: "Taivillavungtau - Villa & Homestay Cao Cấp Vũng Tàu",
+    description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu",
+    type: "website",
+    locale: "vi_VN",
+  },
+};
+
 
 // Mock data for demo/fallback
 const MOCK_VILLAS = [
@@ -68,24 +82,40 @@ const MOCK_VILLAS = [
 
 async function getAllProperties() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/v1/properties?size=100`,
-      {
-        next: { revalidate: 60 }, // Cache data for 60 seconds
-      }
+    // Auto-scaling fetch: get first page with max size, then remaining pages if needed
+    const maxSize = 500; // Backend max limit
+    
+    const firstRes = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/v1/properties?size=${maxSize}&page=0`,
+      { next: { revalidate: 60 } }
     );
     
-    if (!res.ok) {
-      return MOCK_VILLAS;
+    if (!firstRes.ok) return MOCK_VILLAS;
+    
+    const firstResponse = await firstRes.json();
+    if (!firstResponse.data?.content) return MOCK_VILLAS;
+    
+    const allProperties = [...firstResponse.data.content];
+    const totalPages = firstResponse.data.totalPages || 1;
+    
+    // Fetch remaining pages in parallel if needed (for 500+ properties)
+    if (totalPages > 1) {
+      const remainingPromises = [];
+      for (let page = 1; page < totalPages; page++) {
+        remainingPromises.push(
+          fetch(
+            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/v1/properties?size=${maxSize}&page=${page}`,
+            { next: { revalidate: 60 } }
+          ).then(res => res.ok ? res.json() : null)
+        );
+      }
+      const responses = await Promise.all(remainingPromises);
+      responses.forEach(res => {
+        if (res?.data?.content) allProperties.push(...res.data.content);
+      });
     }
     
-    const response = await res.json();
-    
-    if (response.data && response.data.content) {
-      return response.data.content;
-    }
-    
-    return MOCK_VILLAS;
+    return allProperties;
   } catch {
     return MOCK_VILLAS;
   }
@@ -95,7 +125,7 @@ export default async function HomePage() {
   const properties = await getAllProperties();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" suppressHydrationWarning>
       <Navbar transparent />
       <main id="main-content">
         <HomePageContent initialData={properties || MOCK_VILLAS} />

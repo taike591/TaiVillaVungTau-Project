@@ -28,6 +28,7 @@ function Card({
 }: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
   return (
     <div
+      suppressHydrationWarning
       data-slot="card"
       className={cn(cardVariants({ shadow }), className)}
       {...props}

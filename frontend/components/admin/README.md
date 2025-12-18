@@ -21,9 +21,9 @@ A comprehensive image upload component with drag-and-drop, reordering, progress 
 ### Usage
 
 ```tsx
-import { ImageUploader } from '@/components/admin/ImageUploader';
-import { useImageUpload } from '@/lib/hooks/useImageUpload';
-import { toast } from 'sonner';
+import { ImageUploader } from "@/components/admin/ImageUploader";
+import { useImageUpload } from "@/lib/hooks/useImageUpload";
+import { toast } from "sonner";
 
 function PropertyForm() {
   const {
@@ -35,15 +35,15 @@ function PropertyForm() {
     retryUpload,
   } = useImageUpload({
     maxImages: 20,
-    maxSizeInMB: 5,
+    maxSizeInMB: 10,
     onError: (error) => toast.error(error),
-    onUploadComplete: (imageUrl) => console.log('Uploaded:', imageUrl),
+    onUploadComplete: (imageUrl) => console.log("Uploaded:", imageUrl),
   });
 
   const handleSubmit = async () => {
     const result = await uploadAllImages(propertyId);
     if (result.success) {
-      toast.success('All images uploaded!');
+      toast.success("All images uploaded!");
     }
   };
 
@@ -57,7 +57,7 @@ function PropertyForm() {
         onReorder={reorderImages}
         onRetry={(id) => retryUpload(id, propertyId)}
         maxImages={20}
-        maxSizeInMB={5}
+        maxSizeInMB={10}
       />
       <button type="submit">Submit</button>
     </form>
@@ -69,26 +69,26 @@ function PropertyForm() {
 
 #### ImageUploader
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `images` | `ImagePreview[]` | required | Array of image previews |
-| `onChange` | `(images: ImagePreview[]) => void` | required | Callback when images change |
-| `onAdd` | `(files: File[]) => void` | required | Callback to add new images |
-| `onRemove` | `(id: string) => void` | required | Callback to remove an image |
-| `onReorder` | `(startIndex: number, endIndex: number) => void` | required | Callback to reorder images |
-| `onRetry` | `(imageId: string) => void` | optional | Callback to retry failed upload |
-| `maxImages` | `number` | `20` | Maximum number of images allowed |
-| `maxSizeInMB` | `number` | `5` | Maximum file size in MB |
-| `disabled` | `boolean` | `false` | Disable all interactions |
+| Prop          | Type                                             | Default  | Description                      |
+| ------------- | ------------------------------------------------ | -------- | -------------------------------- |
+| `images`      | `ImagePreview[]`                                 | required | Array of image previews          |
+| `onChange`    | `(images: ImagePreview[]) => void`               | required | Callback when images change      |
+| `onAdd`       | `(files: File[]) => void`                        | required | Callback to add new images       |
+| `onRemove`    | `(id: string) => void`                           | required | Callback to remove an image      |
+| `onReorder`   | `(startIndex: number, endIndex: number) => void` | required | Callback to reorder images       |
+| `onRetry`     | `(imageId: string) => void`                      | optional | Callback to retry failed upload  |
+| `maxImages`   | `number`                                         | `20`     | Maximum number of images allowed |
+| `maxSizeInMB` | `number`                                         | `10`     | Maximum file size in MB          |
+| `disabled`    | `boolean`                                        | `false`  | Disable all interactions         |
 
 #### useImageUpload Hook
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `maxImages` | `number` | `20` | Maximum number of images |
-| `maxSizeInMB` | `number` | `5` | Maximum file size in MB |
-| `onError` | `(error: string) => void` | optional | Error callback |
-| `onUploadComplete` | `(imageUrl: string) => void` | optional | Upload success callback |
+| Option             | Type                         | Default  | Description              |
+| ------------------ | ---------------------------- | -------- | ------------------------ |
+| `maxImages`        | `number`                     | `20`     | Maximum number of images |
+| `maxSizeInMB`      | `number`                     | `10`     | Maximum file size in MB  |
+| `onError`          | `(error: string) => void`    | optional | Error callback           |
+| `onUploadComplete` | `(imageUrl: string) => void` | optional | Upload success callback  |
 
 ### Hook Methods
 
@@ -121,7 +121,7 @@ The component integrates with the backend Cloudinary API:
 ### Validation
 
 - **Allowed types**: JPEG, JPG, PNG, WebP
-- **Max file size**: Configurable (default 5MB)
+- **Max file size**: Configurable (default 10MB)
 - **Max images**: Configurable (default 20)
 
 ### Error Handling

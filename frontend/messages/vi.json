@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Trang Chủ",
-    "properties": "Danh Sách Villa",
+    "properties": "Danh Sách",
     "contact": "Gửi Tư Vấn",
     "sendRequest": "Gửi Yêu Cầu"
   },
@@ -11,7 +11,7 @@
     "guests": "Khách",
     "perNight": "đêm",
     "viewAll": "Xem tất cả",
-    "viewAllVilla": "Xem tất cả Villa",
+    "viewAllVilla": "Xem tất cả",
     "loading": "Đang tải...",
     "error": "Có lỗi xảy ra",
     "retry": "Thử lại",
@@ -45,7 +45,7 @@
     "roomsPlus": "phòng trở lên",
     "amenities": "Tiện ích",
     "exploreNow": "Khám phá ngay",
-    "ready": "Sẵn sàng",
+    "ready": "Đang khả dụng",
     "bookNow": "Đặt phòng ngay",
     "swipeToView": "Vuốt để xem"
   },
@@ -137,7 +137,7 @@
     "discoverVacation": "Khám Phá Nghỉ Dưỡng",
     "experienceDescription": "Trải nghiệm không gian nghỉ dưỡng sang trọng bên bờ biển xanh",
     "favoriteDestinations": "Điểm đến yêu thích",
-    "discoverBestAreas": "Khám phá các khu vực đẹp nhất",
+    "discoverBestAreas": "Các bãi biển ở Vũng Tàu",
     "findPerfectPlace": "Tìm hiểu về các địa điểm nổi bật tại Vũng Tàu để chọn nơi nghỉ dưỡng hoàn hảo cho bạn",
     "villaAndHomestay": "Villa & Homestay",
     "fanpageReviews": "Đánh giá Fanpage",
@@ -150,7 +150,7 @@
     "viewAllFacebookReviews": "Xem tất cả đánh giá trên Facebook",
     "noVillasInArea": "Không có villa nào ở khu vực này",
     "pleaseSelectOther": "Vui lòng chọn khu vực khác",
-    "bestAreas": "khu vực đẹp nhất"
+    "bestAreas": "Các vị trí lý tưởng ở Vũng Tàu"
   },
   "cta": {
     "readyToBook": "Sẵn sàng đặt Villa của bạn?",
@@ -160,13 +160,13 @@
     "workingHours": "Giờ làm việc: 7AM-10PM"
   },
   "pricing": {
-    "startingFrom": "Giá khởi điểm từ",
+    "startingFrom": "Giá tham khảo",
     "guests": "khách",
     "night": "đêm",
     "weekdayPrice": "Giá Ngày Thường",
     "weekendPrice": "Giá Cuối Tuần",
-    "monToThu": "Thứ 2 - Thứ 5",
-    "friToSun": "Thứ 6, Thứ 7, Chủ nhật",
+    "monToThu": "Chủ nhật - thứ 6",
+    "friToSun": "Thứ 7",
     "priceDisclaimer1": "Giá tại thời điểm đăng bài, có thể tăng giảm theo mùa",
     "priceDisclaimer2": "Giá các ngày Lễ, Tết có thay đổi",
     "requestConsultation": "Yêu Cầu Tư Vấn Ngay",
@@ -186,7 +186,7 @@
     "inactive": "Không hoạt động"
   },
   "propertiesPage": {
-    "title": "Danh sách Villa",
+    "title": "Danh sách",
     "subtitle": "Khám phá các villa cao cấp tại Vũng Tàu",
     "noResults": "Không tìm thấy villa phù hợp",
     "tryAdjustFilters": "Thử điều chỉnh bộ lọc để xem thêm kết quả"

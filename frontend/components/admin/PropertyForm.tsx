@@ -219,6 +219,9 @@ export function PropertyForm({
         }
         updateStepStatus('thumbnail', 'completed');
         setCurrentStepIndex(2);
+        
+        // Wait briefly for DB transaction to fully commit before next update
+        await new Promise(resolve => setTimeout(resolve, 500));
       } else {
         // For create mode, skip image upload and thumbnail steps
         updateStepStatus('upload', 'completed');
@@ -226,10 +229,40 @@ export function PropertyForm({
         setCurrentStepIndex(2);
       }
 
-      // Step 3: Save property data
+      // Step 3: Save property data with retry mechanism
       updateStepStatus('save', 'in-progress');
-      await onSubmit(data);
-      updateStepStatus('save', 'completed');
+      
+      // Retry logic for transient lock errors
+      const maxRetries = 3;
+      let lastError: any = null;
+      
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          await onSubmit(data);
+          updateStepStatus('save', 'completed');
+          lastError = null;
+          break; // Success, exit retry loop
+        } catch (error: any) {
+          lastError = error;
+          const isLockError = error?.message?.includes('Lock') || 
+                             error?.response?.data?.message?.includes('Lock') ||
+                             error?.response?.status === 500;
+          
+          if (isLockError && attempt < maxRetries) {
+            // Wait before retry with exponential backoff
+            const waitTime = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
+            console.warn(`Lock timeout, retrying in ${waitTime}ms (attempt ${attempt}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+          } else {
+            // Either not a lock error or last attempt - throw
+            throw error;
+          }
+        }
+      }
+      
+      if (lastError) {
+        throw lastError;
+      }
       
       // Keep overlay visible briefly to show completion (reduced from 800ms)
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -244,7 +277,9 @@ export function PropertyForm({
   };
 
   const onFormError = (errors: any) => {
-    console.error('[PropertyForm] Validation errors:', errors);
+    if (Object.keys(errors).length > 0) {
+      console.error('[PropertyForm] Validation errors:', errors);
+    }
   };
 
   return (
@@ -470,9 +505,17 @@ export function PropertyForm({
                       type="number"
                       placeholder="1000000"
                       {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      onChange={(e) => {
+                        const weekdayPrice = Number(e.target.value);
+                        field.onChange(weekdayPrice);
+                        // Auto-update weekend price to 2x weekday price
+                        form.setValue('priceWeekend', weekdayPrice * 2);
+                      }}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Giá cuối tuần sẽ tự động nhân đôi (x2)
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

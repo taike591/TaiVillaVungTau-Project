@@ -18,7 +18,6 @@ export function FloatingContact() {
     <>
       {/* Floating Button */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-        {/* Contact Options - Show when open */}
         <div
           className={cn(
             "flex flex-col gap-3 transition-all duration-300 origin-bottom-right",
@@ -31,6 +30,7 @@ export function FloatingContact() {
             target="_blank"
             rel="noopener noreferrer"
             suppressHydrationWarning
+            aria-label="Chat qua Zalo"
             className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-[#0891b2]"
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0891b2] to-[#0ea5e9] flex items-center justify-center shadow-lg">
@@ -45,6 +45,7 @@ export function FloatingContact() {
           {/* Phone */}
           <a
             href="tel:0868947734"
+            aria-label="Gọi điện thoại 0868-947-734"
             className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-green-500"
             suppressHydrationWarning
           >
@@ -63,6 +64,7 @@ export function FloatingContact() {
             target="_blank"
             rel="noopener noreferrer"
             suppressHydrationWarning
+            aria-label="Nhắn tin qua Facebook"
             className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-[#1877F2]"
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1877F2] to-[#0e5fd8] flex items-center justify-center shadow-lg">

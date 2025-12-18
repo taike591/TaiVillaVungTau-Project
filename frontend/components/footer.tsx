@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, MapPin, Clock, MessageCircle, Phone, Mail, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
+import { FacebookPagePlugin } from './FacebookPagePlugin';
 
 export function Footer() {
   const t = useTranslations('footer');
@@ -16,20 +18,25 @@ export function Footer() {
       role="contentinfo"
       aria-label="Site footer"
     >
-      {/* Background Image - villa-collage.jpg */}
+      {/* Background Image - Optimized with Next.js Image */}
       <div className="absolute inset-0 z-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-60"
-          style={{ backgroundImage: "url('/villa-collage.jpg')" }}
+        <Image 
+          src="/villa-collage.jpg"
+          alt="Villa collage background"
+          fill
+          sizes="100vw"
+          quality={60}
+          className="object-cover opacity-60"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/70 to-gray-900/60" />
       </div>
 
       {/* Decorative Ocean Overlay */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-cyan-400 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-teal-400 rounded-full blur-3xl opacity-20"></div>
+      <div className="absolute inset-0 opacity-10 pointer-events-none z-0" suppressHydrationWarning>
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20" suppressHydrationWarning />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-cyan-400 rounded-full blur-3xl opacity-20" suppressHydrationWarning />
+        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-teal-400 rounded-full blur-3xl opacity-20" suppressHydrationWarning />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
@@ -86,9 +93,11 @@ export function Footer() {
           {/* Brand & About - Takes 4 columns */}
           <div className="lg:col-span-4 space-y-6">
             <div className="mb-6">
-              <img 
+              <Image 
                 src="/logo.jpg" 
                 alt="Taivillavungtau Logo" 
+                width={160}
+                height={64}
                 className="h-16 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
               />
             </div>
@@ -106,7 +115,8 @@ export function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 suppressHydrationWarning 
-                className="group p-3 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white transition-all duration-300 border border-white/30 shadow-lg"
+                aria-label="Theo dõi Facebook"
+                className="group p-3 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white transition-all duration-300 border border-white/30 shadow-lg min-w-[48px] min-h-[48px] flex items-center justify-center"
               >
                 <Facebook className="w-5 h-5 text-white group-hover:text-[#1877F2] transition-colors drop-shadow-lg" />
               </a>
@@ -115,7 +125,8 @@ export function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 suppressHydrationWarning 
-                className="group p-3 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white transition-all duration-300 border border-white/30 shadow-lg"
+                aria-label="Liên hệ qua Zalo"
+                className="group p-3 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white transition-all duration-300 border border-white/30 shadow-lg min-w-[48px] min-h-[48px] flex items-center justify-center"
               >
                 <MessageCircle className="w-5 h-5 text-white group-hover:text-[#0891b2] transition-colors drop-shadow-lg" />
               </a>
@@ -193,19 +204,47 @@ export function Footer() {
               </li>
             </ul>
 
-            {/* Facebook Page Plugin Placeholder */}
-            <div className="mt-8 p-4 bg-white/20 backdrop-blur-md rounded-xl border border-white/30 shadow-lg">
-              <p className="text-sm text-white mb-3 font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{t('followFanpage')}</p>
-              <a 
-                href="https://www.facebook.com/profile.php?id=100091682560247" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                suppressHydrationWarning
-                className="flex items-center gap-2 text-white hover:text-cyan-200 transition-colors drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
-              >
-                <Facebook className="w-5 h-5 drop-shadow-lg" />
-                <span className="text-sm font-medium">Taivillavungtau</span>
-              </a>
+            {/* Facebook Fanpage - Premium Design */}
+            <div className="mt-8 group">
+              {/* Section Header with Icon */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="relative">
+                  {/* Animated glow behind icon */}
+                  <div className="absolute inset-0 bg-blue-500 rounded-full blur-md opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"></div>
+                  <div className="relative p-2.5 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full shadow-lg">
+                    <Facebook className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-white font-bold text-lg drop-shadow-lg">{t('followFanpage')}</p>
+                  <p className="text-cyan-200/80 text-xs font-medium">6.3K+ người theo dõi</p>
+                </div>
+              </div>
+              
+              {/* Premium Card with Animated Gradient Border */}
+              <div className="relative w-fit group/card">
+                {/* Animated gradient glow effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 rounded-2xl blur-sm opacity-70 group-hover/card:opacity-100 group-hover/card:blur-md transition-all duration-500 animate-pulse"></div>
+                
+                {/* Inner card with glassmorphism */}
+                <div className="relative rounded-xl overflow-hidden bg-white/95 backdrop-blur-sm shadow-2xl transform group-hover/card:scale-[1.02] transition-transform duration-300">
+                  <FacebookPagePlugin
+                    pageUrl="https://www.facebook.com/profile.php?id=100091682560247"
+                    width={340}
+                    height={130}
+                    showCover={true}
+                    showFacepile={true}
+                    smallHeader={false}
+                    tabs="" 
+                  />
+                </div>
+              </div>
+
+              {/* Call to action text */}
+              <p className="text-cyan-100/70 text-xs mt-4 flex items-center gap-1.5">
+                <span className="inline-block w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                Like & Follow để nhận ưu đãi độc quyền
+              </p>
             </div>
           </div>
         </div>
@@ -213,9 +252,9 @@ export function Footer() {
         {/* --- SECTION 3: BOTTOM BAR --- */}
         <div className="pt-8 border-t border-white/30">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white font-medium drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-            <p className="flex items-center gap-2">
+            <p className="flex items-center gap-2" suppressHydrationWarning>
               {t('copyright', { year: new Date().getFullYear() })} 
-              <span className="hidden sm:inline">{t('tagline')}</span>
+              <span className="hidden sm:inline" suppressHydrationWarning>{t('tagline')}</span>
             </p>
             <p className="flex items-center gap-1">
               Made with <Heart className="w-4 h-4 text-red-400 fill-red-400 drop-shadow-lg" /> in Vũng Tàu

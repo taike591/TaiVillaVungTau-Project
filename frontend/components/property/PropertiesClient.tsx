@@ -21,6 +21,7 @@ export function PropertiesClient() {
 
   // Parse filters from URL
   const filters: PropertyFiltersType = {
+    keyword: searchParams.get('keyword') || undefined,
     locationId: searchParams.get('locationId') ? parseInt(searchParams.get('locationId')!, 10) : undefined,
     propertyTypeId: searchParams.get('propertyTypeId') ? parseInt(searchParams.get('propertyTypeId')!, 10) : undefined,
     minGuests: searchParams.get('minGuests') ? parseInt(searchParams.get('minGuests')!, 10) : undefined,
@@ -53,6 +54,7 @@ export function PropertiesClient() {
   const handleFilterChange = (newFilters: PropertyFiltersType) => {
     const params = new URLSearchParams();
 
+    if (newFilters.keyword) params.set('keyword', newFilters.keyword);
     if (newFilters.locationId) params.set('locationId', newFilters.locationId.toString());
     if (newFilters.propertyTypeId) params.set('propertyTypeId', newFilters.propertyTypeId.toString());
     if (newFilters.minGuests) params.set('minGuests', newFilters.minGuests.toString());

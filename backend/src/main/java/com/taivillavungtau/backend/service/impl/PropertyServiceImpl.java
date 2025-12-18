@@ -162,6 +162,38 @@ public class PropertyServiceImpl implements PropertyService {
                 sort = Sort.by(Sort.Direction.DESC, "updatedAt")
                         .and(Sort.by(Sort.Direction.DESC, "code"));
                 break;
+            case TYPE_ASC:
+                sort = Sort.by(Sort.Direction.ASC, "propertyType.name")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case TYPE_DESC:
+                sort = Sort.by(Sort.Direction.DESC, "propertyType.name")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case LOCATION_ASC:
+                sort = Sort.by(Sort.Direction.ASC, "locationEntity.name")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case LOCATION_DESC:
+                sort = Sort.by(Sort.Direction.DESC, "locationEntity.name")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case FEATURED_ASC:
+                sort = Sort.by(Sort.Direction.ASC, "isFeatured")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case FEATURED_DESC:
+                sort = Sort.by(Sort.Direction.DESC, "isFeatured")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case IMAGE_COUNT_ASC:
+                sort = Sort.by(Sort.Direction.ASC, "imageCount")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
+            case IMAGE_COUNT_DESC:
+                sort = Sort.by(Sort.Direction.DESC, "imageCount")
+                        .and(Sort.by(Sort.Direction.DESC, "code"));
+                break;
             case CODE_ASC:
             case CODE_DESC:
             case NEWEST:
@@ -173,7 +205,8 @@ public class PropertyServiceImpl implements PropertyService {
 
         // 3. Xử lý Phân trang (với giá trị mặc định an toàn)
         int page = (request.getPage() != null && request.getPage() >= 0) ? request.getPage() : 0;
-        int size = (request.getSize() != null && request.getSize() > 0 && request.getSize() <= 100)
+        // Allow size up to 500 (matching @Max annotation in PropertySearchRequest)
+        int size = (request.getSize() != null && request.getSize() > 0 && request.getSize() <= 500)
                 ? request.getSize()
                 : 10;
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -251,6 +284,18 @@ public class PropertyServiceImpl implements PropertyService {
         log.info("Updating property ID: {}", id);
         Property existing = propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(Translator.toLocale("error.villa.not_found")));
+
+        // --- CẬP NHẬT MÃ (CODE) nếu có thay đổi ---
+        if (dto.getCode() != null && !dto.getCode().equals(existing.getCode())) {
+            // Kiểm tra xem mã mới có trùng với property khác không
+            if (propertyRepository.existsByCode(dto.getCode())) {
+                throw new DuplicateResourceException(
+                        String.format(Translator.toLocale("error.villa.code_existed"), dto.getCode()));
+            }
+            log.info("Updating property code from {} to {}", existing.getCode(), dto.getCode());
+            existing.setCode(dto.getCode());
+        }
+
         existing.setLocation(dto.getLocation()); // Thêm dòng này
         // --- CẬP NHẬT CÁC TRƯỜNG (Dùng getter chuẩn hóa) ---
         existing.setName(dto.getName());
@@ -422,6 +467,61 @@ public class PropertyServiceImpl implements PropertyService {
         targetImage.setIsThumbnail(true);
         propertyRepository.save(property);
         log.info("Thumbnail set successfully for property ID: {}", propertyId);
+    }
+
+    @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "properties", key = "#id"),
+            @CacheEvict(value = "property_search", allEntries = true)
+    })
+    public void permanentDeleteProperty(Long id) {
+        Objects.requireNonNull(id, "Property ID must not be null");
+        log.warn("PERMANENT DELETE initiated for property ID: {}", id);
+
+        Property property = propertyRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Property not found for permanent delete. ID: {}", id);
+                    return new ResourceNotFoundException(Translator.toLocale("error.villa.not_found"));
+                });
+
+        // 1. Collect all image URLs FIRST (before clearing collections)
+        List<String> imageUrlsToDelete = property.getImages().stream()
+                .map(PropertyImage::getImageUrl)
+                .filter(url -> url != null && !url.isEmpty())
+                .collect(Collectors.toList());
+
+        log.info("Collected {} image URLs for cloud deletion", imageUrlsToDelete.size());
+
+        // 2. Clear amenity associations FIRST (Many-to-Many - no FK constraint issue)
+        property.getAmenities().clear();
+
+        // 3. Delete images from DB using orphanRemoval (clear collection triggers
+        // delete)
+        property.getImages().clear();
+
+        // 4. Flush to execute DELETE on images before property delete
+        propertyRepository.saveAndFlush(property);
+
+        // 5. Delete the property entity
+        propertyRepository.delete(property);
+        propertyRepository.flush(); // Force immediate execution
+
+        log.info("Property deleted from database. ID: {}", id);
+
+        // 6. Delete images from Cloudinary AFTER DB transaction succeeds
+        // This is done last to avoid holding DB locks during network calls
+        for (String imageUrl : imageUrlsToDelete) {
+            try {
+                cloudinaryService.deleteImage(imageUrl);
+                log.debug("Deleted image from Cloudinary: {}", imageUrl);
+            } catch (Exception e) {
+                // Log but don't fail - orphaned cloud images are acceptable
+                log.warn("Failed to delete image from Cloudinary: {}. Error: {}", imageUrl, e.getMessage());
+            }
+        }
+
+        log.warn("Property PERMANENTLY DELETED. ID: {}", id);
     }
 
 }

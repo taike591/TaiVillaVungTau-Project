@@ -3,7 +3,7 @@
 import { PropertyForm } from '@/components/admin/PropertyForm';
 import { useProperty, useUpdateProperty } from '@/lib/hooks/useProperties';
 import { PropertyFormData } from '@/lib/validation';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { showSuccess } from '@/lib/notifications';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -14,6 +14,8 @@ export default function EditPropertyPage() {
   const router = useRouter();
   const params = useParams();
   const propertyId = params.id as string;
+  const searchParams = useSearchParams();
+  const returnPage = searchParams.get('page') || '0';
   
   const { data: property, isLoading: isLoadingProperty, error } = useProperty(propertyId);
   const updateProperty = useUpdateProperty();
@@ -61,7 +63,7 @@ export default function EditPropertyPage() {
     // Show success notification and redirect
     // The redirect happens after the overlay shows completion (handled by PropertyForm)
     showSuccess.updated('Property');
-    router.push('/admin/properties');
+    router.push(`/admin/properties?page=${returnPage}`);
   };
 
   if (error) {

@@ -61,15 +61,15 @@ export function LanguageSwitcher({ variant = 'default', className }: LanguageSwi
             className
           )}
         >
-          <span className="text-base">{currentLang.flag}</span>
+          <span className="text-base leading-none flex items-center">{currentLang.flag}</span>
           <span className={cn(
-            "font-medium text-xs uppercase tracking-wide",
+            "font-medium text-xs uppercase tracking-wide leading-none",
             variant === 'compact' && "hidden sm:inline"
           )}>
             {currentLang.code}
           </span>
           <Globe className={cn(
-            "opacity-60",
+            "opacity-60 shrink-0",
             variant === 'compact' ? "w-3 h-3" : "w-3.5 h-3.5"
           )} />
         </Button>

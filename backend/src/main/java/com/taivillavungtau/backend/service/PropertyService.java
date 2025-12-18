@@ -28,4 +28,11 @@ public interface PropertyService {
     PropertyDTO patchProperty(Long id, PropertyDTO propertyDTO); // Partial update (PATCH)
 
     void deleteProperty(Long id);
+
+    /**
+     * Permanently delete a property and all associated data (images, amenity
+     * links).
+     * WARNING: This action is irreversible!
+     */
+    void permanentDeleteProperty(Long id);
 }

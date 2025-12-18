@@ -29,6 +29,7 @@ export function PropertyFilters({
 }: PropertyFiltersProps) {
   const t = useTranslations('common');
   // Local state for debounced inputs
+  const [localKeyword, setLocalKeyword] = useState(filters.keyword || '');
   const [localMinPrice, setLocalMinPrice] = useState(filters.minPrice?.toString() || '');
   const [localMaxPrice, setLocalMaxPrice] = useState(filters.maxPrice?.toString() || '');
   const [localMinGuests, setLocalMinGuests] = useState(filters.minGuests?.toString() || '');
@@ -51,6 +52,22 @@ export function PropertyFilters({
 
     return () => clearTimeout(timer);
   }, [localMinPrice, localMaxPrice]);
+
+  // Debounce keyword input (500ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const keyword = localKeyword.trim() || undefined;
+      
+      if (keyword !== filters.keyword) {
+        onFilterChange({
+          ...filters,
+          keyword,
+        });
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [localKeyword]);
 
   // Debounce guest count inputs (300ms)
   useEffect(() => {
@@ -104,6 +121,7 @@ export function PropertyFilters({
   };
 
   const handleClearAll = () => {
+    setLocalKeyword('');
     setLocalMinPrice('');
     setLocalMaxPrice('');
     setLocalMinGuests('');
@@ -112,6 +130,7 @@ export function PropertyFilters({
   };
 
   const hasActiveFilters = 
+    filters.keyword ||
     filters.locationId || 
     filters.propertyTypeId ||
     filters.minGuests || 
@@ -139,6 +158,21 @@ export function PropertyFilters({
       </div>
 
       <div className="space-y-4">
+        {/* Keyword Search */}
+        <div>
+          <Label htmlFor="keyword" className="text-sm font-medium mb-2 block">
+            Tìm kiếm
+          </Label>
+          <Input
+            id="keyword"
+            type="text"
+            placeholder="Tên villa, địa chỉ..."
+            value={localKeyword}
+            onChange={(e) => setLocalKeyword(e.target.value)}
+            className="w-full"
+          />
+        </div>
+
         {/* Location Filter */}
         <div>
           <Label htmlFor="location" className="text-sm font-medium mb-2 block">

@@ -94,27 +94,34 @@ export function PropertyDetailPricingCard({
         )}
       </div>
 
-      {/* Price Notes */}
+      {/* Price Notes
       {priceNote && (
         <div className="px-4 pb-2">
           <p className="text-xs text-slate-500 italic">
             * {priceNote}
           </p>
         </div>
-      )}
+      )} */}
 
-      {/* Price Disclaimers - Prominent Warning Style */}
-      <div className="mx-4 mb-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl">
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-amber-800 flex items-center gap-2">
-            <span>⚠️</span> {t('priceDisclaimer1')}
-          </p>
-          <p className="text-xs font-medium text-orange-700">
-            🔥 Giá Thứ 6, Thứ 7, Chủ nhật, Lễ, Tết có thay đổi
-          </p>
-          <div className="pt-2 border-t border-amber-200/60">
-            <p className="text-sm font-bold text-[#0891b2] text-center">
-              ☎️ Vui lòng liên hệ để có giá chính xác !!
+      {/* Price Disclaimers - PROMINENT Warning Style */}
+      <div className="mx-4 mb-4 p-5 bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-100 border-2 border-amber-300 rounded-2xl shadow-lg shadow-amber-200/50">
+        <div className="space-y-3">
+          <div className="flex items-start gap-3 text-amber-900">
+            <span className="text-2xl">⚠️</span>
+            <p className="text-sm font-semibold leading-relaxed">
+              {t('priceDisclaimer1')}
+            </p>
+          </div>
+          <div className="flex items-start gap-3 text-orange-800">
+            <span className="text-2xl">🔥</span>
+            <p className="text-sm font-bold leading-relaxed">
+              Giá Thứ 6, Thứ 7, Chủ nhật, Lễ, Tết có thay đổi
+            </p>
+          </div>
+          <div className="flex items-center gap-3 pt-2 border-t border-amber-200">
+            <span className="text-2xl animate-pulse">☎️</span>
+            <p className="text-base font-extrabold text-[#0891b2] tracking-wide">
+              Vui lòng liên hệ để có giá chính xác !!
             </p>
           </div>
         </div>
@@ -159,23 +166,7 @@ export function PropertyDetailPricingCard({
         </Button>
       </div>
 
-      {/* Trust Badges */}
-      <div className="px-4 pb-5 pt-2 border-t border-slate-100 mt-2">
-        <div className="space-y-2.5">
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <CheckCircle className="w-4 h-4 text-green-500" />
-            <span>{t('freeCancellation')}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <Clock className="w-4 h-4 text-green-500" />
-            <span>{t('support247')}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <Shield className="w-4 h-4 text-green-500" />
-            <span>{t('instantConfirmation')}</span>
-          </div>
-        </div>
-      </div>
+     
     </Card>
   );
 }

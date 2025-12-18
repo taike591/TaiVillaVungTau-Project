@@ -57,11 +57,18 @@ public class PropertyController {
         return ResponseEntity.ok(ApiResponse.success(updatedProperty, "Cập nhật thông tin thành công"));
     }
 
-    // 5. Xóa Villa (MỚI)
+    // 5. Xóa Villa (Soft delete - chuyển status sang DELETED)
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteProperty(@PathVariable Long id) {
         propertyService.deleteProperty(id);
         return ResponseEntity.ok(ApiResponse.success("Xóa Villa thành công"));
+    }
+
+    // 5.2 Xóa vĩnh viễn Villa (Hard delete - XÓA HOÀN TOÀN khỏi DB + Cloudinary)
+    @DeleteMapping("/{id}/permanent")
+    public ResponseEntity<ApiResponse<Void>> permanentDeleteProperty(@PathVariable Long id) {
+        propertyService.permanentDeleteProperty(id);
+        return ResponseEntity.ok(ApiResponse.success("Đã xóa vĩnh viễn Villa và toàn bộ dữ liệu liên quan"));
     }
 
     // 5.1 Partial update (PATCH) - for toggling featured, status, etc.

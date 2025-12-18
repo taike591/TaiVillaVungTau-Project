@@ -26,6 +26,7 @@ interface Villa {
   bedroomCount?: number;
   maxGuests?: number;
   priceWeekday?: number;
+  locationName?: string;
 }
 
 function getShortAddress(address?: string): string {
@@ -117,9 +118,10 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       className="relative h-screen w-full overflow-hidden bg-slate-900"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      suppressHydrationWarning
     >
       {/* Background Images with Ken Burns Effect */}
-      {villas.map((villa, index) => {
+      {villas.slice(0, 5).map((villa, index) => {
         const image = getMainImage(villa.images) || backgroundImage;
         const isActive = index === currentIndex;
         
@@ -131,37 +133,42 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               opacity: isActive ? 1 : 0,
               zIndex: isActive ? 1 : 0,
             }}
+            suppressHydrationWarning
           >
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url('${image}')`,
-                animation: isActive ? 'kenBurns 20s ease-in-out infinite alternate' : 'none',
-              }}
+            <Image
+              src={image}
+              alt={villa.name}
+              fill
+              sizes="100vw"
+              priority={index === 0 || index === 1}
+              loading={index <= 1 ? "eager" : "lazy"}
+              quality={80}
+              className={`object-cover ${isActive ? 'animate-ken-burns' : ''}`}
             />
           </div>
         );
       })}
 
       {/* Gradient Overlays - Lighter for clearer image */}
-      <div className="absolute inset-0 z-[2]">
+      <div className="absolute inset-0 z-[2]" suppressHydrationWarning>
         {/* Bottom gradient for content readability - reduced opacity */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" suppressHydrationWarning />
         {/* Top gradient for navbar - lighter */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" suppressHydrationWarning />
         {/* Side gradient for thumbnails - lighter */}
-        <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-transparent hidden lg:block" />
+        <div className="absolute inset-0 bg-gradient-to-l from-black/30 via-transparent to-transparent hidden lg:block" suppressHydrationWarning />
         {/* Animated color overlay - reduced opacity */}
         <div 
           className="absolute inset-0 opacity-15 mix-blend-overlay"
           style={{
             background: 'linear-gradient(135deg, #0ea5e9 0%, #14b8a6 50%, #0891b2 100%)',
           }}
+          suppressHydrationWarning
         />
       </div>
 
       {/* Floating Particles Effect */}
-      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden" suppressHydrationWarning>
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
@@ -173,36 +180,43 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               animation: `floatParticle ${10 + i * 2}s ease-in-out infinite`,
               animationDelay: `${i * 0.7}s`,
             }}
+            suppressHydrationWarning
           />
         ))}
       </div>
 
       {/* Main Content */}
-      <div className="absolute inset-0 z-[5] flex items-end">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-24 lg:pb-28">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+      <div className="absolute inset-0 z-[15] flex items-end pointer-events-none" suppressHydrationWarning>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-28 sm:pb-28 lg:pb-28" suppressHydrationWarning>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8" suppressHydrationWarning>
             {/* Left Content */}
-            <div className="flex-1 max-w-3xl">
-              {/* Location Badge */}
+            <div className="flex-1 max-w-3xl pointer-events-none" suppressHydrationWarning>
+              {/* Location Badge + Villa Code - Same Row */}
               <div 
-                key={`loc-${currentIndex}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6 animate-fade-in-up"
+                key={`badges-${currentIndex}`}
+                className="flex flex-wrap items-center gap-3 mb-6 animate-fade-in-up"
+                suppressHydrationWarning
               >
-                <MapPin className="h-4 w-4 text-cyan-400" />
-                <span className="text-sm font-medium text-white/90">
-                  {currentVilla.area || 'Vũng Tàu, Vietnam'}
-                </span>
-              </div>
+                {/* Location Badge */}
+                <div 
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20"
+                  suppressHydrationWarning
+                >
+                  <MapPin className="h-4 w-4 text-cyan-400" />
+                  <span className="text-sm font-medium text-white/90">
+                    {currentVilla.locationName || 'Vũng Tàu, Vietnam'}
+                  </span>
+                </div>
 
-              {/* Villa Code */}
-              <div 
-                key={`code-${currentIndex}`}
-                className="inline-block px-3 py-1 rounded-lg bg-cyan-500/20 backdrop-blur-sm border border-cyan-400/30 mb-4 animate-fade-in-up"
-                style={{ animationDelay: '100ms' }}
-              >
-                <span className="text-cyan-300 text-sm font-bold tracking-wider">
-                  {currentVilla.code}
-                </span>
+                {/* Villa Code */}
+                <div 
+                  className="inline-flex items-center px-3 py-2 rounded-full bg-cyan-500/20 backdrop-blur-sm border border-cyan-400/30"
+                  suppressHydrationWarning
+                >
+                  <span className="text-cyan-300 text-sm font-bold tracking-wider">
+                    {currentVilla.code}
+                  </span>
+                </div>
               </div>
 
               {/* Villa Name - Premium Typography */}
@@ -225,6 +239,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                   key={`addr-${currentIndex}`}
                   className="flex items-center gap-2 text-white/70 mb-4 animate-fade-in-up"
                   style={{ animationDelay: '200ms' }}
+                  suppressHydrationWarning
                 >
                   <MapPin className="h-4 w-4 text-teal-400 shrink-0" />
                   <span className="text-sm sm:text-base">{getShortAddress(currentVilla.address)}</span>
@@ -236,21 +251,22 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                 key={`stats-${currentIndex}`}
                 className="flex flex-wrap items-center gap-4 mb-6 animate-fade-in-up"
                 style={{ animationDelay: '250ms' }}
+                suppressHydrationWarning
               >
                 {currentVilla.bedroomCount && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm" suppressHydrationWarning>
                     <Bed className="h-4 w-4 text-cyan-400" />
                     <span className="text-white text-sm font-medium">{currentVilla.bedroomCount} {t('beds')}</span>
                   </div>
                 )}
                 {currentVilla.maxGuests && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm" suppressHydrationWarning>
                     <Users className="h-4 w-4 text-teal-400" />
                     <span className="text-white text-sm font-medium">{currentVilla.maxGuests} {t('guests')}</span>
                   </div>
                 )}
                 {currentVilla.priceWeekday && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/20 backdrop-blur-sm border border-amber-400/30">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/20 backdrop-blur-sm border border-amber-400/30" suppressHydrationWarning>
                     <span className="text-amber-300 text-sm font-bold">{formatPrice(currentVilla.priceWeekday)}/{t('perNight')}</span>
                   </div>
                 )}
@@ -267,8 +283,9 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
 
               {/* Action Buttons */}
               <div 
-                className="flex items-center gap-4 animate-fade-in-up"
+                className="flex items-center gap-4 animate-fade-in-up pointer-events-auto"
                 style={{ animationDelay: '350ms' }}
+                suppressHydrationWarning
               >
                 <Button
                   asChild
@@ -280,7 +297,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                       {t('viewDetails')}
                       <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                     </span>
-                    <span className="absolute inset-0 bg-gradient-to-r from-cyan-100 to-teal-100 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-cyan-100 to-teal-100 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" suppressHydrationWarning />
                   </Link>
                 </Button>
                 
@@ -299,100 +316,125 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                 />
               </div>
             </div>
-
-            {/* Right Side - Thumbnail Navigation */}
-            <div className="hidden lg:block">
-              <div className="flex flex-col gap-3">
-                {villas.slice(0, 4).map((villa, index) => {
-                  const isActive = index === currentIndex;
-                  const thumbImage = getMainImage(villa.images) || backgroundImage;
-                  
-                  return (
-                    <button
-                      key={villa.id}
-                      onClick={() => goToSlide(index)}
-                      className={`group relative w-44 h-28 rounded-2xl overflow-hidden transition-all duration-500 ${
-                        isActive 
-                          ? 'scale-105 ring-2 ring-cyan-400 ring-offset-2 ring-offset-transparent shadow-2xl shadow-cyan-500/30' 
-                          : 'opacity-60 hover:opacity-100 hover:scale-102'
-                      }`}
-                    >
-                      {/* Thumbnail Image */}
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                        style={{ backgroundImage: `url('${thumbImage}')` }}
-                      />
-                      
-                      {/* Overlay */}
-                      <div className={`absolute inset-0 transition-all duration-300 ${
-                        isActive 
-                          ? 'bg-gradient-to-t from-cyan-900/80 via-transparent to-transparent' 
-                          : 'bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:from-black/80'
-                      }`} />
-                      
-                      {/* Content */}
-                      <div className="absolute inset-0 p-3 flex flex-col justify-end">
-                        <div className="flex items-center gap-1 mb-1">
-                          <MapPin className="h-3 w-3 text-cyan-400" />
-                          <span className="text-[10px] text-white/80 font-medium">
-                            {villa.area || 'Vũng Tàu'}
-                          </span>
-                        </div>
-                        <p className="text-sm font-bold text-white line-clamp-1">
-                          {villa.name.split(' ').slice(0, 3).join(' ')}
-                        </p>
-                      </div>
-                      
-                      {/* Active Indicator */}
-                      {isActive && (
-                        <div className="absolute top-2 right-2">
-                          <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-lg shadow-cyan-400/50" />
-                        </div>
-                      )}
-                      
-                      {/* Progress bar for active thumbnail */}
-                      {isActive && (
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-                          <div 
-                            className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-100"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
+      {/* Right Side - Thumbnail Navigation - Positioned Independently */}
+      <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-[60]" suppressHydrationWarning>
+        <div className="flex flex-col gap-3" suppressHydrationWarning>
+          {villas.slice(0, 5).map((villa, index) => {
+            const isActive = index === currentIndex;
+            const thumbImage = getMainImage(villa.images) || backgroundImage;
+            
+            return (
+              <button
+                key={villa.id}
+                onClick={() => goToSlide(index)}
+                className={`group relative w-44 h-28 rounded-2xl overflow-hidden transition-all duration-500 ${
+                  isActive 
+                    ? 'scale-105 ring-2 ring-cyan-400 ring-offset-2 ring-offset-transparent shadow-2xl shadow-cyan-500/30' 
+                    : 'opacity-60 hover:opacity-100 hover:scale-102'
+                }`}
+                suppressHydrationWarning
+              >
+                {/* Thumbnail Image - Optimized with Next.js Image */}
+                <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110" suppressHydrationWarning>
+                  <Image
+                    src={thumbImage}
+                    alt={villa.name}
+                    fill
+                    sizes="(max-width: 1024px) 0vw, 176px"
+                    quality={60}
+                    className="object-cover"
+                    suppressHydrationWarning
+                  />
+                </div>
+                
+                {/* Overlay */}
+                <div className={`absolute inset-0 transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-gradient-to-t from-cyan-900/80 via-transparent to-transparent' 
+                    : 'bg-gradient-to-t from-black/70 via-black/20 to-transparent group-hover:from-black/80'
+                }`} suppressHydrationWarning />
+                
+                {/* Content */}
+                <div className="absolute inset-0 p-3 flex flex-col justify-end" suppressHydrationWarning>
+                  <div className="flex items-center gap-1 mb-1" suppressHydrationWarning>
+                    <MapPin className="h-3 w-3 text-cyan-400" />
+                    <span className="text-[10px] text-white/80 font-medium">
+                      {villa.locationName || 'Vũng Tàu'}
+                    </span>
+                  </div>
+                  <p className="text-sm font-bold text-white line-clamp-1">
+                    {villa.name.split(' ').slice(0, 3).join(' ')}
+                  </p>
+                </div>
+                
+                {/* Active Indicator */}
+                {isActive && (
+                  <div className="absolute top-2 right-2" suppressHydrationWarning>
+                    <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-lg shadow-cyan-400/50" suppressHydrationWarning />
+                  </div>
+                )}
+                
+                {/* Progress bar for active thumbnail */}
+                {isActive && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20" suppressHydrationWarning>
+                    <div 
+                      className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-100"
+                      style={{ width: `${progress}%` }}
+                      suppressHydrationWarning
+                    />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Navigation Controls - Compact */}
-      <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none" suppressHydrationWarning>
         <button
           onClick={goToPrevious}
-          className="group w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center hover:bg-white/25 hover:scale-105 transition-all duration-300"
+          className="group w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center hover:bg-white/25 hover:scale-105 transition-all duration-300 pointer-events-auto"
           aria-label={tHero('previousSlide')}
+          suppressHydrationWarning
         >
           <ChevronLeft className="h-4 w-4 text-white group-hover:-translate-x-0.5 transition-transform" />
         </button>
       </div>
+
+      {/* Scroll Down Indicator - Premium Accent */}
+      <div 
+        className="absolute bottom-4 sm:bottom-6 right-8 sm:right-12 hidden lg:flex flex-col items-center gap-3 z-10 animate-fade-in pointer-events-none"
+        style={{ animationDelay: '1000ms' }}
+        suppressHydrationWarning
+      >
+        <span className="text-[10px] uppercase tracking-[0.2em] text-white/60 font-medium vertical-text">
+          Scroll
+        </span>
+        <div className="w-px h-12 bg-gradient-to-b from-white/60 to-transparent relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1/2 bg-cyan-400 animate-scroll-line" />
+        </div>
+      </div>
       
-      <div className="absolute right-2 sm:right-3 lg:right-52 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute right-2 sm:right-3 lg:right-52 top-1/2 -translate-y-1/2 z-10 pointer-events-none" suppressHydrationWarning>
         <button
           onClick={goToNext}
-          className="group w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center hover:bg-white/25 hover:scale-105 transition-all duration-300"
+          className="group w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center hover:bg-white/25 hover:scale-105 transition-all duration-300 pointer-events-auto"
           aria-label={tHero('nextSlide')}
+          suppressHydrationWarning
         >
           <ChevronRight className="h-4 w-4 text-white group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
 
       {/* Bottom Controls - Responsive */}
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3">
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3" suppressHydrationWarning>
         {/* Slide Indicators */}
-        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
           {villas.map((_, index) => (
             <button
               key={index}
@@ -401,6 +443,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                 index === currentIndex ? 'w-6 sm:w-8 bg-cyan-400' : 'w-1.5 sm:w-2 bg-white/40 hover:bg-white/60'
               }`}
               aria-label={tHero('goToSlide', { num: index + 1 })}
+              suppressHydrationWarning
             >
               {index === currentIndex && (
                 <span 
@@ -409,6 +452,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                     width: `${progress}%`,
                     transition: 'width 100ms linear'
                   }}
+                  suppressHydrationWarning
                 />
               )}
             </button>
@@ -420,6 +464,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
           onClick={toggleAutoPlay}
           className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300"
           aria-label={isAutoPlaying ? tHero('pause') : tHero('play')}
+          suppressHydrationWarning
         >
           {isAutoPlaying ? (
             <Pause className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
@@ -429,7 +474,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
         </button>
         
         {/* Slide Counter */}
-        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
           <span className="text-white text-xs sm:text-sm font-medium">
             {String(currentIndex + 1).padStart(2, '0')} / {String(villas.length).padStart(2, '0')}
           </span>

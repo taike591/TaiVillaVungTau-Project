@@ -298,10 +298,13 @@ export function GalleryGrid({ images, propertyName, onImageClick }: GalleryGridP
         className="col-span-4 md:col-span-2 row-span-2 relative group cursor-pointer overflow-hidden"
         onClick={() => onImageClick(0)}
       >
-        <img 
+        <Image 
           src={getImageUrl(displayImages[0])} 
           alt={propertyName}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          priority
         />
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
@@ -318,10 +321,13 @@ export function GalleryGrid({ images, propertyName, onImageClick }: GalleryGridP
           className="hidden md:block col-span-1 row-span-1 relative group cursor-pointer overflow-hidden"
           onClick={() => onImageClick(idx + 1)}
         >
-          <img 
+          <Image 
             src={getImageUrl(img)} 
             alt={`${propertyName} ${idx + 2}`}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            fill
+            sizes="25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
           />
           {/* Hover overlay */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">

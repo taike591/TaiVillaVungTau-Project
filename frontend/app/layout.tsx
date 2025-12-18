@@ -3,7 +3,6 @@ import { Lora, Inter, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
-import { SkipLinks } from "@/components/shared/SkipLinks";
 import { FloatingContact } from "@/components/floating-contact";
 import { WishlistFloatingButton } from "@/components/wishlist";
 import { NextIntlClientProvider } from 'next-intl';
@@ -32,15 +31,18 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "TaiVillaVungTau - Cho Thuê Villa Vũng Tàu",
-  description: "Hệ thống cho thuê villa cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ của bạn.",
+  title: "Taivillavungtau",
+  description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ của bạn.",
   keywords: "villa vũng tàu, cho thuê villa, homestay vũng tàu, nhà nghỉ vũng tàu",
-  authors: [{ name: "TaiVillaVungTau" }],
+  authors: [{ name: "Taivillavungtau" }],
   openGraph: {
-    title: "TaiVillaVungTau - Cho Thuê Villa Vũng Tàu",
-    description: "Hệ thống cho thuê villa cao cấp tại Vũng Tàu",
+    title: "Taivillavungtau",
+    description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu",
     type: "website",
     locale: "vi_VN",
+  },
+  icons: {
+    icon: '/favicon.ico',
   },
 };
 
@@ -58,7 +60,6 @@ export default async function RootLayout({
         className={`${lora.variable} ${inter.variable} ${dmSans.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
-        <SkipLinks />
         <NextIntlClientProvider messages={messages}>
           <Providers>
             {children}

@@ -17,7 +17,15 @@ public enum SortType {
     CREATED_AT_DESC("created_at_desc"),
     UPDATED_AT_ASC("updated_at_asc"),
     UPDATED_AT_DESC("updated_at_desc"),
-    NEWEST("newest");
+    NEWEST("newest"),
+    TYPE_ASC("type_asc"),
+    TYPE_DESC("type_desc"),
+    LOCATION_ASC("location_asc"),
+    LOCATION_DESC("location_desc"),
+    FEATURED_ASC("featured_asc"),
+    FEATURED_DESC("featured_desc"),
+    IMAGE_COUNT_ASC("image_count_asc"),
+    IMAGE_COUNT_DESC("image_count_desc");
 
     private final String value;
 

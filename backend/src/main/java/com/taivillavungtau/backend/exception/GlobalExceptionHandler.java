@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ApiResponse<Object>> handleMaxSizeException(MaxUploadSizeExceededException ex) {
                 return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                                 .body(ApiResponse.error(HttpStatus.PAYLOAD_TOO_LARGE.value(),
-                                                "File tải lên quá lớn (Tối đa 5MB)",
+                                                "File tải lên quá lớn (Tối đa 10MB)",
                                                 null));
         }
 

@@ -97,9 +97,9 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
   const imagesMessage = getMissingImagesMessage();
   
   return (
-    <div ref={ref} className={`card-fade-in ${isInView ? 'in-view' : ''} h-full`}>
+    <div ref={ref} className={`card-fade-in ${isInView ? 'in-view' : ''} h-full property-card-container`} suppressHydrationWarning>
       <Link href={`/properties/${property.id}`} className="block h-full" suppressHydrationWarning>
-        <Card className="p-0 gap-0 overflow-hidden h-full flex flex-col transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl shadow-lg rounded-2xl group bg-white border-0">
+        <Card className="p-0 gap-0 overflow-hidden h-full flex flex-col transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_22px_45px_-12px_rgba(0,0,0,0.15)] shadow-lg rounded-2xl group bg-white border-0 property-card-glow" suppressHydrationWarning>
           {/* Image Section - Clean overlay design */}
           <div className="relative h-52 md:h-56 overflow-hidden">
             {/* Gradient overlay on hover */}
@@ -110,7 +110,7 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
                 src={mainImage}
                 alt={`${displayName} - Villa ${property.bedroomCount} phòng ngủ tại ${property.area || 'Vũng Tàu'}`}
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
                 className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                 loading="lazy"
                 placeholder="blur"
@@ -159,7 +159,7 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
           </div>
 
           {/* Content Section - Improved hierarchy */}
-          <CardContent className="p-4 flex flex-col flex-1 bg-white">
+          <CardContent className="p-4 flex flex-col flex-1 bg-white" suppressHydrationWarning>
             {/* Property Name - Balanced size, matching address font weight and family */}
             <h3 className="font-sans font-medium text-[15px] md:text-base text-slate-800 leading-snug line-clamp-2 mb-2 group-hover:text-[#0891b2] transition-colors h-[2.75rem]">
               {displayName}

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Pagination } from '@/components/ui/pagination';
 import { TableSkeleton } from '@/components/shared/LoadingState';
 import { showSuccess, showError } from '@/lib/notifications';
-import { Plus, Edit, Eye, ArrowUpDown, X, MapPin, Power } from 'lucide-react';
+import { Plus, Edit, Eye, ArrowUpDown, X, MapPin, Power, Trash2, Search, ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
 import { useLocations, usePropertyTypes } from '@/lib/hooks/useLocationsAndTypes';
@@ -20,16 +21,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 
 
 export default function PropertiesPage() {
   const queryClient = useQueryClient();
-  const [currentPage, setCurrentPage] = useState(0);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Derive currentPage directly from URL
+  const pageParam = searchParams.get('page');
+  const currentPage = pageParam ? parseInt(pageParam, 10) : 0;
+  
   const pageSize = 10;
   
   // Filters
   const [selectedLocationId, setSelectedLocationId] = useState<string>('all');
   const [selectedPropertyTypeId, setSelectedPropertyTypeId] = useState<string>('all');
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const [debouncedKeyword, setDebouncedKeyword] = useState<string>('');
+
+  // Permanent delete confirmation
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [propertyToDelete, setPropertyToDelete] = useState<any>(null);
 
   // Default Sort: Code Descending (Newest logic)
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ 
@@ -40,8 +65,29 @@ export default function PropertiesPage() {
   const { data: locations } = useLocations();
   const { data: propertyTypes } = usePropertyTypes();
 
+  // Keyword tracking for reset page logic
+  const [prevKeyword, setPrevKeyword] = useState('');
+
+  // Debounce search keyword and reset page if changed
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(searchKeyword);
+      
+      // Only reset page if keyword truly changed
+      if (searchKeyword !== prevKeyword) {
+          setPrevKeyword(searchKeyword);
+          // Reset to page 0 on new search
+          const params = new URLSearchParams(searchParams.toString());
+          params.delete('page');
+          router.replace(`?${params.toString()}`, { scroll: false });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchKeyword, prevKeyword, searchParams, router]);
+
   const { data: propertiesData, isLoading } = useQuery({
-    queryKey: ['admin-properties', currentPage, pageSize, sortConfig, selectedLocationId, selectedPropertyTypeId],
+    queryKey: ['admin-properties', currentPage, pageSize, sortConfig.key, sortConfig.direction, selectedLocationId, selectedPropertyTypeId, debouncedKeyword],
+    staleTime: 0, // Force refetch on every sort change
     queryFn: async () => {
       const params = new URLSearchParams();
       params.append('page', currentPage.toString());
@@ -58,6 +104,9 @@ export default function PropertiesPage() {
       if (selectedPropertyTypeId && selectedPropertyTypeId !== 'all') {
         params.append('propertyTypeId', selectedPropertyTypeId);
       }
+      if (debouncedKeyword) {
+        params.append('keyword', debouncedKeyword);
+      }
 
       const res = await api.get(`/api/v1/properties?${params.toString()}`);
       return res.data;
@@ -65,12 +114,16 @@ export default function PropertiesPage() {
   });
 
   const handleSort = (key: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-    setCurrentPage(0);
+    setSortConfig((prev) => {
+      const newDirection = prev.key === key 
+        ? (prev.direction === 'asc' ? 'desc' : 'asc')
+        : 'desc';
+      return { key, direction: newDirection as 'asc' | 'desc' };
+    });
+    // Reset to page 0 on sort
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('page');
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
   
   const renderSortArrow = (key: string) => {
@@ -111,6 +164,22 @@ export default function PropertiesPage() {
     },
   });
 
+  // Permanent delete mutation (HARD DELETE - irreversible!)
+  const permanentDeleteMutation = useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      await api.delete(`/api/v1/properties/${id}/permanent`);
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['admin-properties'] });
+      showSuccess.custom('Đã xóa vĩnh viễn Villa và toàn bộ dữ liệu');
+      setDeleteConfirmOpen(false);
+      setPropertyToDelete(null);
+    },
+    onError: () => {
+      showError.custom('Không thể xóa vĩnh viễn Villa');
+    },
+  });
+
   const handleStatusToggle = (property: any) => {
     const newStatus = property.status === 'ACTIVE' ? 'DELETED' : 'ACTIVE';
     updateStatusMutation.mutate({
@@ -120,19 +189,40 @@ export default function PropertiesPage() {
     });
   };
 
+  const handlePermanentDelete = (property: any) => {
+    setPropertyToDelete(property);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmPermanentDelete = () => {
+    if (propertyToDelete) {
+      permanentDeleteMutation.mutate({ id: propertyToDelete.id });
+    }
+  };
+
   const properties = propertiesData?.data?.content || [];
   const totalPages = propertiesData?.data?.totalPages || 0;
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    // Update URL to navigate
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`?${params.toString()}`);
+    // No need to set state, URL change will trigger re-render
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const resetFilters = () => {
     setSelectedLocationId('all');
     setSelectedPropertyTypeId('all');
-    setCurrentPage(0);
+    setSearchKeyword('');
+    setPrevKeyword(''); // Reset previous keyword tracking
+    // Reset URL params (page = 0)
+    router.replace('/admin/properties');
+    // setCurrentPage(0); // Removed
   };
+
+  const hasActiveFilters = selectedLocationId !== 'all' || selectedPropertyTypeId !== 'all' || searchKeyword.trim() !== '';
 
   return (
     <div className="space-y-6">
@@ -153,6 +243,21 @@ export default function PropertiesPage() {
       {/* Filters */}
       <Card className="p-4">
         <div className="flex flex-col sm:flex-row gap-4 items-end">
+          {/* Search Input */}
+          <div className="space-y-2 flex-1 min-w-[200px]">
+            <label className="text-sm font-medium">Search</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Tên, địa chỉ, mã villa..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+
           <div className="space-y-2 flex-1 min-w-[200px]">
             <label className="text-sm font-medium">Location</label>
             <Select value={selectedLocationId} onValueChange={setSelectedLocationId}>
@@ -187,7 +292,7 @@ export default function PropertiesPage() {
             </Select>
           </div>
 
-          {(selectedLocationId !== 'all' || selectedPropertyTypeId !== 'all') && (
+          {hasActiveFilters && (
             <Button variant="ghost" onClick={resetFilters} className="mb-0.5">
               <X className="h-4 w-4 mr-2" />
               Clear Filters
@@ -220,11 +325,23 @@ export default function PropertiesPage() {
                     {renderSortArrow('name')}
                   </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Type
+                <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('type')}
+                >
+                  <div className="flex items-center">
+                    Type
+                    {renderSortArrow('type')}
+                  </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Location
+                <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('location')}
+                >
+                  <div className="flex items-center">
+                    Location
+                    {renderSortArrow('location')}
+                  </div>
                 </th>
                 <th 
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -235,8 +352,23 @@ export default function PropertiesPage() {
                     {renderSortArrow('price')}
                   </div>
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Featured
+                <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('image_count')}
+                >
+                  <div className="flex items-center">
+                    Images
+                    {renderSortArrow('image_count')}
+                  </div>
+                </th>
+                <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('featured')}
+                >
+                  <div className="flex items-center">
+                    Featured
+                    {renderSortArrow('featured')}
+                  </div>
                 </th>
                 <th 
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -247,6 +379,15 @@ export default function PropertiesPage() {
                     {renderSortArrow('status')}
                   </div>
                 </th>
+                <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('updatedAt')}
+                >
+                  <div className="flex items-center">
+                    Updated
+                    {renderSortArrow('updatedAt')}
+                  </div>
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -255,13 +396,13 @@ export default function PropertiesPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-4">
+                <td colSpan={10} className="px-6 py-4">
                     <TableSkeleton rows={5} columns={8} />
                   </td>
                 </tr>
               ) : properties.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={10} className="px-6 py-12 text-center text-gray-500">
                     No properties found matching your criteria.
                   </td>
                 </tr>
@@ -300,6 +441,19 @@ export default function PropertiesPage() {
                       }).format(property.priceWeekday)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
+                      {property.images && property.images.length > 0 ? (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <ImageIcon className="h-3 w-3 mr-1" />
+                          {property.images.length}
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                          <ImageIcon className="h-3 w-3 mr-1" />
+                          No Images
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                         <Switch
                             checked={property.isFeatured || false}
                             onCheckedChange={(checked) => {
@@ -316,6 +470,21 @@ export default function PropertiesPage() {
                         {property.status}
                       </Badge>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {property.updatedAt ? (
+                        <span title={new Date(property.updatedAt).toLocaleString('vi-VN')}>
+                          {new Date(property.updatedAt).toLocaleDateString('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" asChild>
@@ -324,7 +493,7 @@ export default function PropertiesPage() {
                           </Link>
                         </Button>
                         <Button variant="ghost" size="sm" asChild>
-                          <Link href={`/admin/properties/${property.id}/edit`}>
+                          <Link href={`/admin/properties/${property.id}/edit?page=${currentPage}`}>
                             <Edit className="h-4 w-4" />
                           </Link>
                         </Button>
@@ -337,6 +506,19 @@ export default function PropertiesPage() {
                         >
                           <Power className={`h-4 w-4 ${property.status === 'ACTIVE' ? 'text-green-600' : 'text-red-600'}`} />
                         </Button>
+                        {/* Permanent Delete - Only shows for DELETED properties */}
+                        {property.status === 'DELETED' && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handlePermanentDelete(property)}
+                            disabled={permanentDeleteMutation.isPending}
+                            title="Xóa vĩnh viễn"
+                            className="hover:bg-red-100"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-600" />
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -358,6 +540,43 @@ export default function PropertiesPage() {
         )}
       </Card>
 
+      {/* Permanent Delete Confirmation Dialog */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-600">⚠️ Xóa Vĩnh Viễn Villa</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <span className="block">
+                  Bạn có chắc chắn muốn <strong className="text-red-600">XÓA VĨNH VIỄN</strong> villa:{' '}
+                  <strong>{propertyToDelete?.code} - {propertyToDelete?.name}</strong>?
+                </span>
+                <span className="block text-red-600 font-semibold">
+                  Hành động này sẽ xóa toàn bộ dữ liệu bao gồm:
+                </span>
+                <ul className="list-disc list-inside text-sm text-red-500">
+                  <li>Tất cả hình ảnh trên Cloudinary</li>
+                  <li>Liên kết với các tiện ích</li>
+                  <li>Dữ liệu villa trong database</li>
+                </ul>
+                <span className="block text-red-700 font-bold mt-4">
+                  ⛔ KHÔNG THỂ KHÔI PHỤC SAU KHI XÓA!
+                </span>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmPermanentDelete}
+              disabled={permanentDeleteMutation.isPending}
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+            >
+              {permanentDeleteMutation.isPending ? 'Đang xóa...' : 'Xóa Vĩnh Viễn'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
     </div>
   );
