@@ -42,24 +42,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Integration test for customer request flow
- * Tests the complete flow: HTTP Request → Controller → Service → Repository → Database
+ * Tests the complete flow: HTTP Request → Controller → Service → Repository →
+ * Database
  * 
  * **Validates: Requirements 4.3**
  */
-@SpringBootTest(
-    classes = com.taivillavungtau.backend.BackendApplication.class,
-    properties = {
+@SpringBootTest(classes = com.taivillavungtau.backend.BackendApplication.class, properties = {
         "spring.cache.type=none",
         "spring.data.redis.repositories.enabled=false",
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration"
-    }
-)
+})
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
 @DisplayName("Customer Request Integration Tests")
 class CustomerRequestIntegrationTest {
-    
+
     @Configuration
     static class TestCacheConfig {
         @Bean
@@ -68,13 +66,13 @@ class CustomerRequestIntegrationTest {
             return new NoOpCacheManager();
         }
     }
-    
+
     @MockBean
     private TelegramNotificationService telegramNotificationService;
-    
+
     @MockBean
     private SimpMessagingTemplate messagingTemplate;
-    
+
     @MockBean
     private com.taivillavungtau.backend.service.RefreshTokenService refreshTokenService;
 
@@ -86,10 +84,10 @@ class CustomerRequestIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-    
+
     @Autowired
     private com.taivillavungtau.backend.repository.UserRepository userRepository;
-    
+
     @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
@@ -99,7 +97,7 @@ class CustomerRequestIntegrationTest {
     private static final String TEST_NOTE = "Tôi muốn thuê villa này vào cuối tuần";
     private static final String ADMIN_USERNAME = "admintest";
     private static final String ADMIN_PASSWORD = "admin123";
-    
+
     private String adminToken;
 
     @BeforeEach
@@ -107,7 +105,7 @@ class CustomerRequestIntegrationTest {
         // Clean database
         customerRequestRepository.deleteAll();
         userRepository.deleteAll();
-        
+
         // Create admin user
         com.taivillavungtau.backend.entity.User adminUser = com.taivillavungtau.backend.entity.User.builder()
                 .username(ADMIN_USERNAME)
@@ -118,22 +116,31 @@ class CustomerRequestIntegrationTest {
                 .role("ROLE_ADMIN")
                 .build();
         userRepository.save(adminUser);
-        
+
+        // Mock RefreshTokenService to return a valid token
+        com.taivillavungtau.backend.entity.RefreshToken mockRefreshToken = com.taivillavungtau.backend.entity.RefreshToken
+                .builder()
+                .token("mock-refresh-token-for-test")
+                .expiryDate(java.time.Instant.now().plusSeconds(86400))
+                .build();
+        when(refreshTokenService.createRefreshToken(any(Long.class))).thenReturn(mockRefreshToken);
+
         // Login to get JWT token
         com.taivillavungtau.backend.dto.request.LoginRequest loginRequest = new com.taivillavungtau.backend.dto.request.LoginRequest();
         loginRequest.setUsername(ADMIN_USERNAME);
         loginRequest.setPassword(ADMIN_PASSWORD);
-        
+
         org.springframework.test.web.servlet.MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andReturn();
-        
+
         String responseBody = loginResult.getResponse().getContentAsString();
         adminToken = objectMapper.readTree(responseBody).get("data").get("token").asText();
-        
-        // Configure mocks to do nothing (notifications are not critical for integration test)
+
+        // Configure mocks to do nothing (notifications are not critical for integration
+        // test)
         doNothing().when(messagingTemplate).convertAndSend(eq("/topic/admin"), any(Object.class));
         doNothing().when(telegramNotificationService).sendNotification(anyString());
     }
@@ -150,8 +157,8 @@ class CustomerRequestIntegrationTest {
 
         // When: Execute HTTP POST request to create customer request
         MvcResult result = mockMvc.perform(post("/api/v1/requests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value(200)) // API response status, not HTTP status
                 .andExpect(jsonPath("$.data.customerName").value(TEST_CUSTOMER_NAME))
@@ -192,11 +199,12 @@ class CustomerRequestIntegrationTest {
         updateDTO.setStatus("CONTACTED");
         updateDTO.setAdminNote("Đã liên hệ khách hàng qua điện thoại");
 
-        // When: Execute HTTP PUT request to update request status (requires admin authentication)
+        // When: Execute HTTP PUT request to update request status (requires admin
+        // authentication)
         MvcResult result = mockMvc.perform(put("/api/v1/requests/" + savedRequest.getId())
-                        .header("Authorization", "Bearer " + adminToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.status").value("CONTACTED"))
@@ -247,10 +255,11 @@ class CustomerRequestIntegrationTest {
                 .build();
         customerRequestRepository.save(request3);
 
-        // When: Execute HTTP GET request to retrieve all requests (requires admin authentication)
+        // When: Execute HTTP GET request to retrieve all requests (requires admin
+        // authentication)
         MvcResult result = mockMvc.perform(get("/api/v1/requests")
-                        .header("Authorization", "Bearer " + adminToken)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data").isArray())
@@ -264,7 +273,8 @@ class CustomerRequestIntegrationTest {
         assertThat(responseBody).contains("Customer 2");
         assertThat(responseBody).contains("Customer 1");
 
-        // Verify the order: newest (Customer 3) should appear before oldest (Customer 1)
+        // Verify the order: newest (Customer 3) should appear before oldest (Customer
+        // 1)
         int indexCustomer3 = responseBody.indexOf("Customer 3");
         int indexCustomer2 = responseBody.indexOf("Customer 2");
         int indexCustomer1 = responseBody.indexOf("Customer 1");

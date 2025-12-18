@@ -35,265 +35,263 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Integration test for property search flow
- * Tests the complete flow: HTTP Request → Controller → Service → Repository → Database
+ * Tests the complete flow: HTTP Request → Controller → Service → Repository →
+ * Database
  * 
  * **Validates: Requirements 4.1**
  */
-@SpringBootTest(
-    classes = com.taivillavungtau.backend.BackendApplication.class,
-    properties = {
-        "spring.cache.type=none",
-        "spring.data.redis.repositories.enabled=false",
-        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration"
-    }
-)
+@SpringBootTest(classes = com.taivillavungtau.backend.BackendApplication.class, properties = {
+                "spring.cache.type=none",
+                "spring.data.redis.repositories.enabled=false",
+                "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration"
+})
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 @Transactional
 @DisplayName("Property Search Integration Tests")
 class PropertySearchIntegrationTest {
-    
-    @Configuration
-    static class TestCacheConfig {
-        @Bean
-        @Primary
-        public CacheManager cacheManager() {
-            return new NoOpCacheManager();
+
+        @Configuration
+        static class TestCacheConfig {
+                @Bean
+                @Primary
+                public CacheManager cacheManager() {
+                        return new NoOpCacheManager();
+                }
         }
-    }
-    
-    @MockBean
-    private RefreshTokenService refreshTokenService;
-    
-    @MockBean
-    private TelegramNotificationService telegramNotificationService;
 
-    @Autowired
-    private MockMvc mockMvc;
+        @MockBean
+        private RefreshTokenService refreshTokenService;
 
-    @Autowired
-    private PropertyRepository propertyRepository;
+        @MockBean
+        private TelegramNotificationService telegramNotificationService;
 
-    @Autowired
-    private AmenityRepository amenityRepository;
+        @Autowired
+        private MockMvc mockMvc;
 
-    private Amenity poolAmenity;
-    private Amenity karaokeAmenity;
-    private Amenity wifiAmenity;
+        @Autowired
+        private PropertyRepository propertyRepository;
 
-    @BeforeEach
-    void setUp() {
-        // Clean database
-        propertyRepository.deleteAll();
-        amenityRepository.deleteAll();
+        @Autowired
+        private AmenityRepository amenityRepository;
 
-        // Create test amenities
-        poolAmenity = amenityRepository.save(Amenity.builder()
-                .name("Hồ bơi")
-                .iconCode("pool")
-                .build());
+        private Amenity poolAmenity;
+        private Amenity karaokeAmenity;
+        private Amenity wifiAmenity;
 
-        karaokeAmenity = amenityRepository.save(Amenity.builder()
-                .name("Karaoke")
-                .iconCode("karaoke")
-                .build());
+        @BeforeEach
+        void setUp() {
+                // Clean database
+                propertyRepository.deleteAll();
+                amenityRepository.deleteAll();
 
-        wifiAmenity = amenityRepository.save(Amenity.builder()
-                .name("WiFi")
-                .iconCode("wifi")
-                .build());
-    }
+                // Create test amenities
+                poolAmenity = amenityRepository.save(Amenity.builder()
+                                .name("Hồ bơi")
+                                .iconCode("pool")
+                                .build());
 
-    @Test
-    @DisplayName("Should complete full search flow from HTTP to database")
-    void testCompleteSearchFlow() throws Exception {
-        // Given: Create test properties in database
-        Property villa1 = createProperty("MS01", "Luxury Villa", 
-                new BigDecimal("3000000"), new BigDecimal("3500000"),
-                4, 3, 8, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity));
+                karaokeAmenity = amenityRepository.save(Amenity.builder()
+                                .name("Karaoke")
+                                .iconCode("karaoke")
+                                .build());
 
-        Property villa2 = createProperty("MS02", "Budget Villa",
-                new BigDecimal("1500000"), new BigDecimal("2000000"),
-                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
+                wifiAmenity = amenityRepository.save(Amenity.builder()
+                                .name("WiFi")
+                                .iconCode("wifi")
+                                .build());
+        }
 
-        propertyRepository.save(villa1);
-        propertyRepository.save(villa2);
+        @Test
+        @DisplayName("Should complete full search flow from HTTP to database")
+        void testCompleteSearchFlow() throws Exception {
+                // Given: Create test properties in database
+                Property villa1 = createProperty("MS01", "Luxury Villa",
+                                new BigDecimal("3000000"), new BigDecimal("3500000"),
+                                4, 3, 8, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity));
 
-        // When: Execute HTTP GET request to search endpoint
-        MvcResult result = mockMvc.perform(get("/api/v1/properties")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.totalElements").value(2))
-                .andReturn();
+                Property villa2 = createProperty("MS02", "Budget Villa",
+                                new BigDecimal("1500000"), new BigDecimal("2000000"),
+                                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
 
-        // Then: Verify the complete flow worked correctly
-        String responseBody = result.getResponse().getContentAsString();
-        assertThat(responseBody).contains("MS01");
-        assertThat(responseBody).contains("MS02");
-        assertThat(responseBody).contains("Luxury Villa");
-        assertThat(responseBody).contains("Budget Villa");
-    }
+                propertyRepository.save(villa1);
+                propertyRepository.save(villa2);
 
-    @Test
-    @DisplayName("Should filter properties with combined price, location and amenity filters")
-    void testSearchWithMultipleFilters() throws Exception {
-        // Given: Create properties with different characteristics
-        Property villa1 = createProperty("MS01", "Luxury Beach Villa", 
-                new BigDecimal("3000000"), new BigDecimal("3500000"),
-                4, 3, 8, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity, karaokeAmenity));
+                // When: Execute HTTP GET request to search endpoint
+                MvcResult result = mockMvc.perform(get("/api/v1/properties")
+                                .param("page", "0")
+                                .param("size", "10"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.status").value(200))
+                                .andExpect(jsonPath("$.data.content").isArray())
+                                .andExpect(jsonPath("$.data.totalElements").value(2))
+                                .andReturn();
 
-        Property villa2 = createProperty("MS02", "Budget Villa",
-                new BigDecimal("1500000"), new BigDecimal("2000000"),
-                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
+                // Then: Verify the complete flow worked correctly
+                String responseBody = result.getResponse().getContentAsString();
+                assertThat(responseBody).contains("MS01");
+                assertThat(responseBody).contains("MS02");
+                assertThat(responseBody).contains("Luxury Villa");
+                assertThat(responseBody).contains("Budget Villa");
+        }
 
-        Property villa3 = createProperty("MS03", "Mid-range Beach Villa",
-                new BigDecimal("2500000"), new BigDecimal("3000000"),
-                3, 2, 6, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity));
+        @Test
+        @DisplayName("Should filter properties with combined price, location and amenity filters")
+        void testSearchWithMultipleFilters() throws Exception {
+                // Given: Create properties with different characteristics
+                Property villa1 = createProperty("MS01", "Luxury Beach Villa",
+                                new BigDecimal("3000000"), new BigDecimal("3500000"),
+                                4, 3, 8, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity, karaokeAmenity));
 
-        propertyRepository.save(villa1);
-        propertyRepository.save(villa2);
-        propertyRepository.save(villa3);
+                Property villa2 = createProperty("MS02", "Budget Villa",
+                                new BigDecimal("1500000"), new BigDecimal("2000000"),
+                                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
 
-        // When: Search with price range, location, and amenities
-        MvcResult result = mockMvc.perform(get("/api/v1/properties")
-                        .param("minPrice", "2000000")
-                        .param("maxPrice", "3500000")
-                        .param("location", "BAI_TRUOC")
-                        .param("amenityIds", poolAmenity.getId().toString())
-                        .param("amenityMatchMode", "ALL")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content").isArray())
-                .andReturn();
+                Property villa3 = createProperty("MS03", "Mid-range Beach Villa",
+                                new BigDecimal("2500000"), new BigDecimal("3000000"),
+                                3, 2, 6, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity));
 
-        // Then: Only properties matching all filters should be returned
-        String responseBody = result.getResponse().getContentAsString();
-        assertThat(responseBody).contains("MS01"); // Matches all filters
-        assertThat(responseBody).contains("MS03"); // Matches all filters
-        assertThat(responseBody).doesNotContain("MS02"); // Wrong location and no pool
-        
-        // Verify total elements
-        mockMvc.perform(get("/api/v1/properties")
-                        .param("minPrice", "2000000")
-                        .param("maxPrice", "3500000")
-                        .param("location", "BAI_TRUOC")
-                        .param("amenityIds", poolAmenity.getId().toString())
-                        .param("amenityMatchMode", "ALL")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(jsonPath("$.data.totalElements").value(2));
-    }
+                propertyRepository.save(villa1);
+                propertyRepository.save(villa2);
+                propertyRepository.save(villa3);
 
-    @Test
-    @DisplayName("Should sort search results correctly by sort parameter")
-    void testSearchWithSorting() throws Exception {
-        // Given: Create properties with different prices
-        Property villa1 = createProperty("MS01", "Expensive Villa", 
-                new BigDecimal("5000000"), new BigDecimal("6000000"),
-                5, 4, 10, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity));
+                // When: Search with price range, location, and amenities
+                MvcResult result = mockMvc.perform(get("/api/v1/properties")
+                                .param("minPrice", "2000000")
+                                .param("maxPrice", "3500000")
+                                .param("location", "BAI_TRUOC")
+                                .param("amenityIds", poolAmenity.getId().toString())
+                                .param("amenityMatchMode", "ALL")
+                                .param("page", "0")
+                                .param("size", "10"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.status").value(200))
+                                .andExpect(jsonPath("$.data.content").isArray())
+                                .andReturn();
 
-        Property villa2 = createProperty("MS02", "Cheap Villa",
-                new BigDecimal("1000000"), new BigDecimal("1500000"),
-                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
+                // Then: Only properties matching all filters should be returned
+                String responseBody = result.getResponse().getContentAsString();
+                assertThat(responseBody).contains("MS01"); // Matches all filters
+                assertThat(responseBody).contains("MS03"); // Matches all filters
+                assertThat(responseBody).doesNotContain("MS02"); // Wrong location and no pool
 
-        Property villa3 = createProperty("MS03", "Mid-price Villa",
-                new BigDecimal("3000000"), new BigDecimal("3500000"),
-                3, 2, 6, LocationType.BAI_TRUOC, Set.of(poolAmenity));
+                // Verify total elements
+                mockMvc.perform(get("/api/v1/properties")
+                                .param("minPrice", "2000000")
+                                .param("maxPrice", "3500000")
+                                .param("location", "BAI_TRUOC")
+                                .param("amenityIds", poolAmenity.getId().toString())
+                                .param("amenityMatchMode", "ALL")
+                                .param("page", "0")
+                                .param("size", "10"))
+                                .andExpect(jsonPath("$.data.totalElements").value(2));
+        }
 
-        propertyRepository.save(villa1);
-        propertyRepository.save(villa2);
-        propertyRepository.save(villa3);
+        @Test
+        @DisplayName("Should sort search results correctly by sort parameter")
+        void testSearchWithSorting() throws Exception {
+                // Given: Create properties with different prices
+                Property villa1 = createProperty("MS01", "Expensive Villa",
+                                new BigDecimal("5000000"), new BigDecimal("6000000"),
+                                5, 4, 10, LocationType.BAI_TRUOC, Set.of(poolAmenity, wifiAmenity));
 
-        // When: Search with PRICE_LOW_TO_HIGH sort
-        MvcResult resultAsc = mockMvc.perform(get("/api/v1/properties")
-                        .param("sort", "PRICE_LOW_TO_HIGH")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.totalElements").value(3))
-                .andReturn();
+                Property villa2 = createProperty("MS02", "Cheap Villa",
+                                new BigDecimal("1000000"), new BigDecimal("1500000"),
+                                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
 
-        // Then: Results should be sorted by price ascending
-        String responseAsc = resultAsc.getResponse().getContentAsString();
-        int indexMS02 = responseAsc.indexOf("MS02");
-        int indexMS03 = responseAsc.indexOf("MS03");
-        int indexMS01 = responseAsc.indexOf("MS01");
-        assertThat(indexMS02).isLessThan(indexMS03);
-        assertThat(indexMS03).isLessThan(indexMS01);
+                Property villa3 = createProperty("MS03", "Mid-price Villa",
+                                new BigDecimal("3000000"), new BigDecimal("3500000"),
+                                3, 2, 6, LocationType.BAI_TRUOC, Set.of(poolAmenity));
 
-        // When: Search with PRICE_HIGH_TO_LOW sort
-        MvcResult resultDesc = mockMvc.perform(get("/api/v1/properties")
-                        .param("sort", "PRICE_HIGH_TO_LOW")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content").isArray())
-                .andExpect(jsonPath("$.data.totalElements").value(3))
-                .andReturn();
+                propertyRepository.save(villa1);
+                propertyRepository.save(villa2);
+                propertyRepository.save(villa3);
 
-        // Then: Results should be sorted by price descending
-        String responseDesc = resultDesc.getResponse().getContentAsString();
-        int indexMS01Desc = responseDesc.indexOf("MS01");
-        int indexMS03Desc = responseDesc.indexOf("MS03");
-        int indexMS02Desc = responseDesc.indexOf("MS02");
-        assertThat(indexMS01Desc).isLessThan(indexMS03Desc);
-        assertThat(indexMS03Desc).isLessThan(indexMS02Desc);
-    }
+                // When: Search with PRICE_LOW_TO_HIGH sort
+                MvcResult resultAsc = mockMvc.perform(get("/api/v1/properties")
+                                .param("sort", "PRICE_LOW_TO_HIGH")
+                                .param("page", "0")
+                                .param("size", "10"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.status").value(200))
+                                .andExpect(jsonPath("$.data.content").isArray())
+                                .andExpect(jsonPath("$.data.totalElements").value(3))
+                                .andReturn();
 
-    @Test
-    @DisplayName("Should clean up test data after integration tests complete")
-    void testDataCleanupAfterTests() throws Exception {
-        // Given: Create test properties
-        Property villa1 = createProperty("MS01", "Test Villa 1", 
-                new BigDecimal("2000000"), new BigDecimal("2500000"),
-                3, 2, 6, LocationType.BAI_TRUOC, Set.of(poolAmenity));
+                // Then: Results should be sorted by price ascending
+                String responseAsc = resultAsc.getResponse().getContentAsString();
+                int indexMS02 = responseAsc.indexOf("MS02");
+                int indexMS03 = responseAsc.indexOf("MS03");
+                int indexMS01 = responseAsc.indexOf("MS01");
+                assertThat(indexMS02).isLessThan(indexMS03);
+                assertThat(indexMS03).isLessThan(indexMS01);
 
-        Property villa2 = createProperty("MS02", "Test Villa 2",
-                new BigDecimal("1500000"), new BigDecimal("2000000"),
-                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
+                // When: Search with PRICE_HIGH_TO_LOW sort
+                MvcResult resultDesc = mockMvc.perform(get("/api/v1/properties")
+                                .param("sort", "PRICE_HIGH_TO_LOW")
+                                .param("page", "0")
+                                .param("size", "10"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.status").value(200))
+                                .andExpect(jsonPath("$.data.content").isArray())
+                                .andExpect(jsonPath("$.data.totalElements").value(3))
+                                .andReturn();
 
-        propertyRepository.save(villa1);
-        propertyRepository.save(villa2);
+                // Then: Results should be sorted by price descending
+                String responseDesc = resultDesc.getResponse().getContentAsString();
+                int indexMS01Desc = responseDesc.indexOf("MS01");
+                int indexMS03Desc = responseDesc.indexOf("MS03");
+                int indexMS02Desc = responseDesc.indexOf("MS02");
+                assertThat(indexMS01Desc).isLessThan(indexMS03Desc);
+                assertThat(indexMS03Desc).isLessThan(indexMS02Desc);
+        }
 
-        // When: Verify data exists
-        long countBefore = propertyRepository.count();
-        assertThat(countBefore).isEqualTo(2);
+        @Test
+        @DisplayName("Should clean up test data after integration tests complete")
+        void testDataCleanupAfterTests() throws Exception {
+                // Given: Create test properties
+                Property villa1 = createProperty("MS01", "Test Villa 1",
+                                new BigDecimal("2000000"), new BigDecimal("2500000"),
+                                3, 2, 6, LocationType.BAI_TRUOC, Set.of(poolAmenity));
 
-        // Then: After test completes, @Transactional should rollback
-        // This is verified by the @Transactional annotation on the class
-        // which ensures each test runs in a transaction that is rolled back
-        
-        // We can verify the transactional behavior by checking that
-        // data from this test doesn't affect other tests
-        // The @BeforeEach method cleans up explicitly as well
-    }
+                Property villa2 = createProperty("MS02", "Test Villa 2",
+                                new BigDecimal("1500000"), new BigDecimal("2000000"),
+                                2, 1, 4, LocationType.BAI_SAU, Set.of(wifiAmenity));
 
-    private Property createProperty(String code, String name, 
-                                   BigDecimal priceWeekday, BigDecimal priceWeekend,
-                                   int bedrooms, int bathrooms, int maxGuests,
-                                   LocationType location, Set<Amenity> amenities) {
-        return Property.builder()
-                .code(code)
-                .name(name)
-                .slug(name.toLowerCase().replace(" ", "-"))
-                .description("Test description")
-                .priceWeekday(priceWeekday)
-                .priceWeekend(priceWeekend)
-                .bedroomCount(bedrooms)
-                .bathroomCount(bathrooms)
-                .standardGuests(maxGuests - 2)
-                .maxGuests(maxGuests)
-                .location(location)
-                .status("ACTIVE")
-                .amenities(new HashSet<>(amenities))
-                .build();
-    }
+                propertyRepository.save(villa1);
+                propertyRepository.save(villa2);
+
+                // When: Verify data exists
+                long countBefore = propertyRepository.count();
+                assertThat(countBefore).isEqualTo(2);
+
+                // Then: After test completes, @Transactional should rollback
+                // This is verified by the @Transactional annotation on the class
+                // which ensures each test runs in a transaction that is rolled back
+
+                // We can verify the transactional behavior by checking that
+                // data from this test doesn't affect other tests
+                // The @BeforeEach method cleans up explicitly as well
+        }
+
+        private Property createProperty(String code, String name,
+                        BigDecimal priceWeekday, BigDecimal priceWeekend,
+                        int bedrooms, int bathrooms, int maxGuests,
+                        LocationType location, Set<Amenity> amenities) {
+                return Property.builder()
+                                .code(code)
+                                .name(name)
+                                .slug(name.toLowerCase().replace(" ", "-"))
+                                .description("Test description")
+                                .priceWeekday(priceWeekday)
+                                .priceWeekend(priceWeekend)
+                                .bedroomCount(bedrooms)
+                                .bathroomCount(bathrooms)
+                                .standardGuests(maxGuests - 2)
+                                .maxGuests(maxGuests)
+                                .location(location)
+                                .status("ACTIVE")
+                                .amenities(new HashSet<>(amenities))
+                                .build();
+        }
 }

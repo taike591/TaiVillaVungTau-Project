@@ -54,9 +54,9 @@ class PropertyServiceImplTest {
     void setUp() {
         // Mock MessageSource for Translator (used in exception messages)
         org.springframework.test.util.ReflectionTestUtils.setField(
-            com.taivillavungtau.backend.utils.Translator.class, "messageSource", messageSource);
+                com.taivillavungtau.backend.utils.Translator.class, "messageSource", messageSource);
         when(messageSource.getMessage(anyString(), any(), any(java.util.Locale.class)))
-            .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     @Test
@@ -158,19 +158,26 @@ class PropertyServiceImplTest {
     }
 
     @Test
-    void deleteProperty_ShouldDelete_WhenFound() {
+    void deleteProperty_ShouldSoftDelete_WhenFound() {
         Long id = 1L;
-        when(propertyRepository.existsById(id)).thenReturn(true);
+        Property property = new Property();
+        property.setId(id);
+        property.setStatus("ACTIVE");
+
+        when(propertyRepository.findById(id)).thenReturn(Optional.of(property));
+        when(propertyRepository.save(any(Property.class))).thenReturn(property);
 
         propertyService.deleteProperty(id);
 
-        verify(propertyRepository).deleteById(id);
+        // Verify soft delete: status changed to DELETED and saved
+        assertThat(property.getStatus()).isEqualTo("DELETED");
+        verify(propertyRepository).save(property);
     }
 
     @Test
     void deleteProperty_ShouldThrowException_WhenNotFound() {
         Long id = 1L;
-        when(propertyRepository.existsById(id)).thenReturn(false);
+        when(propertyRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> propertyService.deleteProperty(id))
                 .isInstanceOf(ResourceNotFoundException.class);
