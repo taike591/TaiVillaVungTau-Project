@@ -80,43 +80,34 @@ const MOCK_VILLAS = [
   },
 ];
 
+export const dynamic = 'force-dynamic'; // Force fetch at request time, not build time
+
 async function getAllProperties() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+  console.log('Fetching properties from:', apiUrl);
+
   try {
-    // Auto-scaling fetch: get first page with max size, then remaining pages if needed
-    const maxSize = 500; // Backend max limit
+    // Auto-scaling fetch: get first page with max size
+    const maxSize = 500; 
     
     const firstRes = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/v1/properties?size=${maxSize}&page=0`,
-      { next: { revalidate: 60 } }
+      `${apiUrl}/api/v1/properties?size=${maxSize}&page=0`,
+      { cache: 'no-store' } // Ensure fresh data
     );
     
-    if (!firstRes.ok) return MOCK_VILLAS;
+    if (!firstRes.ok) {
+      console.error('Failed to fetch properties:', firstRes.status, firstRes.statusText);
+      const text = await firstRes.text();
+      console.error('Error body:', text);
+      return MOCK_VILLAS;
+    }
     
     const firstResponse = await firstRes.json();
     if (!firstResponse.data?.content) return MOCK_VILLAS;
     
-    const allProperties = [...firstResponse.data.content];
-    const totalPages = firstResponse.data.totalPages || 1;
-    
-    // Fetch remaining pages in parallel if needed (for 500+ properties)
-    if (totalPages > 1) {
-      const remainingPromises = [];
-      for (let page = 1; page < totalPages; page++) {
-        remainingPromises.push(
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/v1/properties?size=${maxSize}&page=${page}`,
-            { next: { revalidate: 60 } }
-          ).then(res => res.ok ? res.json() : null)
-        );
-      }
-      const responses = await Promise.all(remainingPromises);
-      responses.forEach(res => {
-        if (res?.data?.content) allProperties.push(...res.data.content);
-      });
-    }
-    
-    return allProperties;
-  } catch {
+    return firstResponse.data.content;
+  } catch (error) {
+    console.error('Error checking properties:', error);
     return MOCK_VILLAS;
   }
 }
