@@ -78,9 +78,9 @@ const LOCATIONS = [
   { 
     id: 'BAI_TRUOC',
     name: 'Bãi Trước', 
-    image: 'https://kingvillavungtau.com/wp-content/uploads/2024/10/cong-vien-bai-truoc-vung-tau-7.jpg?w=1920&q=80',
+    image: 'https://bazantravel.com/cdn/medias/uploads/57/57590-bai-truoc-vung-tau-ve-dem.jpg?w=1920&q=80',
     description: 'Trung tâm thành phố Vũng Tàu, gần công viên Bãi Trước và Bạch Dinh. Khu vực thuận tiện di chuyển, gần nhiều nhà hàng và quán cà phê view biển.',
-    showcaseImage: 'https://kingvillavungtau.com/wp-content/uploads/2024/10/cong-vien-bai-truoc-vung-tau-7.jpg?w=1200&q=80',
+    showcaseImage: 'https://bazantravel.com/cdn/medias/uploads/57/57590-bai-truoc-vung-tau-ve-dem.jpg?w=1200&q=80',
   },
   { 
     id: 'LONG_CUNG',
@@ -92,9 +92,9 @@ const LOCATIONS = [
   { 
     id: 'BAI_DAU',
     name: 'Bãi Dâu', 
-    image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1920&q=80',
+    image: 'https://vielimousine.com/wp-content/uploads/2024/01/bai-dau-vung-tau-10.jpg?w=1920&q=80',
     description: 'Khu vực yên bình, thích hợp nghỉ dưỡng, gần Đức Mẹ Bãi Dâu. Không gian xanh mát với nhiều cây cối, lý tưởng cho du lịch tâm linh và nghỉ ngơi.',
-    showcaseImage: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1200&q=80',
+    showcaseImage: 'https://vielimousine.com/wp-content/uploads/2024/01/bai-dau-vung-tau-10.jpg?w=1200&q=80',
   },
   { 
     id: 'TRUNG_TAM',

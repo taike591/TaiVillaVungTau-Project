@@ -17,7 +17,39 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images2.thanhnien.vn',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'kingvillavungtau.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'odwintravel.vn',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cafefcdn.com',
+        pathname: '/**',
+      },
+      { 
+        protocol: 'https',
+        hostname: 'vielimousine.com',
+        pathname: '/**',
+      },
+      { 
+        protocol: 'https',
+        hostname: 'bazantravel.com',
+        pathname: '/**',
+      }
     ],
+    // Configure allowed quality values
+    qualities: [60, 75, 80, 85],
     // Enable WebP and AVIF formats for better compression
     formats: ['image/webp', 'image/avif'],
     // Optimize responsive images with srcset
