@@ -88,7 +88,7 @@ async function getAllProperties() {
 
   try {
     // Auto-scaling fetch: get first page with max size
-    const maxSize = 100; // Backend limit
+    const maxSize = 500; // Backend limit updated to 500
     
     const firstRes = await fetch(
       `${apiUrl}/api/v1/properties?size=${maxSize}&page=0`,
