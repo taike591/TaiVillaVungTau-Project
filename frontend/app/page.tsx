@@ -88,7 +88,7 @@ async function getAllProperties() {
 
   try {
     // Auto-scaling fetch: get first page with max size
-    const maxSize = 500; 
+    const maxSize = 100; // Backend limit
     
     const firstRes = await fetch(
       `${apiUrl}/api/v1/properties?size=${maxSize}&page=0`,
@@ -105,7 +105,35 @@ async function getAllProperties() {
     const firstResponse = await firstRes.json();
     if (!firstResponse.data?.content) return MOCK_VILLAS;
     
-    return firstResponse.data.content;
+    const allProperties = [...firstResponse.data.content];
+    const totalPages = firstResponse.data.totalPages || 1;
+    
+    // Fetch remaining pages in parallel if needed
+    if (totalPages > 1) {
+      const remainingPromises = [];
+      for (let page = 1; page < totalPages; page++) {
+        remainingPromises.push(
+          fetch(
+            `${apiUrl}/api/v1/properties?size=${maxSize}&page=${page}`,
+            { cache: 'no-store' }
+          ).then(res => res.ok ? res.json() : null)
+        );
+      }
+      
+      try {
+        const responses = await Promise.all(remainingPromises);
+        responses.forEach(res => {
+          if (res?.data?.content) {
+            allProperties.push(...res.data.content);
+          }
+        });
+      } catch (err) {
+        console.error('Error fetching remaining pages:', err);
+        // Continue with what we have
+      }
+    }
+    
+    return allProperties;
   } catch (error) {
     console.error('Error checking properties:', error);
     return MOCK_VILLAS;
