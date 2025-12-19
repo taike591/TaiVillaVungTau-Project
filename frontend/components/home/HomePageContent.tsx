@@ -64,30 +64,30 @@ const LOCATIONS = [
   { 
     id: 'all',
     name: 'Tất cả', 
-    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=80',
+    image: 'https://images2.thanhnien.vn/528068263637045248/2025/10/13/dji0824-1760324544283962847578.jpg?w=1920&q=80',
     description: 'Tất cả các villa và homestay tại Vũng Tàu',
-    showcaseImage: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
+    showcaseImage: 'https://images2.thanhnien.vn/528068263637045248/2025/10/13/dji0824-1760324544283962847578.jpg?w=1200&q=80',
   },
   { 
     id: 'BAI_SAU',
     name: 'Bãi Sau', 
-    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=80',
+    image: 'https://images2.thanhnien.vn/528068263637045248/2025/10/13/dji0824-1760324544283962847578.jpg',
     description: 'Khu vực bãi biển Thùy Vân sôi động, tập trung nhiều khách sạn và dịch vụ du lịch. Bãi biển dài với cát trắng mịn, nước biển trong xanh, là điểm đến lý tưởng cho các gia đình và nhóm bạn.',
-    showcaseImage: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
+    showcaseImage: 'https://images2.thanhnien.vn/528068263637045248/2025/10/13/dji0824-1760324544283962847578.jpg',
   },
   { 
     id: 'BAI_TRUOC',
     name: 'Bãi Trước', 
-    image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80',
+    image: 'https://kingvillavungtau.com/wp-content/uploads/2024/10/cong-vien-bai-truoc-vung-tau-7.jpg?w=1920&q=80',
     description: 'Trung tâm thành phố Vũng Tàu, gần công viên Bãi Trước và Bạch Dinh. Khu vực thuận tiện di chuyển, gần nhiều nhà hàng và quán cà phê view biển.',
-    showcaseImage: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80',
+    showcaseImage: 'https://kingvillavungtau.com/wp-content/uploads/2024/10/cong-vien-bai-truoc-vung-tau-7.jpg?w=1200&q=80',
   },
   { 
     id: 'LONG_CUNG',
     name: 'Long Cung', 
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80',
+    image: 'https://odwintravel.vn/wp-content/uploads/2019/07/villa-long-cung-vung-tau.jpg?w=1920&q=80',
     description: 'Khu vực nghỉ dưỡng yên tĩnh với bãi cát rộng và sạch. Nơi đây có không gian thoáng đãng, phù hợp cho những ai muốn tận hưởng sự bình yên.',
-    showcaseImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
+    showcaseImage: 'https://odwintravel.vn/wp-content/uploads/2019/07/villa-long-cung-vung-tau.jpg?w=1200&q=80',
   },
   { 
     id: 'BAI_DAU',
@@ -99,9 +99,9 @@ const LOCATIONS = [
   { 
     id: 'TRUNG_TAM',
     name: 'Trung Tâm', 
-    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1920&q=80',
+    image: 'https://cafefcdn.com/203337114487263232/2023/10/30/vung-tau-1698465981868706183225-1698655039859-1698655042036709930409.jpg?w=1920&q=80',
     description: 'Khu vực trung tâm sầm uất, thuận tiện di chuyển đến các điểm ăn uống và vui chơi. Gần chợ, siêu thị và các tiện ích đầy đủ.',
-    showcaseImage: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80',
+    showcaseImage: 'https://cafefcdn.com/203337114487263232/2023/10/30/vung-tau-1698465981868706183225-1698655039859-1698655042036709930409.jpg?w=1200&q=80',
   },
 ];
 

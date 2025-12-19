@@ -26,3 +26,12 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Personal Documentation (không push lên GitHub)
+OPERATIONS_GUIDE.md
+GCP_DEPLOYMENT_GUIDE.md
+DEPLOYMENT_PLAN.md
+ARCHITECTURE.md
+
+# Scripts folder (contains sensitive credentials)
+scripts/
