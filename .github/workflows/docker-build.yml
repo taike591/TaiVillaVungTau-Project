@@ -68,20 +68,23 @@ jobs:
             taikeo591/taivilla-backend:latest
             taikeo591/taivilla-backend:${{ github.sha }}
 
-  # Optional: Deploy to VPS via SSH
-  # Uncomment when ready to deploy
-  # deploy:
-  #   needs: build-and-push
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Deploy to VPS
-  #       uses: appleboy/ssh-action@v1.0.0
-  #       with:
-  #         host: ${{ secrets.VPS_HOST }}
-  #         username: ${{ secrets.VPS_USER }}
-  #         key: ${{ secrets.VPS_SSH_KEY }}
-  #         script: |
-  #           cd /opt/taivilla
-  #           docker-compose pull
-  #           docker-compose up -d
-  #           docker system prune -f
+  # Auto deploy to GCP via SSH
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Deploy to GCP
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /opt/taivilla
+            git pull origin main
+            docker-compose pull backend || docker-compose build backend
+            docker-compose up -d backend
+            docker system prune -f
+            echo "Backend deployed successfully!"
