@@ -180,10 +180,15 @@ api.interceptors.response.use(
         localStorage.removeItem('auth-storage');
         Cookies.remove('auth-token');
         
-        // Redirect to login (only on client-side)
+        // Only redirect to login if on admin pages
+        // Public pages should continue working without authentication
         if (typeof window !== 'undefined') {
-          toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-          window.location.href = '/admin/login';
+          const isAdminPage = window.location.pathname.startsWith('/admin');
+          if (isAdminPage) {
+            toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            window.location.href = '/admin/login';
+          }
+          // For public pages, just silently clear the token and don't redirect
         }
         
         return Promise.reject(refreshError);

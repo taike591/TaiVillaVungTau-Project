@@ -636,9 +636,53 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
               boxShadow: '0 20px 40px -10px rgba(0,0,0,0.05)',
             }}
           >
+            {/* Mobile: Image on top, Desktop: Side by side */}
             <div className="flex flex-col lg:flex-row">
-              {/* Left Side - Content */}
-              <div className="flex-1 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col relative justify-center order-2 lg:order-1">
+              
+              {/* Image Section - Shows first on mobile */}
+              <div className="relative w-full h-[200px] sm:h-[280px] lg:h-[600px] lg:flex-1 lg:order-2 overflow-hidden">
+                <div className="absolute inset-0 animate-slow-zoom">
+                  <Image
+                    src={showcaseLocations[showcaseIndex]?.showcaseImage}
+                    alt={showcaseLocations[showcaseIndex]?.name}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition-all duration-1000"
+                    priority={showcaseIndex === 0}
+                  />
+                </div>
+                
+                {/* Gradient overlays */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 lg:bg-gradient-to-r lg:from-white/30 lg:via-transparent lg:to-transparent" />
+                
+                {/* Location Badge */}
+                <div 
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-slate-200"
+                  style={{ background: 'rgba(255,255,255,0.9)' }}
+                >
+                  <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-slate-700 text-xs font-semibold">Vũng Tàu</span>
+                </div>
+
+                {/* Progress indicators - Mobile only */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1 lg:hidden">
+                  {showcaseLocations.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setShowcaseIndex(idx)}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all",
+                        showcaseIndex === idx ? "bg-white w-2.5" : "bg-white/60 w-1.5"
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Content Section */}
+              <div className="flex-1 p-5 sm:p-6 md:p-10 lg:p-16 flex flex-col relative justify-center lg:order-1">
                 {/* Location Tabs - Responsive Pills */}
                 <div className="flex flex-wrap gap-2 sm:gap-3 mb-8 sm:mb-10 lg:mb-12">
                   {showcaseLocations.map((location, idx) => {
@@ -721,11 +765,11 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
                     </div>
                   </div>
                   
-                  {/* CTA and Navigation - Responsive */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                  {/* CTA and Navigation - Fixed for Mobile */}
+                  <div className="flex items-center justify-between gap-3">
                     <Button 
                       asChild 
-                      className="group relative overflow-hidden bg-gradient-to-r from-[#0c4a6e] to-[#0891b2] text-white font-bold rounded-full px-6 sm:px-8 py-4 sm:py-5 text-sm sm:text-base shadow-xl shadow-cyan-500/10 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex-1 sm:flex-none"
+                      className="group relative overflow-hidden bg-gradient-to-r from-[#0c4a6e] to-[#0891b2] text-white font-bold rounded-full px-5 sm:px-8 py-3 sm:py-5 text-sm sm:text-base shadow-xl shadow-cyan-500/10 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex-1"
                     >
                       <Link href={locationData[showcaseLocations[showcaseIndex]?.id]?.locationId 
                         ? `/properties?locationId=${locationData[showcaseLocations[showcaseIndex]?.id]?.locationId}` 
@@ -739,84 +783,28 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
                       </Link>
                     </Button>
 
-                    {/* Navigation Controls - Smaller */}
-                    <div className="flex items-center justify-center gap-2 sm:gap-3">
+                    {/* Navigation Controls - Always inline */}
+                    <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => setShowcaseIndex(prev => prev === 0 ? showcaseLocations.length - 1 : prev - 1)}
-                        className="group w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 hover:scale-105 transition-all duration-300"
+                        className="group w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 hover:scale-105 transition-all duration-300"
                         aria-label="Previous location"
                       >
-                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-slate-600 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
                       <button
                         onClick={() => setShowcaseIndex(prev => prev === showcaseLocations.length - 1 ? 0 : prev + 1)}
-                        className="group w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 hover:scale-105 transition-all duration-300"
+                        className="group w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center hover:bg-slate-200 hover:scale-105 transition-all duration-300"
                         aria-label="Next location"
                       >
-                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-slate-600 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Right Side - Image with Ken Burns Effect */}
-              <div className="flex-1 relative h-[300px] sm:h-[400px] lg:h-[600px] overflow-hidden order-1 lg:order-2">
-                <div className="absolute inset-0 animate-slow-zoom">
-                  <Image
-                    src={showcaseLocations[showcaseIndex]?.showcaseImage}
-                    alt={showcaseLocations[showcaseIndex]?.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover transition-all duration-1000"
-                    priority={showcaseIndex === 0}
-                  />
-                </div>
-                
-                {/* Gradient overlays */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-transparent hidden lg:block" />
-                <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent lg:from-white/20" />
-                
-                {/* Location Badge - Responsive */}
-                <div 
-                  className="absolute top-4 right-4 sm:top-6 sm:right-6 lg:top-8 lg:right-8 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full flex items-center gap-1.5 sm:gap-2 shadow-sm border border-slate-200"
-                  style={{
-                    background: 'rgba(255,255,255,0.9)',
-                  }}
-                >
-                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-slate-700 text-xs sm:text-sm font-semibold">Vũng Tàu</span>
-                </div>
-
-                {/* Progress indicators - Responsive */}
-                <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 lg:bottom-8 lg:right-8 flex items-center gap-1.5 sm:gap-2">
-                  {showcaseLocations.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setShowcaseIndex(idx)}
-                      className={cn(
-                        "h-1.5 sm:h-2 rounded-full transition-all duration-300",
-                        idx === showcaseIndex
-                          ? "w-6 sm:w-8 bg-cyan-500"
-                          : "w-1.5 sm:w-2 bg-slate-300 hover:bg-slate-400"
-                      )}
-                      aria-label={`Go to location ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Mobile swipe hint */}
-                <div className="absolute bottom-4 left-4 sm:hidden flex items-center gap-1.5 text-slate-400 text-xs">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                  <span>{tCommon('swipeToView')}</span>
                 </div>
               </div>
             </div>

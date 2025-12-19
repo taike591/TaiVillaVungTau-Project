@@ -431,11 +431,18 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
         </button>
       </div>
 
-      {/* Bottom Controls - Responsive */}
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3" suppressHydrationWarning>
-        {/* Slide Indicators */}
-        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
-          {villas.map((_, index) => (
+      {/* Bottom Controls - Compact for Mobile */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 sm:gap-3" suppressHydrationWarning>
+        {/* Slide Counter - Compact on mobile, showing current/total */}
+        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
+          <span className="text-white text-[10px] sm:text-sm font-medium">
+            {String(currentIndex + 1).padStart(2, '0')} / {String(villas.length).padStart(2, '0')}
+          </span>
+        </div>
+
+        {/* Progress Bar - simpler on mobile instead of dots */}
+        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
+          {villas.slice(0, 5).map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
@@ -457,12 +464,26 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               )}
             </button>
           ))}
+          {villas.length > 5 && (
+            <span className="text-white/60 text-xs">+{villas.length - 5}</span>
+          )}
+        </div>
+
+        {/* Mobile Progress Bar - Single bar instead of dots */}
+        <div className="flex sm:hidden items-center px-2 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 w-16" suppressHydrationWarning>
+          <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-cyan-400 transition-all duration-300 rounded-full"
+              style={{ width: `${((currentIndex + 1) / villas.length) * 100}%` }}
+              suppressHydrationWarning
+            />
+          </div>
         </div>
         
         {/* Play/Pause Button */}
         <button
           onClick={toggleAutoPlay}
-          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300"
+          className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300"
           aria-label={isAutoPlaying ? tHero('pause') : tHero('play')}
           suppressHydrationWarning
         >
@@ -472,13 +493,6 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
             <Play className="h-3 w-3 sm:h-4 sm:w-4 text-white ml-0.5" />
           )}
         </button>
-        
-        {/* Slide Counter */}
-        <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
-          <span className="text-white text-xs sm:text-sm font-medium">
-            {String(currentIndex + 1).padStart(2, '0')} / {String(villas.length).padStart(2, '0')}
-          </span>
-        </div>
       </div>
 
       {/* CSS Animations */}

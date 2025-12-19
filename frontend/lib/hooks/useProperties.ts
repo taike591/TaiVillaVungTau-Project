@@ -58,6 +58,7 @@ export interface PropertyFilters {
   maxPrice?: number;
   bedroomCount?: number;
   amenityIds?: number[];
+  sort?: 'price_asc' | 'price_desc' | 'newest'; // Sort option
   page?: number;
   size?: number;
 }
@@ -90,6 +91,7 @@ export function useProperties(filters?: PropertyFilters) {
       if (filters?.amenityIds?.length) {
         filters.amenityIds.forEach(id => params.append('amenityIds', id.toString()));
       }
+      if (filters?.sort) params.append('sort', filters.sort);
       if (filters?.page !== undefined) params.append('page', filters.page.toString());
       if (filters?.size) params.append('size', filters.size.toString());
       

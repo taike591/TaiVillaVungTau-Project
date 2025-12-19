@@ -30,6 +30,7 @@ export function PropertiesClient() {
     maxPrice: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!, 10) : undefined,
     bedroomCount: searchParams.get('bedroomCount') ? parseInt(searchParams.get('bedroomCount')!, 10) : undefined,
     amenityIds: searchParams.getAll('amenityIds').map(id => parseInt(id, 10)),
+    sort: searchParams.get('sort') as 'price_asc' | 'price_desc' | 'newest' | undefined,
     page: searchParams.get('page') ? parseInt(searchParams.get('page')!, 10) : 0,
     size: 12,
   };
@@ -65,6 +66,7 @@ export function PropertiesClient() {
     if (newFilters.amenityIds?.length) {
       newFilters.amenityIds.forEach(id => params.append('amenityIds', id.toString()));
     }
+    if (newFilters.sort) params.set('sort', newFilters.sort);
     // Reset to page 0 when filters change
     params.set('page', '0');
     params.set('size', '12');

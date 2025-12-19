@@ -1,10 +1,10 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { MapPin, Users, Bed, Bath, Wifi, Car, Waves, Coffee, Shield, Tv, Clock, Building2, Star } from 'lucide-react';
+import { MapPin, Users, Bed, Bath, Wifi, Car, Waves, Coffee, Shield, Tv, Clock, Building2, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { WishlistButton } from './wishlist';
@@ -86,7 +86,22 @@ const getAmenityIcon = (amenity: Amenity) => {
 
 function PropertyCardComponent({ property, variant = 'default' }: PropertyCardProps) {
   const t = useTranslations('common');
-  const mainImage = getMainImage(property.images);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Get all image URLs
+  const getAllImages = (): string[] => {
+    if (!property.images || property.images.length === 0) {
+      return [];
+    }
+    return property.images.map(img => 
+      typeof img === 'string' ? img : img.imageUrl
+    ).filter(Boolean);
+  };
+  
+  const allImages = getAllImages();
+  const mainImage = allImages[currentImageIndex] || null;
+  const hasMultipleImages = allImages.length > 1;
+  
   const isFeatured = property.featured || property.priceWeekday >= 7000000;
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
   const displayName = getDisplayNameUtil(property);
@@ -95,12 +110,24 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
   const missingAmenities = hasMissingAmenities(property.amenities);
   const priceMessage = getMissingPriceMessage();
   const imagesMessage = getMissingImagesMessage();
+
+  const handlePrevImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+  };
   
   return (
     <div ref={ref} className={`card-fade-in ${isInView ? 'in-view' : ''} h-full property-card-container`} suppressHydrationWarning>
       <Link href={`/properties/${property.id}`} className="block h-full" suppressHydrationWarning>
         <Card className="p-0 gap-0 overflow-hidden h-full flex flex-col transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_22px_45px_-12px_rgba(0,0,0,0.15)] shadow-lg rounded-2xl group bg-white border-0 property-card-glow" suppressHydrationWarning>
-          {/* Image Section - Clean overlay design */}
+          {/* Image Section with Navigation Arrows */}
           <div className="relative h-52 md:h-56 overflow-hidden">
             {/* Gradient overlay on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
@@ -123,6 +150,43 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
                   <p className="text-sm">{imagesMessage}</p>
                 </div>
               </div>
+            )}
+
+            {/* Navigation Arrows - Always visible on mobile, hover on desktop */}
+            {hasMultipleImages && (
+              <>
+                <button
+                  onClick={handlePrevImage}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 md:w-8 md:h-8 rounded-full bg-white/90 hover:bg-white shadow-lg flex items-center justify-center transition-all opacity-80 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
+                  aria-label="Ảnh trước"
+                >
+                  <ChevronLeft className="h-5 w-5 text-slate-700" />
+                </button>
+                <button
+                  onClick={handleNextImage}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 md:w-8 md:h-8 rounded-full bg-white/90 hover:bg-white shadow-lg flex items-center justify-center transition-all opacity-80 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
+                  aria-label="Ảnh tiếp"
+                >
+                  <ChevronRight className="h-5 w-5 text-slate-700" />
+                </button>
+                
+                {/* Image Dots Indicator */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
+                  {allImages.slice(0, 5).map((_, idx) => (
+                    <span
+                      key={idx}
+                      className={`w-1.5 h-1.5 rounded-full transition-all ${
+                        idx === currentImageIndex 
+                          ? 'bg-white w-3' 
+                          : 'bg-white/60'
+                      }`}
+                    />
+                  ))}
+                  {allImages.length > 5 && (
+                    <span className="text-white text-xs font-medium ml-1">+{allImages.length - 5}</span>
+                  )}
+                </div>
+              </>
             )}
             
             {/* Villa Code Badge - Top right */}
@@ -149,7 +213,7 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
                   id: property.id,
                   code: property.code,
                   name: displayName,
-                  image: mainImage || '',
+                  image: allImages[0] || '',
                   priceWeekday: property.priceWeekday,
                   bedroomCount: property.bedroomCount,
                 }}

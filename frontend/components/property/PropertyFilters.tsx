@@ -129,6 +129,13 @@ export function PropertyFilters({
     onClearFilters();
   };
 
+  const handleSortChange = (value: string) => {
+    onFilterChange({
+      ...filters,
+      sort: value === 'default' ? undefined : value as 'price_asc' | 'price_desc' | 'newest',
+    });
+  };
+
   const hasActiveFilters = 
     filters.keyword ||
     filters.locationId || 
@@ -138,12 +145,13 @@ export function PropertyFilters({
     filters.minPrice || 
     filters.maxPrice || 
     filters.bedroomCount || 
+    filters.sort ||
     (filters.amenityIds && filters.amenityIds.length > 0);
 
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-lg">Bộ Lọc</h3>
+        <h3 className="font-semibold text-lg">Bộ Lọc Tìm Kiếm</h3>
         {hasActiveFilters && (
           <Button
             variant="ghost"
@@ -158,6 +166,27 @@ export function PropertyFilters({
       </div>
 
       <div className="space-y-4">
+        {/* Sort Dropdown */}
+        <div>
+          <Label htmlFor="sort" className="text-sm font-medium mb-2 block">
+            Sắp xếp theo
+          </Label>
+          <Select
+            value={filters.sort || 'default'}
+            onValueChange={handleSortChange}
+          >
+            <SelectTrigger id="sort">
+              <SelectValue placeholder="Chọn cách sắp xếp" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Mặc định</SelectItem>
+              <SelectItem value="price_asc">Giá: Thấp → Cao</SelectItem>
+              <SelectItem value="price_desc">Giá: Cao → Thấp</SelectItem>
+              <SelectItem value="newest">Mới nhất</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Keyword Search */}
         <div>
           <Label htmlFor="keyword" className="text-sm font-medium mb-2 block">
