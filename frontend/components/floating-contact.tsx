@@ -16,8 +16,8 @@ export function FloatingContact() {
 
   return (
     <>
-      {/* Floating Button */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      {/* Floating Button - more responsive positioning */}
+      <div className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2 sm:gap-3">
         <div
           className={cn(
             "flex flex-col gap-3 transition-all duration-300 origin-bottom-right",
@@ -81,7 +81,7 @@ export function FloatingContact() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "group relative w-16 h-16 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center",
+            "group relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center",
             isOpen 
               ? "bg-gradient-to-br from-red-500 to-red-600 rotate-90" 
               : "bg-gradient-to-br from-[#0891b2] to-[#0ea5e9]"
