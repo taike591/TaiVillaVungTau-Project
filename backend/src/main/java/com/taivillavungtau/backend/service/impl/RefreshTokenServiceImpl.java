@@ -20,7 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    @Value("${taivilla.app.jwtRefreshExpirationMs:86400000}") // Default 24h
+    @Value("${taivilla.app.jwtRefreshExpirationMs:2592000000}") // Default 30 days
     private Long refreshTokenDurationMs;
 
     private final RefreshTokenRepository refreshTokenRepository;

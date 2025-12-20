@@ -142,7 +142,7 @@ export function PropertyDetailPricingCard({
             isRippling && "animate-pulse"
           )}
         >
-          <a href="https://zalo.me/84868947734" target="_blank" rel="noopener noreferrer" suppressHydrationWarning>
+          <a href="https://zalo.me/84868947734" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center w-full" suppressHydrationWarning>
             <MessageCircle className="w-5 h-5 mr-2" />
             {t('requestConsultation')}
           </a>
@@ -159,7 +159,7 @@ export function PropertyDetailPricingCard({
             "transition-all duration-300"
           )}
         >
-          <a href="tel:0868947734" suppressHydrationWarning>
+          <a href="tel:0868947734" className="flex items-center justify-center w-full" suppressHydrationWarning>
             <Phone className="w-4 h-4 mr-2" />
             0868-947-734
           </a>

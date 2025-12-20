@@ -139,11 +139,11 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               src={image}
               alt={villa.name}
               fill
-              sizes="100vw"
-              priority={index === 0 || index === 1}
-              loading={index <= 1 ? "eager" : "lazy"}
-              quality={80}
-              className={`object-cover ${isActive ? 'animate-ken-burns' : ''}`}
+              sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 1920px"
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              quality={75}
+              className={`object-cover ${isActive ? 'md:animate-ken-burns' : ''}`}
             />
           </div>
         );
@@ -167,18 +167,18 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
         />
       </div>
 
-      {/* Floating Particles Effect */}
-      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden" suppressHydrationWarning>
-        {[...Array(12)].map((_, i) => (
+      {/* Floating Particles Effect - Hidden on mobile for performance */}
+      <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden hidden md:block" suppressHydrationWarning>
+        {[...Array(6)].map((_, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-white/20"
             style={{
-              width: `${3 + (i % 4) * 2}px`,
-              height: `${3 + (i % 4) * 2}px`,
-              left: `${5 + i * 8}%`,
-              animation: `floatParticle ${10 + i * 2}s ease-in-out infinite`,
-              animationDelay: `${i * 0.7}s`,
+              width: `${3 + (i % 3) * 2}px`,
+              height: `${3 + (i % 3) * 2}px`,
+              left: `${10 + i * 15}%`,
+              animation: `floatParticle ${12 + i * 3}s ease-in-out infinite`,
+              animationDelay: `${i * 1}s`,
             }}
             suppressHydrationWarning
           />

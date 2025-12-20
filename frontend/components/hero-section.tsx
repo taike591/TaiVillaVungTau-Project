@@ -1,8 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BrandIntroSlide } from './brand-intro-slide';
-import { HeroCarousel } from './hero-carousel';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports to reduce initial bundle size
+const BrandIntroSlide = dynamic(() => import('./brand-intro-slide').then(mod => ({ default: mod.BrandIntroSlide })), {
+  ssr: false, // Not needed on server
+});
+
+const HeroCarousel = dynamic(() => import('./hero-carousel').then(mod => ({ default: mod.HeroCarousel })), {
+  loading: () => <div className="h-[100vh] bg-gradient-to-b from-slate-900 to-slate-800 animate-pulse" />,
+  ssr: true,
+});
 
 interface PropertyImage {
   id: number;

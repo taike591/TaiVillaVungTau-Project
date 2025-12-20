@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.time.Instant;
 
-@RedisHash(value = "refresh_tokens", timeToLive = 86400) // Default 1 day, can be configured
+@RedisHash(value = "refresh_tokens", timeToLive = 2592000) // 30 days for long-term sessions
 @Getter
 @Setter
 @NoArgsConstructor

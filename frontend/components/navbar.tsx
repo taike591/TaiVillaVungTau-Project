@@ -16,29 +16,32 @@ interface NavbarProps {
 export function Navbar({ transparent = false }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const t = useTranslations("nav");
 
-  // Track client-side mounting
+  // Track client-side mounting - MUST happen after hydration
   useEffect(() => {
-    setIsClient(true);
+    setMounted(true);
   }, []);
 
   // Track scroll position
   useEffect(() => {
-    if (!isClient) return;
+    if (!mounted) return;
 
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
+    // Check initial scroll position
+    handleScroll();
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isClient]);
+  }, [mounted]);
 
-  // Determine if navbar should be in "dark mode" (over hero) or "light mode" (scrolled)
-  // Only apply transparent styling after client-side hydration to prevent mismatch
-  const isDarkMode = isClient && transparent && !isScrolled;
+  // IMPORTANT: Always render "light mode" on server to prevent hydration mismatch
+  // Only switch to dark mode after client mounting AND transparent prop is true
+  const isDarkMode = mounted && transparent && !isScrolled;
 
   return (
     <>

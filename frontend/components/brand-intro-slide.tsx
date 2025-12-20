@@ -92,8 +92,8 @@ export function BrandIntroSlide({
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl text-center relative z-10">
         {/* Logo Section with Ocean Glow */}
-        <div className="mb-8 animate-fade-in-scale">
-          <div className="w-36 h-36 md:w-44 md:h-44 mx-auto mb-5 relative rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(34,211,238,0.3),0_20px_60px_rgba(0,0,0,0.4)] border-2 border-cyan-400/30 group">
+        <div className="mb-6 sm:mb-8 animate-fade-in-scale">
+          <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-4 sm:mb-5 relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(34,211,238,0.3),0_20px_60px_rgba(0,0,0,0.4)] border-2 border-cyan-400/30 group">
             <Image
               src="/logo.jpg"
               alt="Taivillavungtau Logo"
@@ -110,9 +110,9 @@ export function BrandIntroSlide({
         </div>
 
         {/* Brand Name & Tagline - Clean White with Cyan Glow like Carousel */}
-        <div className="space-y-3 mb-10">
+        <div className="space-y-3 mb-8 sm:mb-10">
           <h1 
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight animate-fade-in-up text-white uppercase"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight animate-fade-in-up text-white uppercase break-words"
             style={{ 
               textShadow: '0 2px 10px rgba(14, 165, 233, 0.4), 0 4px 20px rgba(20, 184, 166, 0.3), 0 8px 40px rgba(0,0,0,0.5)',
               fontFamily: 'var(--font-heading), "Playfair Display", serif',
@@ -123,7 +123,7 @@ export function BrandIntroSlide({
             Taivillavungtau.vn
           </h1>
           <p 
-            className="text-lg sm:text-xl md:text-2xl font-semibold max-w-3xl mx-auto leading-relaxed animate-fade-in-up text-white/90 tracking-[0.15em] uppercase"
+            className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold max-w-3xl mx-auto leading-relaxed animate-fade-in-up text-white/90 tracking-[0.1em] sm:tracking-[0.15em] uppercase px-2"
             style={{ 
               textShadow: '0 2px 8px rgba(14, 165, 233, 0.3), 0 4px 16px rgba(0,0,0,0.4)',
               animationDelay: '500ms' 
