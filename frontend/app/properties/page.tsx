@@ -27,12 +27,12 @@ function PropertiesLoading() {
 
 export default function PropertiesPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col overflow-x-hidden">
       <Navbar />
 
-      <div className="flex-1">
+      <div className="flex-1 overflow-x-hidden">
         {/* Hero Header with Vung Tau Background */}
-        <section className="relative text-white py-14 md:py-20 overflow-hidden">
+        <section className="relative text-white py-14 md:py-20 overflow-hidden w-full max-w-full">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <div 
@@ -92,8 +92,8 @@ export default function PropertiesPage() {
           </div>
           
           {/* Bottom Wave - More subtle to blend with image */}
-          <div className="absolute bottom-0 left-0 right-0 z-10">
-            <svg className="w-full h-16 md:h-24 opacity-90" viewBox="0 0 1440 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <div className="absolute bottom-0 left-0 right-0 z-10 overflow-hidden">
+            <svg className="w-full h-16 md:h-24 opacity-90 block" viewBox="0 0 1440 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                <path d="M0,32L48,37.3C96,43,192,53,288,58.7C384,64,480,64,576,58.7C672,53,768,43,864,42.7C960,43,1056,53,1152,53.3C1248,53,1344,43,1392,37.3L1440,32V74H1392C1344,74,1248,74,1152,74C1056,74,960,74,864,74C768,74,672,74,576,74C480,74,384,74,288,74C192,74,96,74,48,74H0V32Z" fill="#F9FAFB"/>
             </svg>
           </div>

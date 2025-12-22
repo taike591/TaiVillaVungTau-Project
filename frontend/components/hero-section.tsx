@@ -66,7 +66,7 @@ export function HeroSection({ villas }: HeroSectionProps) {
       {/* Brand Intro Slide - Shows first with auto-advance */}
       {showIntro && (
         <BrandIntroSlide 
-          autoAdvanceDelay={5000} 
+          autoAdvanceDelay={3000} 
           onComplete={handleIntroComplete} 
         />
       )}

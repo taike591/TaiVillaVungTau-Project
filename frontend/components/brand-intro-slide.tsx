@@ -11,7 +11,7 @@ interface BrandIntroSlideProps {
 }
 
 export function BrandIntroSlide({ 
-  autoAdvanceDelay = 5000,
+  autoAdvanceDelay = 3000,
   onComplete 
 }: BrandIntroSlideProps) {
   const [isVisible, setIsVisible] = useState(true);

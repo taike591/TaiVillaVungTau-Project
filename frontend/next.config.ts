@@ -69,8 +69,16 @@ const nextConfig: NextConfig = {
 
   // Enable experimental features for better performance
   experimental: {
-    // Optimize package imports
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    // Optimize package imports for better tree shaking
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-icons',
+      'date-fns',
+      '@tanstack/react-query',
+      'react-hook-form',
+      'embla-carousel-react',
+      'framer-motion',
+    ],
   },
 
   async rewrites() {

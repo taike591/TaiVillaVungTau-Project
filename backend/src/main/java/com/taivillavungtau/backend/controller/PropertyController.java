@@ -10,6 +10,7 @@ import com.taivillavungtau.backend.utils.Translator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,14 +39,18 @@ public class PropertyController {
     public ResponseEntity<ApiResponse<PageResponse<PropertyDTO>>> getProperties(
             @Valid @ModelAttribute PropertySearchRequest request) {
         PageResponse<PropertyDTO> properties = propertyService.searchProperties(request);
-        return ResponseEntity.ok(ApiResponse.success(properties, "Lấy danh sách thành công"));
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(5, java.util.concurrent.TimeUnit.MINUTES).cachePublic())
+                .body(ApiResponse.success(properties, "Lấy danh sách thành công"));
     }
 
     // 3. Xem chi tiết Villa (MỚI)
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PropertyDTO>> getPropertyById(@PathVariable Long id) {
         PropertyDTO property = propertyService.getPropertyById(id);
-        return ResponseEntity.ok(ApiResponse.success(property, "Lấy thông tin chi tiết thành công"));
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(5, java.util.concurrent.TimeUnit.MINUTES).cachePublic())
+                .body(ApiResponse.success(property, "Lấy thông tin chi tiết thành công"));
     }
 
     // 4. Cập nhật Villa (MỚI)
