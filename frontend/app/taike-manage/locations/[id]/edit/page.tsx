@@ -1,31 +1,31 @@
 'use client';
 
-import { PropertyTypeForm } from '@/components/admin/property-types/PropertyTypeForm';
-import { usePropertyType, useUpdatePropertyType } from '@/lib/hooks/useLocationsAndTypes';
+import { LocationForm } from '@/components/admin/locations/LocationForm';
+import { useLocation, useUpdateLocation } from '@/lib/hooks/useLocationsAndTypes';
 import { useRouter, useParams } from 'next/navigation';
 import { showSuccess, showError } from '@/lib/notifications';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 
-export default function EditPropertyTypePage() {
+export default function EditLocationPage() {
   const router = useRouter();
   const params = useParams();
-  const typeId = params.id as string;
+  const locationId = params.id as string;
 
-  const { data: propertyType, isLoading: isLoadingType, error } = usePropertyType(typeId);
-  const updatePropertyType = useUpdatePropertyType();
+  const { data: location, isLoading: isLoadingLocation, error } = useLocation(locationId);
+  const updateLocation = useUpdateLocation();
 
   const handleSubmit = async (data: any) => {
     try {
-      await updatePropertyType.mutateAsync({
-        id: Number(typeId),
+      await updateLocation.mutateAsync({
+        id: Number(locationId),
         data,
       });
-      showSuccess.updated('Property Type');
-      router.push('/admin/property-types');
+      showSuccess.updated('Location');
+      router.push('/taike-manage/locations');
     } catch (error) {
-      showError.update('property type');
+      showError.update('location');
     }
   };
 
@@ -34,7 +34,7 @@ export default function EditPropertyTypePage() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin/property-types"
+            href="/taike-manage/locations"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -42,18 +42,18 @@ export default function EditPropertyTypePage() {
           </Link>
         </div>
         <Card className="p-12 text-center">
-          <p className="text-red-600">Không thể tải thông tin loại hình. Vui lòng thử lại.</p>
+          <p className="text-red-600">Không thể tải thông tin vị trí. Vui lòng thử lại.</p>
         </Card>
       </div>
     );
   }
 
-  if (isLoadingType) {
+  if (isLoadingLocation) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin/property-types"
+            href="/taike-manage/locations"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -68,12 +68,12 @@ export default function EditPropertyTypePage() {
     );
   }
 
-  if (!propertyType) {
+  if (!location) {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin/property-types"
+            href="/taike-manage/locations"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -81,7 +81,7 @@ export default function EditPropertyTypePage() {
           </Link>
         </div>
         <Card className="p-12 text-center">
-          <p className="text-gray-600">Không tìm thấy loại hình.</p>
+          <p className="text-gray-600">Không tìm thấy vị trí.</p>
         </Card>
       </div>
     );
@@ -91,7 +91,7 @@ export default function EditPropertyTypePage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/property-types"
+          href="/taike-manage/locations"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -100,14 +100,14 @@ export default function EditPropertyTypePage() {
       </div>
 
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Chỉnh sửa Loại hình</h1>
-        <p className="text-gray-600 mt-1">Cập nhật thông tin: {propertyType.name}</p>
+        <h1 className="text-3xl font-bold text-gray-900">Chỉnh sửa Vị trí</h1>
+        <p className="text-gray-600 mt-1">Cập nhật thông tin: {location.name}</p>
       </div>
 
-      <PropertyTypeForm
-        initialData={propertyType}
+      <LocationForm
+        initialData={location}
         onSubmit={handleSubmit}
-        isLoading={updatePropertyType.isPending}
+        isLoading={updateLocation.isPending}
         isEdit
       />
     </div>

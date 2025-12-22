@@ -44,7 +44,7 @@ export default function LoginPage() {
       
       // Small delay to ensure state is persisted before navigation
       await new Promise(resolve => setTimeout(resolve, 100));
-      router.push('/admin');
+      router.push('/taike-manage');
     } catch (error: any) {
       console.error('Login error:', error);
       showError.custom('Đăng nhập thất bại');

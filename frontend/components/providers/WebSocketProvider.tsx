@@ -85,7 +85,7 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
               } catch (error) {
                 console.error('[WebSocketProvider] Navigation error:', error);
                 // Fallback to requests page
-                router.push('/admin/requests');
+                router.push('/taike-manage/requests');
               }
             },
           }

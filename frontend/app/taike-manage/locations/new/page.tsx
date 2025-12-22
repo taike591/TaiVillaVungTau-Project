@@ -15,7 +15,7 @@ export default function NewLocationPage() {
     try {
       await createLocation.mutateAsync(data);
       showSuccess.created('Location');
-      router.push('/admin/locations');
+      router.push('/taike-manage/locations');
     } catch (error) {
       showError.create('location');
     }
@@ -25,7 +25,7 @@ export default function NewLocationPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/locations"
+          href="/taike-manage/locations"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />

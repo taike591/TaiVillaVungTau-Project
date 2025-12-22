@@ -15,7 +15,7 @@ export default function NewPropertyTypePage() {
     try {
       await createPropertyType.mutateAsync(data);
       showSuccess.created('Property Type');
-      router.push('/admin/property-types');
+      router.push('/taike-manage/property-types');
     } catch (error) {
       showError.create('property type');
     }
@@ -25,7 +25,7 @@ export default function NewPropertyTypePage() {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/property-types"
+          href="/taike-manage/property-types"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />

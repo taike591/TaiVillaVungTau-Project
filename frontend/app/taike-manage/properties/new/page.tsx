@@ -16,7 +16,7 @@ export default function NewPropertyPage() {
     try {
       await createProperty.mutateAsync(data);
       showSuccess.created('Property');
-      router.push('/admin/properties');
+      router.push('/taike-manage/properties');
     } catch (error: any) {
       showError.create('property');
     }
@@ -27,7 +27,7 @@ export default function NewPropertyPage() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/properties"
+          href="/taike-manage/properties"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />

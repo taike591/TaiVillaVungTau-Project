@@ -120,7 +120,7 @@ export default function AdminLayout({
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         <Link
-          href="/admin"
+          href="/taike-manage"
           onClick={handleLinkClick}
           className="flex items-center px-3 py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-teal-500 text-white font-medium transition-all"
         >
@@ -128,7 +128,7 @@ export default function AdminLayout({
           Thống Kê
         </Link>
         <Link
-          href="/admin/properties"
+          href="/taike-manage/properties"
           onClick={handleLinkClick}
           className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
         >
@@ -136,7 +136,7 @@ export default function AdminLayout({
           Quản Lý Villa
         </Link>
         <Link
-          href="/admin/locations"
+          href="/taike-manage/locations"
           onClick={handleLinkClick}
           className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
         >
@@ -144,7 +144,7 @@ export default function AdminLayout({
           Quản Lý Vị Trí
         </Link>
         <Link
-          href="/admin/property-types"
+          href="/taike-manage/property-types"
           onClick={handleLinkClick}
           className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
         >
@@ -152,7 +152,7 @@ export default function AdminLayout({
           Loại Hình BĐS
         </Link>
         <Link
-          href="/admin/requests"
+          href="/taike-manage/requests"
           onClick={handleLinkClick}
           className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
         >
@@ -160,7 +160,7 @@ export default function AdminLayout({
           Yêu Cầu Tư Vấn
         </Link>
         <Link
-          href="/admin/amenities"
+          href="/taike-manage/amenities"
           onClick={handleLinkClick}
           className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
         >
@@ -246,7 +246,7 @@ export default function AdminLayout({
               </div>
               <nav className="px-3 space-y-1 mt-4">
                 <Link
-                  href="/admin"
+                  href="/taike-manage"
                   onClick={handleLinkClick}
                   className="flex items-center px-3 py-2.5 rounded-lg bg-gradient-to-r from-blue-500 to-teal-500 text-white font-medium"
                 >
@@ -254,7 +254,7 @@ export default function AdminLayout({
                   Thống Kê
                 </Link>
                 <Link
-                  href="/admin/properties"
+                  href="/taike-manage/properties"
                   onClick={handleLinkClick}
                   className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
                 >
@@ -262,7 +262,7 @@ export default function AdminLayout({
                   Quản Lý Villa
                 </Link>
                 <Link
-                  href="/admin/requests"
+                  href="/taike-manage/requests"
                   onClick={handleLinkClick}
                   className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
                 >
@@ -270,7 +270,7 @@ export default function AdminLayout({
                   Yêu Cầu Tư Vấn
                 </Link>
                 <Link
-                  href="/admin/amenities"
+                  href="/taike-manage/amenities"
                   onClick={handleLinkClick}
                   className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
                 >

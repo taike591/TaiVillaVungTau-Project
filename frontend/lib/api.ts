@@ -183,10 +183,10 @@ api.interceptors.response.use(
         // Only redirect to login if on admin pages
         // Public pages should continue working without authentication
         if (typeof window !== 'undefined') {
-          const isAdminPage = window.location.pathname.startsWith('/admin');
+          const isAdminPage = window.location.pathname.startsWith('/taike-manage');
           if (isAdminPage) {
             toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-            window.location.href = '/admin/login';
+            window.location.href = '/taike-manage/login';
           }
           // For public pages, just silently clear the token and don't redirect
         }

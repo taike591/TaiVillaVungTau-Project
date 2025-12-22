@@ -19,7 +19,7 @@ export function WishlistFloatingButton() {
   const tCommon = useTranslations('common');
   
   // Don't show on admin pages
-  if (pathname?.startsWith('/admin')) {
+  if (pathname?.startsWith('/taike-manage')) {
     return null;
   }
 

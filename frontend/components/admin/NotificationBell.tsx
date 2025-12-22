@@ -224,7 +224,7 @@ export function NotificationBell() {
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  router.push('/admin/requests');
+                  router.push('/taike-manage/requests');
                 }}
                 className="w-full text-sm text-blue-600 hover:text-blue-700 font-medium text-center"
               >

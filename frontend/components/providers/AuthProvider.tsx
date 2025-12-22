@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
-    const isAdminRoute = pathname?.startsWith('/admin');
+    const isAdminRoute = pathname?.startsWith('/taike-manage');
     
     if (isAdminRoute && !isAuthenticated()) {
       router.push('/login');

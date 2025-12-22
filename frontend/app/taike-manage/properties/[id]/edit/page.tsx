@@ -63,7 +63,7 @@ export default function EditPropertyPage() {
     // Show success notification and redirect
     // The redirect happens after the overlay shows completion (handled by PropertyForm)
     showSuccess.updated('Property');
-    router.push(`/admin/properties?page=${returnPage}`);
+    router.push(`/taike-manage/properties?page=${returnPage}`);
   };
 
   if (error) {
@@ -71,7 +71,7 @@ export default function EditPropertyPage() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin/properties"
+            href="/taike-manage/properties"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -90,7 +90,7 @@ export default function EditPropertyPage() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin/properties"
+            href="/taike-manage/properties"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -110,7 +110,7 @@ export default function EditPropertyPage() {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Link
-            href="/admin/properties"
+            href="/taike-manage/properties"
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -129,7 +129,7 @@ export default function EditPropertyPage() {
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/properties"
+          href="/taike-manage/properties"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />

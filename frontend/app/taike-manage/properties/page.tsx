@@ -218,7 +218,7 @@ export default function PropertiesPage() {
     setSearchKeyword('');
     setPrevKeyword(''); // Reset previous keyword tracking
     // Reset URL params (page = 0)
-    router.replace('/admin/properties');
+    router.replace('/taike-manage/properties');
     // setCurrentPage(0); // Removed
   };
 
@@ -232,7 +232,7 @@ export default function PropertiesPage() {
           <h1 className="text-3xl font-bold text-gray-900">Properties</h1>
           <p className="text-gray-600 mt-1">Manage your villa listings</p>
         </div>
-        <Link href="/admin/properties/new">
+        <Link href="/taike-manage/properties/new">
           <Button className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Property

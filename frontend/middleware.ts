@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth-token');
   
   // Protect /admin routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  if (request.nextUrl.pathname.startsWith('/taike-manage')) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
@@ -13,12 +13,12 @@ export function middleware(request: NextRequest) {
   
   // Redirect to admin if already logged in and trying to access login
   if (request.nextUrl.pathname === '/login' && token) {
-    return NextResponse.redirect(new URL('/admin', request.url));
+    return NextResponse.redirect(new URL('/taike-manage', request.url));
   }
   
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/login'],
+  matcher: ['/taike-manage/:path*', '/login'],
 };
