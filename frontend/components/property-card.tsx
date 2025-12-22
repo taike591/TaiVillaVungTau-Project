@@ -88,12 +88,22 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
   const t = useTranslations('common');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Get all image URLs
+  // Get all image URLs, sorted with thumbnail first
   const getAllImages = (): string[] => {
     if (!property.images || property.images.length === 0) {
       return [];
     }
-    return property.images.map(img => 
+    
+    // Sort images: thumbnail first, then by original order
+    const sortedImages = [...property.images].sort((a, b) => {
+      const aIsThumbnail = typeof a === 'object' && a.isThumbnail === true;
+      const bIsThumbnail = typeof b === 'object' && b.isThumbnail === true;
+      if (aIsThumbnail && !bIsThumbnail) return -1;
+      if (!aIsThumbnail && bIsThumbnail) return 1;
+      return 0;
+    });
+    
+    return sortedImages.map(img => 
       typeof img === 'string' ? img : img.imageUrl
     ).filter(Boolean);
   };
