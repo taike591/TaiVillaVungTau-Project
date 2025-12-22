@@ -42,7 +42,7 @@ export function BrandIntroSlide({
   return (
     <div 
       suppressHydrationWarning
-      className={`fixed inset-0 z-[100] flex items-center justify-center transition-opacity duration-700 ease-in-out ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center pt-12 sm:pt-0 transition-opacity duration-700 ease-in-out ${
         isFadingOut ? 'opacity-0' : 'opacity-100'
       }`}
       style={{ isolation: 'isolate' }}
@@ -54,7 +54,7 @@ export function BrandIntroSlide({
           alt="Villa collage background"
           fill
           sizes="100vw"
-          quality={85}
+          quality={70}
           priority
           className="object-cover animate-ken-burns scale-110"
         />
@@ -92,8 +92,8 @@ export function BrandIntroSlide({
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl text-center relative z-10">
         {/* Logo Section with Ocean Glow */}
-        <div className="mb-6 sm:mb-8 animate-fade-in-scale">
-          <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-4 sm:mb-5 relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(34,211,238,0.3),0_20px_60px_rgba(0,0,0,0.4)] border-2 border-cyan-400/30 group">
+        <div className="mb-4 sm:mb-8 animate-fade-in-scale">
+          <div className="w-20 h-20 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-3 sm:mb-5 relative rounded-xl sm:rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(34,211,238,0.3),0_20px_60px_rgba(0,0,0,0.4)] border-2 border-cyan-400/30 group">
             <Image
               src="/logo.jpg"
               alt="Taivillavungtau Logo"
@@ -110,20 +110,21 @@ export function BrandIntroSlide({
         </div>
 
         {/* Brand Name & Tagline - Clean White with Cyan Glow like Carousel */}
-        <div className="space-y-3 mb-8 sm:mb-10">
+        <div className="space-y-2 mb-4 sm:mb-10 px-2">
           <h1 
-            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight animate-fade-in-up text-white uppercase break-words"
+            className="text-xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight animate-fade-in-up text-white uppercase"
             style={{ 
               textShadow: '0 2px 10px rgba(14, 165, 233, 0.4), 0 4px 20px rgba(20, 184, 166, 0.3), 0 8px 40px rgba(0,0,0,0.5)',
               fontFamily: 'var(--font-heading), "Playfair Display", serif',
               animationDelay: '300ms',
               letterSpacing: '-0.02em',
+              wordBreak: 'break-word',
             }}
           >
             Taivillavungtau.vn
           </h1>
           <p 
-            className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold max-w-3xl mx-auto leading-relaxed animate-fade-in-up text-white/90 tracking-[0.1em] sm:tracking-[0.15em] uppercase px-2"
+            className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold max-w-3xl mx-auto leading-relaxed animate-fade-in-up text-white/90 tracking-[0.05em] sm:tracking-[0.15em] uppercase px-2"
             style={{ 
               textShadow: '0 2px 8px rgba(14, 165, 233, 0.3), 0 4px 16px rgba(0,0,0,0.4)',
               animationDelay: '500ms' 
@@ -135,7 +136,7 @@ export function BrandIntroSlide({
 
         {/* Feature Highlights Grid - Brighter Ocean Glass Effect */}
         <div 
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 max-w-5xl mx-auto"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-5 max-w-5xl mx-auto"
           suppressHydrationWarning
         >
           {[
@@ -146,21 +147,21 @@ export function BrandIntroSlide({
           ].map((item, i) => (
             <Card 
               key={i} 
-              className="bg-white/10 backdrop-blur-xl border border-white/20 p-4 sm:p-5 rounded-2xl hover:bg-white/20 transition-all duration-500 hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-[0_10px_40px_rgba(34,211,238,0.25)] group animate-fade-in-up"
+              className="bg-white/10 backdrop-blur-xl border border-white/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:bg-white/20 transition-all duration-500 hover:-translate-y-1 hover:border-cyan-400/50 hover:shadow-[0_10px_40px_rgba(34,211,238,0.25)] group animate-fade-in-up"
               style={{ animationDelay: item.delay }}
             >
               <div className="flex flex-col items-center text-center">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(34,211,238,0.4)]`}>
-                  <item.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-md" />
+                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-2 sm:mb-3 shadow-lg group-hover:scale-110 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(34,211,238,0.4)]`}>
+                  <item.icon className="w-5 h-5 sm:w-7 sm:h-7 text-white drop-shadow-md" />
                 </div>
                 <h3 
-                  className="font-semibold text-sm sm:text-base mb-1.5 text-white group-hover:text-cyan-200 transition-colors uppercase tracking-wide"
+                  className="font-semibold text-xs sm:text-base mb-1 sm:mb-1.5 text-white group-hover:text-cyan-200 transition-colors uppercase tracking-wide"
                   style={{ 
                     textShadow: '0 2px 8px rgba(14, 165, 233, 0.3), 0 4px 12px rgba(0,0,0,0.3)',
                     fontFamily: 'var(--font-heading), "Playfair Display", serif'
                   }}
                 >{item.title}</h3>
-                <p className="text-xs sm:text-sm text-cyan-100/80 leading-relaxed font-medium">
+                <p className="text-[10px] sm:text-sm text-cyan-100/80 leading-tight sm:leading-relaxed font-medium">
                   {item.desc}
                 </p>
               </div>
@@ -169,7 +170,7 @@ export function BrandIntroSlide({
         </div>
 
         {/* Progress indicator - Ocean themed */}
-        <div className="mt-8 sm:mt-10 flex justify-center items-center gap-3" suppressHydrationWarning>
+        <div className="mt-4 sm:mt-10 flex justify-center items-center gap-3" suppressHydrationWarning>
           <Waves className="w-4 h-4 text-cyan-400/60 animate-wave" />
           <div className="w-48 sm:w-64 h-1.5 bg-white/15 rounded-full overflow-hidden backdrop-blur-sm relative border border-cyan-400/20">
             <div 

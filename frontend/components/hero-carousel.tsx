@@ -61,6 +61,8 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
 
   const SLIDE_DURATION = 6000;
 
+  const maxSlides = Math.min(villas.length, 4);
+
   // Progress animation
   useEffect(() => {
     if (!isAutoPlaying || villas.length === 0 || isHovered) {
@@ -76,14 +78,14 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       if (newProgress < 100) {
         progressRef.current = requestAnimationFrame(animate);
       } else {
-        setCurrentIndex((prev) => (prev + 1) % villas.length);
+        setCurrentIndex((prev) => (prev + 1) % maxSlides);
         setProgress(0);
       }
     };
 
     progressRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(progressRef.current);
-  }, [isAutoPlaying, villas.length, currentIndex, isHovered]);
+  }, [isAutoPlaying, maxSlides, currentIndex, isHovered]);
 
   const goToSlide = useCallback((index: number) => {
     if (index === currentIndex) return;
@@ -92,14 +94,14 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
   }, [currentIndex]);
 
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + villas.length) % villas.length);
+    setCurrentIndex((prev) => (prev - 1 + maxSlides) % maxSlides);
     setProgress(0);
-  }, [villas.length]);
+  }, [maxSlides]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % villas.length);
+    setCurrentIndex((prev) => (prev + 1) % maxSlides);
     setProgress(0);
-  }, [villas.length]);
+  }, [maxSlides]);
 
   const toggleAutoPlay = useCallback(() => {
     setIsAutoPlaying((prev) => !prev);
@@ -121,7 +123,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       suppressHydrationWarning
     >
       {/* Background Images with Ken Burns Effect */}
-      {villas.slice(0, 5).map((villa, index) => {
+      {villas.slice(0, 3).map((villa, index) => {
         const image = getMainImage(villa.images) || backgroundImage;
         const isActive = index === currentIndex;
         
@@ -139,10 +141,10 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               src={image}
               alt={villa.name}
               fill
-              sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 1920px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={75}
+              quality={70}
               className={`object-cover ${isActive ? 'md:animate-ken-burns' : ''}`}
             />
           </div>
@@ -323,7 +325,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       {/* Right Side - Thumbnail Navigation - Positioned Independently */}
       <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-[60]" suppressHydrationWarning>
         <div className="flex flex-col gap-3" suppressHydrationWarning>
-          {villas.slice(0, 5).map((villa, index) => {
+          {villas.slice(0, 4).map((villa, index) => {
             const isActive = index === currentIndex;
             const thumbImage = getMainImage(villa.images) || backgroundImage;
             
@@ -345,7 +347,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                     alt={villa.name}
                     fill
                     sizes="(max-width: 1024px) 0vw, 176px"
-                    quality={60}
+                    quality={50}
                     className="object-cover"
                     suppressHydrationWarning
                   />
@@ -442,7 +444,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
 
         {/* Progress Bar - simpler on mobile instead of dots */}
         <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20" suppressHydrationWarning>
-          {villas.slice(0, 5).map((_, index) => (
+          {villas.slice(0, 4).map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
@@ -464,8 +466,8 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               )}
             </button>
           ))}
-          {villas.length > 5 && (
-            <span className="text-white/60 text-xs">+{villas.length - 5}</span>
+          {villas.length > 4 && (
+            <span className="text-white/60 text-xs">+{villas.length - 4}</span>
           )}
         </div>
 
