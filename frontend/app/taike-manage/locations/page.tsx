@@ -95,7 +95,7 @@ export default function LocationsPage() {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button asChild variant="ghost" size="icon">
-                        <Link href={`/admin/locations/${location.id}/edit`}>
+                        <Link href={`/taike-manage/locations/${location.id}/edit`}>
                           <Pencil className="h-4 w-4" />
                         </Link>
                       </Button>

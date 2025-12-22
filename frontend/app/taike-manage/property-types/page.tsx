@@ -95,7 +95,7 @@ export default function PropertyTypesPage() {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button asChild variant="ghost" size="icon">
-                        <Link href={`/admin/property-types/${type.id}/edit`}>
+                        <Link href={`/taike-manage/property-types/${type.id}/edit`}>
                           <Pencil className="h-4 w-4" />
                         </Link>
                       </Button>

@@ -131,7 +131,7 @@ export const useNotificationStore = create<NotificationStore>()(
               title: 'Yêu cầu tư vấn',
               message: `Khách ${req.customerName || 'hàng'} quan tâm${req.propertyCode ? ` căn ${req.propertyCode}` : ''}`,
               type: 'NEW_REQUEST',
-              link: `/admin/requests`,
+              link: `/taike-manage/requests`,
               timestamp: req.createdAt ? new Date(req.createdAt).getTime() : Date.now(),
               // Preserve read status: manually read OR previously read OR CONTACTED status
               read: wasManuallyRead || (existingNotif?.read ?? false) || req.status === 'CONTACTED',

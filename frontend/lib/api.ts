@@ -186,7 +186,7 @@ api.interceptors.response.use(
           const isAdminPage = window.location.pathname.startsWith('/taike-manage');
           if (isAdminPage) {
             toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-            window.location.href = '/taike-manage/login';
+            window.location.href = '/login';
           }
           // For public pages, just silently clear the token and don't redirect
         }

@@ -493,7 +493,7 @@ export default function PropertiesPage() {
                           </Link>
                         </Button>
                         <Button variant="ghost" size="sm" asChild>
-                          <Link href={`/admin/properties/${property.id}/edit?page=${currentPage}`}>
+                          <Link href={`/taike-manage/properties/${property.id}/edit?page=${currentPage}`}>
                             <Edit className="h-4 w-4" />
                           </Link>
                         </Button>
