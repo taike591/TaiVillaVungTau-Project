@@ -31,15 +31,68 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Taivillavungtau",
-  description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ của bạn.",
-  keywords: "villa vũng tàu, cho thuê villa, homestay vũng tàu, nhà nghỉ vũng tàu",
-  authors: [{ name: "Taivillavungtau" }],
+  metadataBase: new URL('https://taivillavungtau.vn'),
+  title: {
+    default: "Taivillavungtau - Cho thuê Villa & Homestay Vũng Tàu",
+    template: "%s | Taivillavungtau.vn",
+  },
+  description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu. Hàng trăm mẫu villa, homestay, căn hộ với đầy đủ tiện nghi. Đảm bảo giống 100% ảnh. Karaoke, hồ bơi, BBQ.",
+  keywords: [
+    "villa vũng tàu",
+    "cho thuê villa vũng tàu", 
+    "homestay vũng tàu",
+    "nhà nghỉ vũng tàu",
+    "taivillavungtau",
+    "thuê villa biển",
+    "villa có hồ bơi vũng tàu",
+    "villa karaoke vũng tàu",
+    "căn hộ vũng tàu",
+    "du lịch vũng tàu"
+  ],
+  authors: [{ name: "Taivillavungtau.vn" }],
+  creator: "Taivillavungtau",
+  publisher: "Taivillavungtau",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: "Taivillavungtau",
-    description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu",
+    title: "Taivillavungtau - Cho thuê Villa & Homestay Vũng Tàu",
+    description: "Hàng trăm mẫu villa, homestay cao cấp tại Vũng Tàu. Đảm bảo giống 100% ảnh.",
+    url: "https://taivillavungtau.vn",
+    siteName: "Taivillavungtau.vn",
     type: "website",
     locale: "vi_VN",
+    images: [
+      {
+        url: "/logo.jpg",
+        width: 800,
+        height: 600,
+        alt: "Taivillavungtau Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Taivillavungtau - Cho thuê Villa Vũng Tàu",
+    description: "Hàng trăm mẫu villa, homestay cao cấp tại Vũng Tàu",
+    images: ["/logo.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    // Add your Google Search Console verification code here
+    // google: 'your-google-verification-code',
   },
   icons: {
     icon: '/favicon.ico',
