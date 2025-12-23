@@ -83,8 +83,16 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /opt/taivilla
+            echo "📥 Pulling latest code..."
             git pull origin main
-            docker-compose pull backend || docker-compose build backend
+
+            echo "🔨 Building backend with --no-cache..."
+            docker-compose build --no-cache backend
+
+            echo "🚀 Restarting backend..."
             docker-compose up -d backend
+
+            echo "🧹 Cleaning up..."
             docker system prune -f
-            echo "Backend deployed successfully!"
+
+            echo "✅ Backend deployed successfully at $(date)"
