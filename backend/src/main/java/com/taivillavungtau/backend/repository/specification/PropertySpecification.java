@@ -140,6 +140,33 @@ public class PropertySpecification {
                 }
             }
 
+            // 10. Lọc theo Labels (Sát biển, View biển, etc.)
+            if (request.getLabelIds() != null && !request.getLabelIds().isEmpty()) {
+                String matchMode = request.getLabelMatchMode();
+
+                if ("ALL".equalsIgnoreCase(matchMode)) {
+                    // Logic: Villa phải có ĐỦ TẤT CẢ các labels
+                    Subquery<Long> subquery = query.subquery(Long.class);
+                    var subRoot = subquery.from(Property.class);
+                    Join<Property, com.taivillavungtau.backend.entity.Label> subJoin = subRoot.join("labels");
+
+                    subquery.select(criteriaBuilder.count(subJoin.get("id")))
+                            .where(
+                                    criteriaBuilder.equal(subRoot.get("id"), root.get("id")),
+                                    subJoin.get("id").in(request.getLabelIds()));
+
+                    predicates.add(criteriaBuilder.equal(
+                            subquery, (long) request.getLabelIds().size()));
+
+                } else {
+                    // Logic mặc định: Villa có ít nhất 1 trong các labels (ANY)
+                    Join<Property, com.taivillavungtau.backend.entity.Label> labelsJoin = root.join("labels",
+                            JoinType.INNER);
+                    predicates.add(labelsJoin.get("id").in(request.getLabelIds()));
+                    query.distinct(true);
+                }
+            }
+
             // 10. Default Sorting (Natural Numeric Sort for Code: MS90 > MS1)
             String sort = request.getSort();
             if (query.getResultType() != Long.class && query.getResultType() != long.class) {

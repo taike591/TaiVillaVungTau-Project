@@ -8,10 +8,12 @@ import com.taivillavungtau.backend.enums.LocationType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class PropertySearchRequest {
+    @Size(max = 100, message = "Từ khóa tìm kiếm tối đa 100 ký tự")
     private String keyword;
 
     @Positive(message = "Giá tối thiểu phải lớn hơn 0")
@@ -50,6 +52,16 @@ public class PropertySearchRequest {
      */
     private String amenityMatchMode = "ALL";
 
+    // --- Lọc theo Labels (Sát biển, View biển...) ---
+    private List<Long> labelIds; // Danh sách ID labels để lọc
+
+    /**
+     * Chế độ lọc labels:
+     * - "ANY": Villa có ít nhất 1 trong các labels (OR logic) - Mặc định
+     * - "ALL": Villa phải có đủ TẤT CẢ các labels (AND logic)
+     */
+    private String labelMatchMode = "ANY";
+
     // --- Sắp xếp ---
     private String sort; // "price_asc", "price_desc", "newest"
 
@@ -77,6 +89,8 @@ public class PropertySearchRequest {
                 ", isFeatured=" + isFeatured +
                 ", amenityIds=" + amenityIds +
                 ", amenityMatchMode='" + amenityMatchMode + '\'' +
+                ", labelIds=" + labelIds +
+                ", labelMatchMode='" + labelMatchMode + '\'' +
                 ", sort='" + sort + '\'' +
                 ", page=" + page +
                 ", size=" + size +

@@ -84,6 +84,12 @@ public class PropertyDTO implements Serializable {
     // Dùng để trả về danh sách tiện ích đầy đủ (Output)
     private List<AmenityDTO> amenities;
 
+    // Dùng để nhận ID labels từ Frontend khi Thêm/Sửa (Input)
+    private List<Long> labelIds;
+
+    // Dùng để trả về danh sách labels đầy đủ (Output)
+    private List<LabelDTO> labels;
+
     // Dùng để trả về danh sách ảnh (Output)
     private List<PropertyImageDTO> images;
 

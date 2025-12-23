@@ -19,10 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Objects;
 
 import com.taivillavungtau.backend.repository.AmenityRepository;
+import com.taivillavungtau.backend.repository.LabelRepository;
 import com.taivillavungtau.backend.repository.LocationRepository;
 import com.taivillavungtau.backend.repository.PropertyImageRepository;
 import com.taivillavungtau.backend.repository.PropertyTypeRepository;
 import com.taivillavungtau.backend.service.CloudinaryService;
+import com.taivillavungtau.backend.entity.Label;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -50,6 +52,7 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyMapper propertyMapper;
     private final PropertyImageRepository propertyImageRepository;
     private final AmenityRepository amenityRepository;
+    private final LabelRepository labelRepository;
     private final LocationRepository locationRepository;
     private final PropertyTypeRepository propertyTypeRepository;
     private final CloudinaryService cloudinaryService;
@@ -93,6 +96,12 @@ public class PropertyServiceImpl implements PropertyService {
         if (dto.getPropertyTypeId() != null) {
             propertyTypeRepository.findById(dto.getPropertyTypeId())
                     .ifPresent(property::setPropertyType);
+        }
+
+        // 6. Xử lý Labels (VD: "Sát biển", "View biển")
+        if (dto.getLabelIds() != null && !dto.getLabelIds().isEmpty()) {
+            List<Label> labels = labelRepository.findAllById(Objects.requireNonNull(dto.getLabelIds()));
+            property.setLabels(new HashSet<>(labels));
         }
 
         property.setStatus("ACTIVE");
@@ -347,6 +356,15 @@ public class PropertyServiceImpl implements PropertyService {
         if (dto.getPropertyTypeId() != null) {
             propertyTypeRepository.findById(dto.getPropertyTypeId())
                     .ifPresent(existing::setPropertyType);
+        }
+
+        // Cập nhật Labels
+        if (dto.getLabelIds() != null) {
+            existing.getLabels().clear();
+            if (!dto.getLabelIds().isEmpty()) {
+                List<Label> labels = labelRepository.findAllById(Objects.requireNonNull(dto.getLabelIds()));
+                existing.getLabels().addAll(labels);
+            }
         }
 
         Property updated = propertyRepository.save(existing);

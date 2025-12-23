@@ -84,6 +84,14 @@ public class Property {
     @org.hibernate.annotations.BatchSize(size = 50)
     private Set<Amenity> amenities = new HashSet<>();
 
+    // Quan hệ N-N với labels (VD: "Sát biển", "View biển")
+    @ManyToMany
+    @JoinTable(name = "property_labels", joinColumns = @JoinColumn(name = "property_id"), inverseJoinColumns = @JoinColumn(name = "label_id"))
+    @Builder.Default
+    @ToString.Exclude
+    @org.hibernate.annotations.BatchSize(size = 50)
+    private Set<Label> labels = new HashSet<>();
+
     @Enumerated(EnumType.STRING)
     @Column(name = "location")
     private LocationType location; // Keep temporarily for migration

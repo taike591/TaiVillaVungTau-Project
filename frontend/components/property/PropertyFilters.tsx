@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card } from '@/components/ui/card';
 import { X } from 'lucide-react';
 import { PropertyFilters as PropertyFiltersType } from '@/lib/hooks/useProperties';
-import { Amenity } from '@/lib/hooks/useProperties';
+import { Amenity, Label as LabelType } from '@/lib/hooks/useProperties';
 import { PropertyType } from '@/lib/hooks/useLocationsAndTypes';
 import { useTranslations } from 'next-intl';
 
@@ -16,6 +16,7 @@ interface PropertyFiltersProps {
   filters: PropertyFiltersType;
   onFilterChange: (filters: PropertyFiltersType) => void;
   amenities: Amenity[];
+  labels?: LabelType[]; // Labels for filtering (Sát biển, View biển...)
   propertyTypes?: PropertyType[];
   onClearFilters: () => void;
 }
@@ -24,6 +25,7 @@ export function PropertyFilters({
   filters, 
   onFilterChange, 
   amenities,
+  labels = [],
   propertyTypes = [],
   onClearFilters 
 }: PropertyFiltersProps) {
@@ -120,6 +122,18 @@ export function PropertyFilters({
     });
   };
 
+  const handleLabelToggle = (labelId: number) => {
+    const currentLabels = filters.labelIds || [];
+    const newLabels = currentLabels.includes(labelId)
+      ? currentLabels.filter(id => id !== labelId)
+      : [...currentLabels, labelId];
+    
+    onFilterChange({
+      ...filters,
+      labelIds: newLabels.length > 0 ? newLabels : undefined,
+    });
+  };
+
   const handleClearAll = () => {
     setLocalKeyword('');
     setLocalMinPrice('');
@@ -146,7 +160,8 @@ export function PropertyFilters({
     filters.maxPrice || 
     filters.bedroomCount || 
     filters.sort ||
-    (filters.amenityIds && filters.amenityIds.length > 0);
+    (filters.amenityIds && filters.amenityIds.length > 0) ||
+    (filters.labelIds && filters.labelIds.length > 0);
 
   return (
     <Card className="p-6">
@@ -166,6 +181,36 @@ export function PropertyFilters({
       </div>
 
       <div className="space-y-4">
+        {/* Label Filter (Sát biển, View biển...) - Đặc điểm nổi bật lên đầu */}
+        {labels.length > 0 && (
+          <div>
+            <Label className="text-sm font-medium mb-2 block">
+              Đặc điểm nổi bật
+            </Label>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {labels.map((label) => (
+                <label
+                  key={label.id}
+                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                >
+                  <input
+                    type="checkbox"
+                    checked={filters.labelIds?.includes(label.id) || false}
+                    onChange={() => handleLabelToggle(label.id)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span 
+                    className="text-xs px-2 py-0.5 rounded text-white font-medium"
+                    style={{ backgroundColor: label.color || '#0EA5E9' }}
+                  >
+                    {label.name}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Sort Dropdown */}
         <div>
           <Label htmlFor="sort" className="text-sm font-medium mb-2 block">

@@ -83,6 +83,8 @@ export const propertySchema = z.object({
   metaDescription: z.string().max(500, 'Meta description không được quá 500 ký tự').optional(),
   
   amenityIds: z.array(z.number()),
+
+  labelIds: z.array(z.number()).optional(), // Labels like "Sát biển", "View biển"
   
   images: z
     .array(z.any())
@@ -168,6 +170,7 @@ export type AmenityFormData = z.infer<typeof amenitySchema>;
 export type ImageFileData = z.infer<typeof imageFileSchema>;
 export type LocationFormData = z.infer<typeof locationSchema>;
 export type PropertyTypeFormData = z.infer<typeof propertyTypeSchema>;
+export type LabelFormData = z.infer<typeof labelSchema>;
 
 /**
  * Location validation schema
@@ -193,6 +196,20 @@ export const propertyTypeSchema = z.object({
     .max(50, 'Tên loại hình không được quá 50 ký tự'),
   
   slug: z.string().optional(),
+  
+  iconCode: z.string().optional(),
+});
+
+/**
+ * Label validation schema
+ */
+export const labelSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Tên label phải có ít nhất 2 ký tự')
+    .max(50, 'Tên label không được quá 50 ký tự'),
+  
+  color: z.string().max(7, 'Mã màu tối đa 7 ký tự').optional(),
   
   iconCode: z.string().optional(),
 });

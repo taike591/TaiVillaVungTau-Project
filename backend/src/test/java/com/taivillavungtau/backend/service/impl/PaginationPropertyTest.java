@@ -5,6 +5,7 @@ import com.taivillavungtau.backend.dto.request.PropertySearchRequest;
 import com.taivillavungtau.backend.dto.response.PageResponse;
 import com.taivillavungtau.backend.mapper.PropertyMapper;
 import com.taivillavungtau.backend.repository.AmenityRepository;
+import com.taivillavungtau.backend.repository.LabelRepository;
 import com.taivillavungtau.backend.repository.LocationRepository;
 import com.taivillavungtau.backend.repository.PropertyImageRepository;
 import com.taivillavungtau.backend.repository.PropertyRepository;
@@ -50,6 +51,7 @@ class PaginationPropertyTest {
                 PropertyImageRepository propertyImageRepository = org.mockito.Mockito
                                 .mock(PropertyImageRepository.class);
                 AmenityRepository amenityRepository = org.mockito.Mockito.mock(AmenityRepository.class);
+                LabelRepository labelRepository = org.mockito.Mockito.mock(LabelRepository.class);
                 LocationRepository locationRepository = org.mockito.Mockito.mock(LocationRepository.class);
                 PropertyTypeRepository propertyTypeRepository = org.mockito.Mockito.mock(PropertyTypeRepository.class);
                 CloudinaryService cloudinaryService = org.mockito.Mockito.mock(CloudinaryService.class);
@@ -63,7 +65,7 @@ class PaginationPropertyTest {
                                 .thenAnswer(invocation -> invocation.getArgument(0));
 
                 return new PropertyServiceImpl(propertyRepository, propertyMapper, propertyImageRepository,
-                                amenityRepository,
+                                amenityRepository, labelRepository,
                                 locationRepository, propertyTypeRepository, cloudinaryService);
         }
 
@@ -87,12 +89,14 @@ class PaginationPropertyTest {
                 PropertyMapper mockMapper = org.mockito.Mockito.mock(PropertyMapper.class);
                 PropertyImageRepository mockImageRepo = org.mockito.Mockito.mock(PropertyImageRepository.class);
                 AmenityRepository mockAmenityRepo = org.mockito.Mockito.mock(AmenityRepository.class);
+                LabelRepository mockLabelRepo = org.mockito.Mockito.mock(LabelRepository.class);
                 LocationRepository mockLocationRepo = org.mockito.Mockito.mock(LocationRepository.class);
                 PropertyTypeRepository mockPropertyTypeRepo = org.mockito.Mockito.mock(PropertyTypeRepository.class);
                 CloudinaryService mockCloudinaryService = org.mockito.Mockito.mock(CloudinaryService.class);
 
                 PropertyServiceImpl service = new PropertyServiceImpl(mockRepository, mockMapper, mockImageRepo,
-                                mockAmenityRepo, mockLocationRepo, mockPropertyTypeRepo, mockCloudinaryService);
+                                mockAmenityRepo, mockLabelRepo, mockLocationRepo, mockPropertyTypeRepo,
+                                mockCloudinaryService);
 
                 // Given: A search request with specific page and size
                 PropertySearchRequest request = new PropertySearchRequest();
@@ -160,12 +164,14 @@ class PaginationPropertyTest {
                 PropertyMapper mockMapper = org.mockito.Mockito.mock(PropertyMapper.class);
                 PropertyImageRepository mockImageRepo = org.mockito.Mockito.mock(PropertyImageRepository.class);
                 AmenityRepository mockAmenityRepo = org.mockito.Mockito.mock(AmenityRepository.class);
+                LabelRepository mockLabelRepo = org.mockito.Mockito.mock(LabelRepository.class);
                 LocationRepository mockLocationRepo = org.mockito.Mockito.mock(LocationRepository.class);
                 PropertyTypeRepository mockPropertyTypeRepo = org.mockito.Mockito.mock(PropertyTypeRepository.class);
                 CloudinaryService mockCloudinaryService = org.mockito.Mockito.mock(CloudinaryService.class);
 
                 PropertyServiceImpl service = new PropertyServiceImpl(mockRepository, mockMapper, mockImageRepo,
-                                mockAmenityRepo, mockLocationRepo, mockPropertyTypeRepo, mockCloudinaryService);
+                                mockAmenityRepo, mockLabelRepo, mockLocationRepo, mockPropertyTypeRepo,
+                                mockCloudinaryService);
 
                 // Given: A request for page 10 when only 2 pages exist
                 PropertySearchRequest request = new PropertySearchRequest();
@@ -210,12 +216,14 @@ class PaginationPropertyTest {
                 PropertyMapper mockMapper = org.mockito.Mockito.mock(PropertyMapper.class);
                 PropertyImageRepository mockImageRepo = org.mockito.Mockito.mock(PropertyImageRepository.class);
                 AmenityRepository mockAmenityRepo = org.mockito.Mockito.mock(AmenityRepository.class);
+                LabelRepository mockLabelRepo = org.mockito.Mockito.mock(LabelRepository.class);
                 LocationRepository mockLocationRepo = org.mockito.Mockito.mock(LocationRepository.class);
                 PropertyTypeRepository mockPropertyTypeRepo = org.mockito.Mockito.mock(PropertyTypeRepository.class);
                 CloudinaryService mockCloudinaryService = org.mockito.Mockito.mock(CloudinaryService.class);
 
                 PropertyServiceImpl service = new PropertyServiceImpl(mockRepository, mockMapper, mockImageRepo,
-                                mockAmenityRepo, mockLocationRepo, mockPropertyTypeRepo, mockCloudinaryService);
+                                mockAmenityRepo, mockLabelRepo, mockLocationRepo, mockPropertyTypeRepo,
+                                mockCloudinaryService);
 
                 // Given: A request with page size of 1
                 PropertySearchRequest request = new PropertySearchRequest();

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { propertySchema, PropertyFormData } from '@/lib/validation';
 import { useImageUpload } from '@/lib/hooks/useImageUpload';
 import { useAmenities } from '@/lib/hooks/useAmenities';
+import { useLabels } from '@/lib/hooks/useLabels';
 import { useLocations, usePropertyTypes } from '@/lib/hooks/useLocationsAndTypes';
 import api from '@/lib/api';
 import { ImageUploader } from './ImageUploader';
@@ -69,12 +70,14 @@ export function PropertyForm({
       facebookLink: initialData?.facebookLink || '',
       metaDescription: initialData?.metaDescription || '',
       amenityIds: initialData?.amenityIds || [],
+      labelIds: initialData?.labelIds || [],
       images: initialData?.images || [],
       status: initialData?.status || 'ACTIVE',
     },
   });
 
   const { data: amenities, isLoading: amenitiesLoading } = useAmenities();
+  const { data: labels, isLoading: labelsLoading } = useLabels();
   const { data: locations, isLoading: locationsLoading } = useLocations();
   const { data: propertyTypes, isLoading: propertyTypesLoading } = usePropertyTypes();
 
@@ -711,6 +714,64 @@ export function PropertyForm({
                     ) : (
                       <p className="text-sm text-gray-500 col-span-full">
                         Chưa có tiện ích nào. Vui lòng thêm tiện ích trước.
+                      </p>
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </Card>
+
+        {/* Labels (Sát biển, View biển, etc.) */}
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold mb-4">Nhãn đặc điểm (Labels)</h2>
+          <FormField
+            control={form.control}
+            name="labelIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Chọn nhãn hiển thị trên card</FormLabel>
+                <FormDescription>
+                  Labels sẽ hiển thị ở góc trên bên trái của ảnh property (tối đa 2 labels)
+                </FormDescription>
+                <FormControl>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
+                    {labelsLoading ? (
+                      <p className="text-sm text-gray-500 col-span-full">Đang tải labels...</p>
+                    ) : labels && labels.length > 0 ? (
+                      labels.map((label) => (
+                        <label
+                          key={label.id}
+                          className="flex items-center space-x-2 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={field.value?.includes(label.id)}
+                            onChange={(e) => {
+                              const currentValue = field.value || [];
+                              if (e.target.checked) {
+                                field.onChange([...currentValue, label.id]);
+                              } else {
+                                field.onChange(
+                                  currentValue.filter((id) => id !== label.id)
+                                );
+                              }
+                            }}
+                            className="rounded border-gray-300 text-primary focus:ring-primary"
+                          />
+                          <span
+                            className="inline-flex items-center px-2 py-0.5 rounded text-white text-xs font-medium"
+                            style={{ backgroundColor: label.color || '#0EA5E9' }}
+                          >
+                            {label.name}
+                          </span>
+                        </label>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500 col-span-full">
+                        Chưa có label nào. Vui lòng thêm label ở menu &quot;Nhãn (Labels)&quot;.
                       </p>
                     )}
                   </div>

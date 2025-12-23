@@ -14,24 +14,24 @@ import java.util.Optional;
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSpecificationExecutor<Property> {
 
-    @Override
-    Page<Property> findAll(Specification<Property> spec, Pageable pageable);
+        @Override
+        Page<Property> findAll(Specification<Property> spec, Pageable pageable);
 
-    // Override findById to fetch images and amenities eagerly for detail view
-    @Override
-    @EntityGraph(attributePaths = { "amenities", "images" })
-    Optional<Property> findById(Long id);
+        // Override findById to fetch images and amenities eagerly for detail view
+        @Override
+        @EntityGraph(attributePaths = { "amenities", "images" })
+        Optional<Property> findById(Long id);
 
-    // Tìm theo mã căn (MS44) - Fetch luôn amenities & images
-    @EntityGraph(attributePaths = { "amenities", "images" })
-    Optional<Property> findByCode(String code);
+        // Tìm theo mã căn (MS44) - Fetch luôn amenities & images
+        @EntityGraph(attributePaths = { "amenities", "images" })
+        Optional<Property> findByCode(String code);
 
-    // Tìm theo slug để làm SEO - Fetch luôn amenities & images
-    @EntityGraph(attributePaths = { "amenities", "images" })
-    Optional<Property> findBySlug(String slug);
+        // Tìm theo slug để làm SEO - Fetch luôn amenities & images
+        @EntityGraph(attributePaths = { "amenities", "images" })
+        Optional<Property> findBySlug(String slug);
 
-    // Kiểm tra mã đã tồn tại chưa
-    boolean existsByCode(String code);
+        // Kiểm tra mã đã tồn tại chưa
+        boolean existsByCode(String code);
 
-    long countByStatus(String status);
+        long countByStatus(String status);
 }

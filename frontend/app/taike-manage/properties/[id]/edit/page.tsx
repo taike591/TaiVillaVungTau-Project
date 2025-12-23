@@ -47,6 +47,7 @@ export default function EditPropertyPage() {
       facebookLink: property.facebookLink || '',
       metaDescription: property.metaDescription || '',
       amenityIds: property.amenities?.map(a => a.id) || [],
+      labelIds: property.labels?.map(l => l.id) || [],
       // Preserve full image objects so PropertyForm can get backendId for deletion
       images: property.images || [],
       status: property.status,

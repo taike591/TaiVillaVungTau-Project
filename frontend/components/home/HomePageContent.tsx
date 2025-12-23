@@ -10,6 +10,7 @@ import api from "@/lib/api";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { usePropertyTypes } from "@/lib/hooks/useLocationsAndTypes";
+import { useLabels } from "@/lib/hooks/useLabels";
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 
@@ -231,9 +232,11 @@ interface HomePageContentProps {
 export function HomePageContent({ initialData }: HomePageContentProps) {
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [selectedPropertyType, setSelectedPropertyType] = useState('all');
+  const [selectedLabelIds, setSelectedLabelIds] = useState<number[]>([]);
   const [showcaseIndex, setShowcaseIndex] = useState(0);
   const { data: properties, isPending, error } = useHomeProperties(initialData);
   const { data: propertyTypes } = usePropertyTypes();
+  const { data: labels = [] } = useLabels();
   const t = useTranslations('home');
   const tCommon = useTranslations('common');
 
@@ -302,7 +305,7 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
   const locationData = getLocationData(properties);
   const propertyTypeData = getPropertyTypeData(properties, selectedLocation);
   
-  // Filter properties based on selected location and property type
+  // Filter properties based on selected location, property type, and labels
   const filteredProperties = properties.filter((p: any) => {
     // Location filter
     const locationMatch = selectedLocation === 'all' || 
@@ -311,8 +314,21 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
     // Property type filter
     const typeMatch = selectedPropertyType === 'all' || p.propertyTypeName === selectedPropertyType;
     
-    return locationMatch && typeMatch;
+    // Label filter (ANY mode: property has at least one of selected labels)
+    const labelMatch = selectedLabelIds.length === 0 || 
+      (p.labels && p.labels.some((label: any) => selectedLabelIds.includes(label.id)));
+    
+    return locationMatch && typeMatch && labelMatch;
   });
+  
+  // Toggle label selection (multiple selection support)
+  const handleLabelToggle = (labelId: number) => {
+    setSelectedLabelIds(prev => 
+      prev.includes(labelId) 
+        ? prev.filter(id => id !== labelId)
+        : [...prev, labelId]
+    );
+  };
   
   // Only show 4 properties in the grid
   const gridVillas = filteredProperties.slice(0, 4);
@@ -500,6 +516,70 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
                   </button>
                 );
               })}
+            </div>
+          )}
+
+          {/* Label Pills - Đặc điểm nổi bật */}
+          {labels.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+              <span className="text-sm text-[#0c4a6e]/70 font-medium mr-2">Đặc điểm:</span>
+              {labels.map((label) => {
+                const isActive = selectedLabelIds.includes(label.id);
+                // Count properties with this label in current location+type filtered set (reactive!)
+                const baseFiltered = properties.filter((p: any) => {
+                  const locationMatch = selectedLocation === 'all' || 
+                    (p.locationName ? p.locationName === LOCATION_MAPPING[selectedLocation] : p.location === selectedLocation);
+                  const typeMatch = selectedPropertyType === 'all' || p.propertyTypeName === selectedPropertyType;
+                  return locationMatch && typeMatch;
+                });
+                const labelCount = baseFiltered.filter((p: any) => 
+                  p.labels?.some((l: any) => l.id === label.id)
+                ).length;
+                
+                return (
+                  <button
+                    key={label.id}
+                    onClick={() => handleLabelToggle(label.id)}
+                    className={cn(
+                      "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 border-2",
+                      isActive
+                        ? "text-white shadow-md scale-105"
+                        : "bg-white/60 hover:bg-white/80 text-[#0c4a6e]"
+                    )}
+                    style={{
+                      backgroundColor: isActive ? (label.color || '#0EA5E9') : undefined,
+                      borderColor: isActive ? (label.color || '#0EA5E9') : `${label.color || '#0EA5E9'}40`,
+                      boxShadow: isActive ? `0 4px 12px ${label.color || '#0EA5E9'}40` : undefined,
+                    }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {!isActive && (
+                        <span 
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: label.color || '#0EA5E9' }}
+                        />
+                      )}
+                      {label.name}
+                      <span className={cn(
+                        "px-1.5 py-0.5 rounded-full text-xs font-bold",
+                        isActive
+                          ? "bg-white/20 text-white"
+                          : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
+                      )}>
+                        {labelCount}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+              {selectedLabelIds.length > 0 && (
+                <button
+                  onClick={() => setSelectedLabelIds([])}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200"
+                >
+                  ✕ Xóa lọc
+                </button>
+              )}
             </div>
           )}
 

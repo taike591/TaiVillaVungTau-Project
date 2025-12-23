@@ -31,6 +31,7 @@ export interface Property {
   status: 'ACTIVE' | 'INACTIVE';
   images: PropertyImage[];
   amenities: Amenity[];
+  labels?: Label[]; // Labels like "Sát biển", "View biển"
   createdAt: string;
   updatedAt: string;
 }
@@ -48,6 +49,13 @@ export interface Amenity {
   category?: string;
 }
 
+export interface Label {
+  id: number;
+  name: string;
+  color?: string;
+  iconCode?: string;
+}
+
 export interface PropertyFilters {
   keyword?: string; // Search by name, address, code
   locationId?: number; // Filter by Location entity ID
@@ -58,6 +66,7 @@ export interface PropertyFilters {
   maxPrice?: number;
   bedroomCount?: number;
   amenityIds?: number[];
+  labelIds?: number[]; // Filter by label IDs (Sát biển, View biển...)
   sort?: 'price_asc' | 'price_desc' | 'newest'; // Sort option
   page?: number;
   size?: number;
@@ -90,6 +99,9 @@ export function useProperties(filters?: PropertyFilters) {
       if (filters?.bedroomCount) params.append('bedroomCount', filters.bedroomCount.toString());
       if (filters?.amenityIds?.length) {
         filters.amenityIds.forEach(id => params.append('amenityIds', id.toString()));
+      }
+      if (filters?.labelIds?.length) {
+        filters.labelIds.forEach(id => params.append('labelIds', id.toString()));
       }
       if (filters?.sort) params.append('sort', filters.sort);
       if (filters?.page !== undefined) params.append('page', filters.page.toString());
@@ -134,6 +146,7 @@ export function useCreateProperty() {
         priceWeekday: data.priceWeekday,
         priceWeekend: data.priceWeekend,
         amenityIds: data.amenityIds || [],
+        labelIds: data.labelIds || [], // Include labels
         images: data.images || [],
       };
       
@@ -169,6 +182,7 @@ export function useUpdateProperty() {
         priceWeekday: data.priceWeekday,
         priceWeekend: data.priceWeekend,
         amenityIds: data.amenityIds || [],
+        labelIds: data.labelIds || [], // Include labels
       };
       
       const response = await api.put<{ data: Property }>(`/api/v1/properties/${id}`, payload);

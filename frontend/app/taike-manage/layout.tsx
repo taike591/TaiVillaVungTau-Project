@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   MapPin,
-  Home
+  Home,
+  Tag
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -167,6 +168,14 @@ export default function AdminLayout({
           <Settings className="h-5 w-5 mr-3" />
           Tiện Nghi
         </Link>
+        <Link
+          href="/taike-manage/labels"
+          onClick={handleLinkClick}
+          className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
+        >
+          <Tag className="h-5 w-5 mr-3" />
+          Nhãn (Labels)
+        </Link>
       </nav>
 
       {/* Help Card */}
@@ -276,6 +285,14 @@ export default function AdminLayout({
                 >
                   <Settings className="h-5 w-5 mr-3" />
                   Tiện Nghi
+                </Link>
+                <Link
+                  href="/taike-manage/labels"
+                  onClick={handleLinkClick}
+                  className="flex items-center px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all"
+                >
+                  <Tag className="h-5 w-5 mr-3" />
+                  Nhãn (Labels)
                 </Link>
               </nav>
               <div className="absolute bottom-0 left-0 w-64 p-4 border-t border-slate-700/50">

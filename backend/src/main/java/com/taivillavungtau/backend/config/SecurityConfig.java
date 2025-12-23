@@ -32,6 +32,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final RateLimitFilter rateLimitFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -86,6 +87,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/amenities/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/amenities/**").hasRole("ADMIN")
 
+                        // Label management (Sát biển, View biển, etc.)
+                        .requestMatchers(HttpMethod.GET, "/api/v1/labels/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/labels/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/labels/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/labels/**").hasRole("ADMIN")
+
                         // Customer Request management (Get all, Update status/notes)
                         .requestMatchers(HttpMethod.GET, "/api/v1/requests").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/requests/**").hasRole("ADMIN")
@@ -95,6 +102,7 @@ public class SecurityConfig {
                         // Tất cả các request khác cần authentication
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

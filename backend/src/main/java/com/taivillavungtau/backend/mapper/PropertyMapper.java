@@ -7,11 +7,12 @@ import com.taivillavungtau.backend.entity.PropertyImage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = { AmenityMapper.class })
+@Mapper(componentModel = "spring", uses = { AmenityMapper.class, LabelMapper.class })
 public interface PropertyMapper {
 
     // Entity -> DTO
     @Mapping(target = "amenityIds", ignore = true) // Không cần map ngược lại ID
+    @Mapping(target = "labelIds", ignore = true) // Không cần map ngược lại ID
     @Mapping(target = "images", source = "images") // MapStruct tự động map Set<PropertyImage> sang
                                                    // List<PropertyImageDTO>
     @Mapping(target = "locationId", source = "locationEntity.id")
@@ -22,6 +23,7 @@ public interface PropertyMapper {
 
     // DTO -> Entity
     @Mapping(target = "amenities", ignore = true) // Sẽ xử lý tay trong Service
+    @Mapping(target = "labels", ignore = true) // Sẽ xử lý tay trong Service
     @Mapping(target = "images", ignore = true) // Sẽ xử lý tay trong Service
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
