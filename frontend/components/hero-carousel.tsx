@@ -141,7 +141,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               src={image}
               alt={villa.name}
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+              sizes="(max-width: 640px) 200vw, (max-width: 1024px) 150vw, 100vw"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
               quality={85}
