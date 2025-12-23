@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, MapPin, Play, Pause, Bed, Users } from 'lucide-react';
 import { Button } from './ui/button';
 import { WishlistButton } from './wishlist';
-import { getMainImage } from '@/lib/error-handling';
+import { getMainImage, getOptimizedCloudinaryUrl } from '@/lib/error-handling';
 
 interface PropertyImage {
   id: number;
@@ -141,10 +141,10 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               src={image}
               alt={villa.name}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={80}
+              quality={85}
               className={`object-cover ${isActive ? 'md:animate-ken-burns' : ''}`}
             />
           </div>

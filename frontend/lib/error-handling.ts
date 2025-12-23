@@ -206,3 +206,53 @@ export function sortImagesWithThumbnailFirst(images?: any[]): any[] {
   return sortedImages;
 }
 
+/**
+ * Optimize Cloudinary URL for better quality on high-DPR screens
+ * Uses Cloudinary's automatic format and quality selection
+ * @param url - Original Cloudinary URL
+ * @param width - Desired width (will be multiplied by DPR internally by Cloudinary)
+ * @param quality - Quality setting: 'auto', 'auto:best', 'auto:good', 'auto:eco', or number
+ */
+export function getOptimizedCloudinaryUrl(
+  url: string | null | undefined,
+  width: number = 1200,
+  quality: string = 'auto:good'
+): string {
+  if (!url) return '';
+  
+  // Only transform Cloudinary URLs
+  if (!url.includes('res.cloudinary.com')) {
+    return url;
+  }
+  
+  // Check if URL already has transformations
+  const uploadIndex = url.indexOf('/upload/');
+  if (uploadIndex === -1) {
+    return url;
+  }
+  
+  // Build optimization transformations
+  // f_auto: automatic format (WebP/AVIF based on browser support)
+  // q_auto:good: automatic quality optimization
+  // w_<width>: responsive width
+  // dpr_auto: automatic device pixel ratio detection
+  const transformations = `f_auto,q_${quality},w_${width},dpr_auto,c_limit`;
+  
+  // Check if there are existing transformations
+  const afterUpload = url.substring(uploadIndex + 8);
+  const hasExistingTransform = afterUpload.includes('/') && 
+    !afterUpload.startsWith('v') && 
+    !afterUpload.match(/^v\d+\//);
+  
+  if (hasExistingTransform) {
+    // Insert our transformations before existing ones
+    const firstSlash = afterUpload.indexOf('/');
+    const existingTransforms = afterUpload.substring(0, firstSlash);
+    const rest = afterUpload.substring(firstSlash);
+    return url.substring(0, uploadIndex + 8) + transformations + ',' + existingTransforms + rest;
+  }
+  
+  // Insert transformations after /upload/
+  return url.substring(0, uploadIndex + 8) + transformations + '/' + afterUpload;
+}
+
