@@ -123,7 +123,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       suppressHydrationWarning
     >
       {/* Background Images with Ken Burns Effect */}
-      {villas.slice(0, 3).map((villa, index) => {
+      {villas.slice(0, maxSlides).map((villa, index) => {
         const image = getMainImage(villa.images) || backgroundImage;
         const isActive = index === currentIndex;
         
@@ -144,7 +144,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={70}
+              quality={80}
               className={`object-cover ${isActive ? 'md:animate-ken-burns' : ''}`}
             />
           </div>
