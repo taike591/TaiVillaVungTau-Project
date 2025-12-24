@@ -333,6 +333,14 @@ public class PropertyServiceImpl implements PropertyService {
             existing.setIsFeatured(dto.getIsFeatured());
         }
 
+        // --- CẬP NHẬT GOOGLE SHEETS FIELDS ---
+        existing.setGoogleSheetsUrl(dto.getGoogleSheetsUrl());
+        existing.setGoogleSheetsNote(dto.getGoogleSheetsNote());
+
+        // --- CẬP NHẬT SEO META DATA ---
+        existing.setMetaTitle(dto.getMetaTitle());
+        existing.setMetaDescription(dto.getMetaDescription());
+
         // Cập nhật Slug nếu tên thay đổi
         String slugRaw = dto.getName() + "-" + existing.getCode();
         existing.setSlug(SlugUtils.toSlug(slugRaw));
