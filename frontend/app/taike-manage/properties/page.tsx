@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Pagination } from '@/components/ui/pagination';
 import { TableSkeleton } from '@/components/shared/LoadingState';
 import { showSuccess, showError } from '@/lib/notifications';
-import { Plus, Edit, Eye, ArrowUpDown, X, MapPin, Power, Trash2, Search, ImageIcon } from 'lucide-react';
+import { Plus, Edit, Eye, ArrowUpDown, X, MapPin, Power, Trash2, Search, ImageIcon, ExternalLink, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
 import { useLocations, usePropertyTypes } from '@/lib/hooks/useLocationsAndTypes';
@@ -389,6 +389,12 @@ export default function PropertiesPage() {
                   </div>
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  GSheet
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Note
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -396,13 +402,13 @@ export default function PropertiesPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {isLoading ? (
                 <tr>
-                <td colSpan={10} className="px-6 py-4">
+                <td colSpan={12} className="px-6 py-4">
                     <TableSkeleton rows={5} columns={8} />
                   </td>
                 </tr>
               ) : properties.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={12} className="px-6 py-12 text-center text-gray-500">
                     No properties found matching your criteria.
                   </td>
                 </tr>
@@ -493,6 +499,34 @@ export default function PropertiesPage() {
                         </span>
                       ) : (
                         '-'
+                      )}
+                    </td>
+                    {/* Google Sheets URL */}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {property.googleSheetsUrl ? (
+                        <a
+                          href={property.googleSheetsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                          title={property.googleSheetsUrl}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          <span className="underline">Link</span>
+                        </a>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                    {/* Google Sheets Note */}
+                    <td className="px-6 py-4 text-sm text-gray-600 max-w-[200px]">
+                      {property.googleSheetsNote ? (
+                        <div className="flex items-start gap-1" title={property.googleSheetsNote}>
+                          <FileText className="h-4 w-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                          <span className="truncate">{property.googleSheetsNote.substring(0, 50)}{property.googleSheetsNote.length > 50 ? '...' : ''}</span>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400">-</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
