@@ -1,68 +1,73 @@
-# 🏖️ TaiVillaVungTau - Villa Rental Platform
+# 🏖️ TaiVillaVungTau - Villa Catalog Platform
 
 > **Live Site:** [taivillavungtau.vn](https://taivillavungtau.vn)
 >
-> A full-stack villa rental web application for Vung Tau, Vietnam. Built with modern technologies and best practices.
+> A production villa catalog website replacing Facebook fanpage for easier property browsing. Built with Spring Boot and Next.js.
 
 ---
 
 ## 📌 Project Overview
 
-**TaiVillaVungTau** is a production-ready villa rental platform that allows users to browse, search, and request bookings for vacation villas in Vung Tau city. The platform includes both a customer-facing website and an admin management system.
+**TaiVillaVungTau** is a **production website** that serves as a villa catalog, replacing the traditional Facebook fanpage approach. Instead of customers scrolling through hundreds of Facebook posts, they can use advanced search filters to find properties quickly.
+
+### How It Works
+
+```
+Customer visits website → Browse/Filter 200+ villas → Contact via Zalo/Fanpage → Broker handles booking with villa owner
+```
 
 ### Key Features
 
-| Feature                        | Description                                              |
-| ------------------------------ | -------------------------------------------------------- |
-| 🏠 **Villa Catalog**           | Browse 100+ villas with detailed info, photos, amenities |
-| 🔍 **Advanced Search**         | Filter by location, price, capacity, amenities           |
-| 📱 **Responsive Design**       | Mobile-first, works on all devices                       |
-| 💬 **Consultation Requests**   | Form submission with real-time notifications             |
-| 🔐 **Admin Dashboard**         | CRUD operations for properties, requests, amenities      |
-| 🔔 **Real-time Notifications** | WebSocket-based notifications for new requests           |
-| 🌐 **Internationalization**    | Vietnamese/English support (next-intl)                   |
+| Feature                        | Description                                             |
+| ------------------------------ | ------------------------------------------------------- |
+| 🏠 **Villa Catalog**           | Browse 200+ villas with photos, amenities, pricing info |
+| 🔍 **Advanced Search**         | Filter by location, price, capacity, amenities, labels  |
+| 📱 **Responsive Design**       | Mobile-first, optimized for all devices                 |
+| 💬 **Consultation Requests**   | Contact form for customer inquiries                     |
+| 🔐 **Admin Dashboard**         | Full CRUD for properties, requests, amenities           |
+| 🔔 **Real-time Notifications** | Telegram alerts for new customer requests               |
+| 🚀 **CI/CD Pipeline**          | Automated deployment via GitHub Actions                 |
+| 📊 **Production Logging**      | Request ID tracing for easy debugging                   |
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend (Next.js 16)
-
-```
-├── Framework:     Next.js 16 (App Router)
-├── Language:      TypeScript 5
-├── UI Library:    React 19
-├── Styling:       Tailwind CSS 4
-├── State:         Zustand (global) + React Query (server)
-├── Forms:         React Hook Form + Zod validation
-├── i18n:          next-intl
-├── Icons:         Lucide React
-├── Components:    Radix UI primitives
-└── Real-time:     WebSocket (STOMP.js)
-```
-
 ### Backend (Spring Boot 3.4)
 
 ```
-├── Framework:     Spring Boot 3.4.12
-├── Language:      Java 17
+├── Framework:     Spring Boot 3.4.x
+├── Language:      Java 17 (LTS)
 ├── Database:      MySQL 8.0
 ├── Cache:         Redis
 ├── ORM:           Spring Data JPA + Hibernate
 ├── Migrations:    Flyway
-├── Security:      Spring Security + JWT
-├── API Docs:      Springdoc OpenAPI (Swagger)
+├── Security:      Spring Security 6 + JWT + Rate Limiting
 ├── Media:         Cloudinary CDN
-└── Mapping:       MapStruct
+├── Logging:       Logback with Request ID tracing
+└── API Docs:      Springdoc OpenAPI (Swagger)
+```
+
+### Frontend (Next.js 15)
+
+```
+├── Framework:     Next.js 15 (App Router)
+├── Language:      TypeScript 5
+├── Styling:       Tailwind CSS
+├── State:         Zustand + React Query
+├── Forms:         React Hook Form + Zod
+├── Deployment:    Vercel
+└── SEO:           SSR + Meta tags optimization
 ```
 
 ### DevOps & Infrastructure
 
 ```
 ├── Containerization:  Docker + Docker Compose
-├── CI/CD:             GitHub Actions (planned)
+├── CI/CD:             GitHub Actions (auto deploy on push)
+├── Cloud:             Google Cloud Platform (GCP VM)
+├── CDN/Security:      Cloudflare (SSL, DDoS protection)
 ├── Monitoring:        Spring Boot Actuator
-├── Hosting:           VPS / Vercel + Railway
 └── Domain:            taivillavungtau.vn
 ```
 
@@ -71,40 +76,29 @@
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         Client                               │
-│  (Browser - React/Next.js)                                  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Next.js Server                            │
-│  • Server Components (SSR)                                   │
-│  • API Rewrites (/api/v1/* → Backend)                       │
-│  • Static Assets + Image Optimization                        │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Spring Boot Backend                         │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │ Controllers │ │  Services   │ │Repositories │           │
-│  │  (REST API) │ │  (Logic)    │ │   (JPA)     │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
-│         │              │               │                     │
-│         ▼              ▼               ▼                     │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐           │
-│  │   Security  │ │   WebSocket │ │  Cloudinary │           │
-│  │    (JWT)    │ │   (STOMP)   │ │   (Media)   │           │
-│  └─────────────┘ └─────────────┘ └─────────────┘           │
-└─────────────────────────────────────────────────────────────┘
-                              │
-              ┌───────────────┴───────────────┐
-              ▼                               ▼
-┌─────────────────────┐         ┌─────────────────────┐
-│       MySQL         │         │        Redis        │
-│   (Primary DB)      │         │   (Cache/Session)   │
-└─────────────────────┘         └─────────────────────┘
+┌─────────────────┐     ┌─────────────────┐
+│   Cloudflare    │     │     Vercel      │
+│  (DNS + CDN)    │     │   (Frontend)    │
+└────────┬────────┘     └────────┬────────┘
+         │                       │
+         ▼                       ▼
+┌─────────────────────────────────────────────────────┐
+│                  GCP VM Server                       │
+│  ┌─────────────────────────────────────────────┐   │
+│  │              Nginx (Reverse Proxy)           │   │
+│  └─────────────────────────────────────────────┘   │
+│                        │                            │
+│  ┌─────────────────────▼─────────────────────┐     │
+│  │         Spring Boot Backend (:8080)        │     │
+│  │  • REST APIs      • JWT Auth               │     │
+│  │  • Rate Limiting  • Request ID Logging     │     │
+│  └─────────────────────┬─────────────────────┘     │
+│           ┌────────────┴────────────┐              │
+│           ▼                         ▼              │
+│  ┌─────────────────┐     ┌─────────────────┐      │
+│  │  MySQL (:3306)  │     │  Redis (:6379)  │      │
+│  └─────────────────┘     └─────────────────┘      │
+└─────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -113,95 +107,81 @@
 
 ```
 TaiVillaVungTau/
-├── frontend/                 # Next.js Application
-│   ├── app/                  # App Router pages
-│   │   ├── page.tsx          # Homepage
-│   │   ├── properties/       # Villa listing & details
-│   │   ├── contact/          # Consultation form
-│   │   ├── admin/            # Admin dashboard
-│   │   └── login/            # Auth page
-│   ├── components/           # React components
-│   │   ├── ui/               # Base UI (Button, Card, etc.)
-│   │   ├── home/             # Homepage sections
-│   │   ├── property/         # Property detail components
-│   │   ├── admin/            # Admin components
-│   │   └── shared/           # Shared components
-│   ├── lib/                  # Utilities & API client
-│   ├── stores/               # Zustand state stores
-│   └── messages/             # i18n translations
-│
 ├── backend/                  # Spring Boot Application
 │   ├── src/main/java/
 │   │   └── com/taivillavungtau/backend/
 │   │       ├── controller/   # REST Controllers
 │   │       ├── service/      # Business Logic
-│   │       ├── repository/   # Data Access
-│   │       ├── entity/       # JPA Entities
+│   │       ├── repository/   # Data Access (JPA)
+│   │       ├── entity/       # Database Entities
 │   │       ├── dto/          # Data Transfer Objects
-│   │       ├── config/       # Configuration
+│   │       ├── config/       # App Configuration
 │   │       ├── security/     # JWT & Auth
-│   │       └── exception/    # Error Handling
+│   │       ├── filter/       # Request ID Filter, Rate Limiting
+│   │       └── exception/    # Global Error Handling
 │   ├── src/main/resources/
-│   │   └── db/migration/     # Flyway migrations
-│   ├── Dockerfile
-│   └── docker-compose.yml
+│   │   ├── db/migration/     # Flyway migrations
+│   │   └── logback-spring.xml # Logging config
+│   └── Dockerfile
 │
-└── README.md                 # This file
+├── frontend/                 # Next.js Application
+│   ├── app/                  # App Router pages
+│   ├── components/           # React components
+│   ├── lib/                  # API client & utilities
+│   └── stores/               # Zustand state
+│
+├── .github/workflows/        # CI/CD Pipelines
+│   └── docker-build.yml      # Auto deploy on push
+│
+├── docker-compose.yml        # Production deployment
+└── README.md
 ```
 
 ---
 
 ## 🔑 Key Implementation Details
 
-### 1. Authentication Flow (JWT)
+### 1. Production Logging with Request ID
+
+Every request gets a unique ID for easy tracing:
 
 ```
-Login Request → Validate Credentials → Generate JWT + Refresh Token
-     ↓
-Store in Zustand (persist to localStorage)
-     ↓
-Attach JWT to API requests via Axios interceptor
-     ↓
-Auto-refresh when token expires
+2024-12-24 10:30:15 [abc12345] INFO PropertyService - Fetching property
+2024-12-24 10:30:15 [abc12345] ERROR GlobalException - Error occurred
 ```
 
-### 2. Real-time Notifications (WebSocket)
+Use `grep "abc12345" logs/app.log` to trace entire request flow.
 
-```
-New Consultation Request → Backend publishes to /topic/requests
-     ↓
-Admin clients subscribed via STOMP.js
-     ↓
-NotificationStore updates → Bell icon shows count
+### 2. CI/CD Pipeline
+
+```yaml
+Push to main → Run Tests → Build Docker Image → Deploy to GCP
 ```
 
-### 3. Image Optimization
+- Automated on every push to `main` branch
+- Fresh Docker builds (no cache) for reliability
+- Zero-downtime deployment
 
-- **Cloudinary CDN** for villa images
-- **Next.js Image** with WebP/AVIF formats
-- **Lazy loading** with blur placeholders
-- **Responsive srcset** for all screen sizes
+### 3. Security Measures
 
-### 4. State Management
+| Feature              | Implementation                              |
+| -------------------- | ------------------------------------------- |
+| **Authentication**   | JWT with access (1h) + refresh tokens (30d) |
+| **Rate Limiting**    | 60 requests/minute per IP                   |
+| **DDoS Protection**  | Cloudflare                                  |
+| **SSL/HTTPS**        | Cloudflare Full (strict)                    |
+| **Password Hashing** | BCrypt (strength 12)                        |
 
-| Store                  | Purpose                                |
-| ---------------------- | -------------------------------------- |
-| `useAuthStore`         | User session, JWT tokens               |
-| `useNotificationStore` | Real-time notifications                |
-| `useFilterStore`       | Search filters (location, price, etc.) |
+### 4. Advanced Search (JPA Specification)
 
-### 5. API Design (RESTful)
+Dynamic query building for flexible filtering:
 
-```
-GET    /api/v1/properties          # List with pagination + filters
-GET    /api/v1/properties/{id}     # Detail
-POST   /api/v1/properties          # Create (Admin)
-PUT    /api/v1/properties/{id}     # Update (Admin)
-DELETE /api/v1/properties/{id}     # Delete (Admin)
-
-POST   /api/v1/requests            # Submit consultation
-GET    /api/v1/requests            # List requests (Admin)
-PATCH  /api/v1/requests/{id}/status # Update status (Admin)
+```java
+Specification<Property> spec = Specification
+    .where(hasKeyword(keyword))
+    .and(hasLocation(locationId))
+    .and(priceBetween(minPrice, maxPrice))
+    .and(hasAmenities(amenityIds));
 ```
 
 ---
@@ -210,22 +190,21 @@ PATCH  /api/v1/requests/{id}/status # Update status (Admin)
 
 ### Prerequisites
 
-- Node.js 18+
 - Java 17+
+- Node.js 18+
 - MySQL 8.0
-- Redis (optional for local dev)
+- Docker (for deployment)
 
-### Development Setup
+### Local Development
 
 ```bash
 # Clone repository
-git clone https://github.com/your-username/TaiVillaVungTau.git
-cd TaiVillaVungTau
+git clone https://github.com/taike591/TaiVillaVungTau-Project.git
+cd TaiVillaVungTau-Project
 
 # Backend
 cd backend
-cp src/main/resources/application.properties.example src/main/resources/application.properties
-# Edit application.properties with your DB credentials
+cp .env.example .env  # Fill in your credentials
 mvn spring-boot:run
 
 # Frontend (new terminal)
@@ -237,52 +216,37 @@ npm run dev
 ### Production Deployment
 
 ```bash
-# Backend with Docker
-cd backend
-docker-compose up -d
-
-# Frontend
-cd frontend
-npm run build
-npm start
-# Or deploy to Vercel
+# On GCP server
+cd /opt/taivilla
+docker-compose up -d --build
 ```
 
 ---
 
 ## 🎓 Skills Demonstrated
 
-This project showcases proficiency in:
-
-### Frontend
-
-- ✅ React 19 with Server Components
-- ✅ TypeScript strict mode
-- ✅ Modern CSS (Tailwind, CSS-in-JS patterns)
-- ✅ State management (Zustand + React Query)
-- ✅ Form handling with validation
-- ✅ Responsive & accessible design
-- ✅ Performance optimization (lazy loading, code splitting)
-- ✅ Internationalization (i18n)
-
 ### Backend
 
-- ✅ Spring Boot 3.x with Java 17
+- ✅ Java 17 + Spring Boot 3.x
 - ✅ RESTful API design
 - ✅ JWT authentication & authorization
-- ✅ Database design with JPA/Hibernate
+- ✅ JPA Specification pattern (dynamic queries)
 - ✅ Database migrations (Flyway)
-- ✅ Caching strategies (Redis)
-- ✅ WebSocket real-time communication
-- ✅ Cloud media management (Cloudinary)
-- ✅ API documentation (OpenAPI/Swagger)
+- ✅ Production logging (Request ID tracing)
+- ✅ Rate limiting & security
 
 ### DevOps
 
 - ✅ Docker containerization
-- ✅ Multi-stage builds
-- ✅ Environment configuration
-- ✅ Health checks (Actuator)
+- ✅ GitHub Actions CI/CD
+- ✅ GCP + Cloudflare infrastructure
+- ✅ Nginx reverse proxy
+
+### Frontend (AI-assisted)
+
+- ✅ Next.js 15 with SSR for SEO
+- ✅ TypeScript + Tailwind CSS
+- ✅ React Query for data fetching
 
 ---
 
@@ -294,7 +258,7 @@ This project is for portfolio demonstration purposes.
 
 ## 👤 Author
 
-**Tai** - Full Stack Developer
+**Tai** - Backend Developer
 
 - Website: [taivillavungtau.vn](https://taivillavungtau.vn)
-- GitHub: [@your-github](https://github.com/your-github)
+- GitHub: [@taike591](https://github.com/taike591)
