@@ -442,10 +442,20 @@ export default function PropertiesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {property.images && property.images.length > 0 ? (
-                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                          <ImageIcon className="h-3 w-3 mr-1" />
-                          {property.images.length}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          {/* Thumbnail Image */}
+                          <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                            <img
+                              src={property.images.find((img: any) => img.isPrimary)?.imageUrl || property.images[0]?.imageUrl}
+                              alt={property.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                            <ImageIcon className="h-3 w-3 mr-1" />
+                            {property.images.length}
+                          </Badge>
+                        </div>
                       ) : (
                         <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
                           <ImageIcon className="h-3 w-3 mr-1" />
