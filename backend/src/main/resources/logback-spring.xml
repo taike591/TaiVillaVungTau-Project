@@ -1,40 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- 1. Console Appender (Cho môi trường Dev) -->
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- 
+    Logback Configuration for Production
+    
+    Features:
+    1. Request ID tracing - mỗi request có unique ID để trace
+    2. Log Rotation - tự động zip log cũ, giữ 7 ngày
+    3. File size limit - max 100MB/file, tổng max 1GB
+    4. Console + File output + Error-only file
+    5. Khác log level cho từng môi trường (dev/prod)
+    6. Async logging để không block main thread
+    -->
+
+    <!-- 1. Console Appender - hiển thị trên terminal -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- Pattern có màu sắc để dễ đọc -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%blue(%thread)] %cyan(%logger{36}) - %msg%n</pattern>
+            <!-- Format: timestamp [requestId] level logger - message -->
+            <!-- %X{requestId} lấy từ MDC được set bởi RequestIdFilter -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{requestId:-NO_REQ}] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!-- 2. File Appender (Cho môi trường Prod) -->
-    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 2. File Appender với Rolling Policy - tự động zip và xóa log cũ -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/app.log</file>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
-        </encoder>
-
-        <!-- Chính sách xoay vòng log (Rolling Policy) -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Tạo file mới mỗi ngày: logs/app-2023-11-27.log -->
-            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+        
+        <!-- Rolling Policy: kết hợp theo ngày và size -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Pattern: app.2024-12-24.0.log.gz - tự động nén -->
+            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
             
-            <!-- Giữ log trong 30 ngày -->
-            <maxHistory>30</maxHistory>
+            <!-- Max size mỗi file: 100MB -->
+            <maxFileSize>100MB</maxFileSize>
             
-            <!-- Tổng dung lượng log không quá 3GB -->
-            <totalSizeCap>3GB</totalSizeCap>
+            <!-- Giữ tối đa 7 ngày -->
+            <maxHistory>7</maxHistory>
+            
+            <!-- Tổng dung lượng tối đa: 1GB -->
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
+
+        <encoder>
+            <!-- Log chi tiết hơn cho file: có thread name -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{requestId:-NO_REQ}] [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
     </appender>
 
-    <!-- 3. Cấu hình Root Logger -->
-    <root level="INFO">
-        <appender-ref ref="Console" />
-        <appender-ref ref="File" />
-    </root>
+    <!-- 3. Error-only File Appender - chỉ ghi ERROR để dễ monitor -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/error.log</file>
+        
+        <!-- Chỉ ghi ERROR level trở lên -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory> <!-- Giữ error log lâu hơn -->
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
 
-    <!-- 4. Cấu hình riêng cho package của dự án (Muốn xem debug thì đổi thành DEBUG) -->
-    <logger name="com.taivillavungtau.backend" level="INFO" />
+        <encoder>
+            <!-- Log full stack trace cho errors -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{requestId:-NO_REQ}] [%thread] %-5level %logger{50} - %msg%n%ex{full}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 4. Async Appender - tránh log blocking main thread (performance) -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold> <!-- Không discard log nào -->
+    </appender>
+
+    <!-- ============ Profile-specific Configuration ============ -->
+    
+    <!-- DEV Profile - log nhiều, dễ debug -->
+    <springProfile name="dev,default">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+        
+        <!-- Log chi tiết cho app code -->
+        <logger name="com.taivillavungtau" level="DEBUG"/>
+        
+        <!-- Log SQL queries (bật khi cần debug) -->
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+    </springProfile>
+
+    <!-- PROD Profile - log ít, performance tốt -->
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+        
+        <!-- Chỉ log INFO cho app code -->
+        <logger name="com.taivillavungtau" level="INFO"/>
+        
+        <!-- Tắt SQL logging -->
+        <logger name="org.hibernate.SQL" level="WARN"/>
+        <logger name="org.hibernate.type.descriptor.sql" level="WARN"/>
+    </springProfile>
 
 </configuration>
