@@ -69,6 +69,8 @@ export function PropertyForm({
       mapUrl: initialData?.mapUrl || '',
       facebookLink: initialData?.facebookLink || '',
       metaDescription: initialData?.metaDescription || '',
+      googleSheetsUrl: initialData?.googleSheetsUrl || '',
+      googleSheetsNote: initialData?.googleSheetsNote || '',
       amenityIds: initialData?.amenityIds || [],
       labelIds: initialData?.labelIds || [],
       images: initialData?.images || [],
@@ -832,6 +834,47 @@ export function PropertyForm({
                       placeholder="Mô tả ngắn gọn cho SEO (tối đa 500 ký tự)"
                       className="w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                       maxLength={500}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Google Sheets Management Section */}
+            <div className="col-span-2 border-t pt-4 mt-4">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">📊 Quản lý Google Sheets</h3>
+            </div>
+
+            <FormField
+              control={form.control}
+              name="googleSheetsUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL Google Sheets</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://docs.google.com/spreadsheets/d/..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="googleSheetsNote"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Ghi chú từ Google Sheets</FormLabel>
+                  <FormControl>
+                    <textarea
+                      placeholder="Nhập ghi chú, thông tin từ Google Sheets..."
+                      className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      maxLength={2000}
                       {...field}
                     />
                   </FormControl>

@@ -85,6 +85,10 @@ export const propertySchema = z.object({
   amenityIds: z.array(z.number()),
 
   labelIds: z.array(z.number()).optional(), // Labels like "Sát biển", "View biển"
+
+  // Admin management fields
+  googleSheetsUrl: z.string().url('URL Google Sheets không hợp lệ').optional().or(z.literal('')),
+  googleSheetsNote: z.string().max(2000, 'Ghi chú không được quá 2000 ký tự').optional(),
   
   images: z
     .array(z.any())

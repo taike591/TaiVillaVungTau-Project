@@ -133,6 +133,13 @@ public class Property {
     @Column(name = "meta_description", length = 500)
     private String metaDescription; // Mô tả ngắn hiển thị trên Google/Zalo
 
+    // --- ADMIN MANAGEMENT FIELDS ---
+    @Column(name = "google_sheets_url", columnDefinition = "TEXT")
+    private String googleSheetsUrl; // URL Google Sheets để quản lý
+
+    @Column(name = "google_sheets_note", columnDefinition = "TEXT")
+    private String googleSheetsNote; // Ghi chú từ Google Sheets
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

@@ -117,6 +117,10 @@ public class PropertyDTO implements Serializable {
     @Size(max = 500, message = "{validation.property.metaDescription.size}")
     private String metaDescription;
 
+    // --- ADMIN MANAGEMENT FIELDS ---
+    private String googleSheetsUrl; // URL Google Sheets để quản lý
+    private String googleSheetsNote; // Ghi chú từ Google Sheets
+
     @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private java.time.LocalDateTime createdAt;
 
