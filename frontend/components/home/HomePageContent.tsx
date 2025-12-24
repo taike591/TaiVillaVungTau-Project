@@ -521,65 +521,67 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
 
           {/* Label Pills - Đặc điểm nổi bật */}
           {labels.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
-              <span className="text-sm text-[#0c4a6e]/70 font-medium mr-2">Đặc điểm:</span>
-              {labels.map((label) => {
-                const isActive = selectedLabelIds.includes(label.id);
-                // Count properties with this label in current location+type filtered set (reactive!)
-                const baseFiltered = properties.filter((p: any) => {
-                  const locationMatch = selectedLocation === 'all' || 
-                    (p.locationName ? p.locationName === LOCATION_MAPPING[selectedLocation] : p.location === selectedLocation);
-                  const typeMatch = selectedPropertyType === 'all' || p.propertyTypeName === selectedPropertyType;
-                  return locationMatch && typeMatch;
-                });
-                const labelCount = baseFiltered.filter((p: any) => 
-                  p.labels?.some((l: any) => l.id === label.id)
-                ).length;
-                
-                return (
-                  <button
-                    key={label.id}
-                    onClick={() => handleLabelToggle(label.id)}
-                    className={cn(
-                      "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 border-2",
-                      isActive
-                        ? "text-white shadow-md scale-105"
-                        : "bg-white/60 hover:bg-white/80 text-[#0c4a6e]"
-                    )}
-                    style={{
-                      backgroundColor: isActive ? (label.color || '#0EA5E9') : undefined,
-                      borderColor: isActive ? (label.color || '#0EA5E9') : `${label.color || '#0EA5E9'}40`,
-                      boxShadow: isActive ? `0 4px 12px ${label.color || '#0EA5E9'}40` : undefined,
-                    }}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      {!isActive && (
-                        <span 
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: label.color || '#0EA5E9' }}
-                        />
-                      )}
-                      {label.name}
-                      <span className={cn(
-                        "px-1.5 py-0.5 rounded-full text-xs font-bold",
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-12">
+              <span className="text-sm text-[#0c4a6e]/70 font-medium">Đặc điểm:</span>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {labels.map((label) => {
+                  const isActive = selectedLabelIds.includes(label.id);
+                  // Count properties with this label in current location+type filtered set (reactive!)
+                  const baseFiltered = properties.filter((p: any) => {
+                    const locationMatch = selectedLocation === 'all' || 
+                      (p.locationName ? p.locationName === LOCATION_MAPPING[selectedLocation] : p.location === selectedLocation);
+                    const typeMatch = selectedPropertyType === 'all' || p.propertyTypeName === selectedPropertyType;
+                    return locationMatch && typeMatch;
+                  });
+                  const labelCount = baseFiltered.filter((p: any) => 
+                    p.labels?.some((l: any) => l.id === label.id)
+                  ).length;
+                  
+                  return (
+                    <button
+                      key={label.id}
+                      onClick={() => handleLabelToggle(label.id)}
+                      className={cn(
+                        "px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 border-2",
                         isActive
-                          ? "bg-white/20 text-white"
-                          : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
-                      )}>
-                        {labelCount}
+                          ? "text-white shadow-md scale-105"
+                          : "bg-white/60 hover:bg-white/80 text-[#0c4a6e]"
+                      )}
+                      style={{
+                        backgroundColor: isActive ? (label.color || '#0EA5E9') : undefined,
+                        borderColor: isActive ? (label.color || '#0EA5E9') : `${label.color || '#0EA5E9'}40`,
+                        boxShadow: isActive ? `0 4px 12px ${label.color || '#0EA5E9'}40` : undefined,
+                      }}
+                    >
+                      <span className="flex items-center gap-1 sm:gap-1.5">
+                        {!isActive && (
+                          <span 
+                            className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full"
+                            style={{ backgroundColor: label.color || '#0EA5E9' }}
+                          />
+                        )}
+                        {label.name}
+                        <span className={cn(
+                          "px-1 sm:px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold",
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
+                        )}>
+                          {labelCount}
+                        </span>
                       </span>
-                    </span>
+                    </button>
+                  );
+                })}
+                {selectedLabelIds.length > 0 && (
+                  <button
+                    onClick={() => setSelectedLabelIds([])}
+                    className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200"
+                  >
+                    ✕ Xóa lọc
                   </button>
-                );
-              })}
-              {selectedLabelIds.length > 0 && (
-                <button
-                  onClick={() => setSelectedLabelIds([])}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200"
-                >
-                  ✕ Xóa lọc
-                </button>
-              )}
+                )}
+              </div>
             </div>
           )}
 
