@@ -1,0 +1,22 @@
+{
+  "name": "Taivillavungtau - Villa & Homestay Vũng Tàu",
+  "short_name": "Taivillavungtau",
+  "description": "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ hoàn hảo của bạn với hơn 100+ villa view biển đẹp nhất.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

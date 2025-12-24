@@ -4,12 +4,12 @@ import { Footer } from "@/components/footer";
 import { HomePageContent } from "@/components/home/HomePageContent";
 
 export const metadata: Metadata = {
-  title: "Taivillavungtau - Villa & Homestay Cao Cấp Vũng Tàu",
-  description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ hoàn hảo của bạn với hơn 100+ villa view biển đẹp nhất.",
+  title: "Taivillavungtau - Villa & Homestay Vũng Tàu",
+  description: "Hệ thống cho thuê Villa và Homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ hoàn hảo của bạn với hơn 200+ villa view biển đẹp nhất.",
   keywords: "villa vũng tàu, cho thuê villa, homestay vũng tàu, nhà nghỉ vũng tàu, villa view biển",
   openGraph: {
-    title: "Taivillavungtau - Villa & Homestay Cao Cấp Vũng Tàu",
-    description: "Hệ thống cho thuê villa và homestay cao cấp tại Vũng Tàu",
+    title: "Taivillavungtau - Villa & Homestay Vũng Tàu",
+    description: "Hệ thống cho thuê Villa và Homestay cao cấp tại Vũng Tàu. Tìm kiếm và đặt villa cho kỳ nghỉ hoàn hảo của bạn với hơn 200+ villa view biển đẹp nhất.",
     type: "website",
     locale: "vi_VN",
   },

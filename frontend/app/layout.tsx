@@ -96,7 +96,15 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
+    apple: '/logo.jpg',
+    other: [
+      {
+        rel: 'apple-touch-icon',
+        url: '/logo.jpg',
+      },
+    ],
   },
+  manifest: '/manifest.json',
 };
 
 export default async function RootLayout({
