@@ -78,6 +78,8 @@ export const propertySchema = z.object({
   
   mapUrl: z.string().url('URL bản đồ không hợp lệ').optional().or(z.literal('')),
   
+  poolArea: z.string().optional(),
+  
   facebookLink: z.string().url('Link Facebook không hợp lệ').optional().or(z.literal('')),
   
   metaDescription: z.string().max(500, 'Meta description không được quá 500 ký tự').optional(),

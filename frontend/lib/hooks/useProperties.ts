@@ -23,11 +23,14 @@ export interface Property {
   standardGuests: number;
   maxGuests: number;
   bedConfig?: string;
+  poolArea?: string;
   distanceToSea?: string;
   priceNote?: string;
   mapUrl?: string;
   facebookLink?: string;
   metaDescription?: string;
+  googleSheetsUrl?: string;
+  googleSheetsNote?: string;
   status: 'ACTIVE' | 'INACTIVE';
   images: PropertyImage[];
   amenities: Amenity[];

@@ -313,6 +313,7 @@ public class PropertyServiceImpl implements PropertyService {
         existing.setArea(dto.getArea());
         existing.setMapUrl(dto.getMapUrl());
         existing.setFacebookLink(dto.getFacebookLink());
+        existing.setPoolArea(dto.getPoolArea());
 
         // Cập nhật giá & sức chứa (Dùng tên mới chuẩn hóa)
         existing.setPriceWeekday(dto.getPriceWeekday());

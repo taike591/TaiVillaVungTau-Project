@@ -39,6 +39,9 @@ public class Property {
     @Column(name = "map_url", columnDefinition = "TEXT")
     private String mapUrl;
 
+    @Column(name = "pool_area")
+    private String poolArea; // e.g. "30m2"
+
     @Column(name = "price_weekday")
     private BigDecimal priceWeekday;
 

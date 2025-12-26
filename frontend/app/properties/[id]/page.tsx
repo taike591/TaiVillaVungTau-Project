@@ -10,7 +10,7 @@ import { PropertyDetailPricingCard } from "@/components/property/PropertyDetailP
 import { WishlistButton } from "@/components/wishlist";
 import { 
   MapPin, Users, Bed, Bath, Home, ChevronRight, 
-  Share2, FileText, Star, Waves,
+  Share2, FileText, Star, Waves, Droplets,
   Wifi, Car, Utensils, Wind, Tv, Coffee, ExternalLink, Camera, Video
 } from "lucide-react";
 import Link from "next/link";
@@ -370,6 +370,18 @@ export default function PropertyDetailPage() {
                   <div>
                     <p className="text-xs text-slate-500 uppercase tracking-wide">Giường</p>
                     <p className="text-xl font-bold text-slate-800">{property.bedCount} Giường</p>
+                  </div>
+                </div>
+              )}
+
+              {property.poolArea && (
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Droplets className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500 uppercase tracking-wide">Hồ bơi</p>
+                    <p className="text-xl font-bold text-slate-800">{property.poolArea}</p>
                   </div>
                 </div>
               )}

@@ -4,7 +4,7 @@ import { memo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { MapPin, Users, Bed, Bath, Wifi, Car, Waves, Coffee, Shield, Tv, Clock, Building2, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Users, Bed, Bath, Wifi, Car, Waves, Coffee, Shield, Tv, Clock, Building2, Star, ChevronLeft, ChevronRight, Droplets } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { WishlistButton } from './wishlist';
@@ -54,6 +54,7 @@ interface PropertyCardProps {
     bathroomCount: number;
     standardGuests: number;
     maxGuests: number;
+    poolArea?: string;
     location?: string;
     locationName?: string; // For location badge
     address?: string;
@@ -289,27 +290,32 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
               )}
             </div>
 
-            {/* Property Info Grid - Cleaner layout */}
-            <div className="grid grid-cols-4 gap-2 mb-3 py-2.5 px-3 bg-slate-50 rounded-xl">
-              <div className="text-center">
+            {/* Property Info Grid - Single row with 5 items */}
+            <div className="flex items-center justify-between mb-3 py-2.5 px-2 bg-slate-50 rounded-xl">
+              <div className="text-center flex-1">
                 <Bed className="h-4 w-4 mx-auto text-[#0891b2] mb-0.5" />
                 <p className="text-xs font-semibold text-slate-700">{property.bedroomCount}</p>
                 <p className="text-[10px] text-slate-500">{t('room')}</p>
               </div>
-              <div className="text-center">
+              <div className="text-center flex-1">
                 <Bed className="h-4 w-4 mx-auto text-[#f59e0b] mb-0.5" />
                 <p className="text-xs font-semibold text-slate-700">{property.bedCount || property.bedroomCount}</p>
                 <p className="text-[10px] text-slate-500">{t('bed')}</p>
               </div>
-              <div className="text-center">
+              <div className="text-center flex-1">
                 <Bath className="h-4 w-4 mx-auto text-[#0891b2] mb-0.5" />
                 <p className="text-xs font-semibold text-slate-700">{property.bathroomCount}</p>
                 <p className="text-[10px] text-slate-500">WC</p>
               </div>
-              <div className="text-center">
+              <div className="text-center flex-1">
                 <Users className="h-4 w-4 mx-auto text-[#10b981] mb-0.5" />
                 <p className="text-xs font-semibold text-slate-700">{property.standardGuests || property.maxGuests || 0}-{property.maxGuests || 0}</p>
                 <p className="text-[10px] text-slate-500">{t('guest')}</p>
+              </div>
+              <div className="text-center flex-1">
+                <Droplets className="h-4 w-4 mx-auto text-[#3b82f6] mb-0.5" />
+                <p className="text-xs font-semibold text-slate-700">{property.poolArea || '-'}</p>
+                <p className="text-[10px] text-slate-500">Hồ bơi</p>
               </div>
             </div>
 

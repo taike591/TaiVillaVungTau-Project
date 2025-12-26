@@ -64,6 +64,7 @@ export function PropertyForm({
       standardGuests: initialData?.standardGuests || 1,
       maxGuests: initialData?.maxGuests || 1,
       bedConfig: initialData?.bedConfig || '',
+      poolArea: initialData?.poolArea || '',
       distanceToSea: initialData?.distanceToSea || '',
       priceNote: initialData?.priceNote || '',
       mapUrl: initialData?.mapUrl || '',
@@ -664,10 +665,24 @@ export function PropertyForm({
               control={form.control}
               name="bedConfig"
               render={({ field }) => (
-                <FormItem className="col-span-2 md:col-span-3">
+                <FormItem className="col-span-2 md:col-span-2">
                   <FormLabel>Cấu hình giường</FormLabel>
                   <FormControl>
                     <Input placeholder="VD: 2 giường đôi, 1 giường đơn" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="poolArea"
+              render={({ field }) => (
+                <FormItem className="col-span-2 md:col-span-2">
+                  <FormLabel>Diện tích hồ bơi</FormLabel>
+                  <FormControl>
+                    <Input placeholder="VD: 30m2" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

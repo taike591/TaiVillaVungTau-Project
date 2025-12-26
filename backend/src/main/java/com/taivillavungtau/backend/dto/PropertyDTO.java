@@ -49,6 +49,7 @@ public class PropertyDTO implements Serializable {
     private String area;
 
     private String mapUrl;
+    private String poolArea;
     private String facebookLink;
 
     // --- GIÁ & SỨC CHỨA ---
