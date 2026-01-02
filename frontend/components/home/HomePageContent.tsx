@@ -73,7 +73,7 @@ const LOCATIONS = [
     id: 'BAI_SAU',
     name: 'Bãi Sau', 
     image: 'https://images2.thanhnien.vn/528068263637045248/2025/10/13/dji0824-1760324544283962847578.jpg',
-    description: 'Khu vực bãi biển Thùy Vân sôi động, tập trung nhiều khách sạn và dịch vụ du lịch. Bãi biển dài với cát trắng mịn, nước biển trong xanh, là điểm đến lý tưởng cho các gia đình và nhóm bạn.',
+    description: ' Khu vực bãi biển Thùy Vân sôi động, tập trung nhiều khách sạn và dịch vụ du lịch. Bãi biển dài với cát trắng mịn, nước biển trong xanh.',
     showcaseImage: 'https://images2.thanhnien.vn/528068263637045248/2025/10/13/dji0824-1760324544283962847578.jpg',
   },
   { 

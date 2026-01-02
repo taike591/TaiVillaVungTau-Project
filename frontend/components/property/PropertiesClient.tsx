@@ -11,7 +11,7 @@ import { PropertyCardSkeleton } from '@/components/shared/LoadingState';
 import { useProperties } from '@/lib/hooks/useProperties';
 import { useAmenities } from '@/lib/hooks/useAmenities';
 import { useLabels } from '@/lib/hooks/useLabels';
-import { usePropertyTypes } from '@/lib/hooks/useLocationsAndTypes';
+import { usePropertyTypes, useLocations } from '@/lib/hooks/useLocationsAndTypes';
 import { PropertyFilters as PropertyFiltersType } from '@/lib/hooks/useProperties';
 
 export function PropertiesClient() {
@@ -30,6 +30,8 @@ export function PropertiesClient() {
     minPrice: searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!, 10) : undefined,
     maxPrice: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!, 10) : undefined,
     bedroomCount: searchParams.get('bedroomCount') ? parseInt(searchParams.get('bedroomCount')!, 10) : undefined,
+    bathroomCount: searchParams.get('bathroomCount') ? parseInt(searchParams.get('bathroomCount')!, 10) : undefined,
+    bedCount: searchParams.get('bedCount') ? parseInt(searchParams.get('bedCount')!, 10) : undefined,
     amenityIds: searchParams.getAll('amenityIds').map(id => parseInt(id, 10)),
     labelIds: searchParams.getAll('labelIds').map(id => parseInt(id, 10)),
     sort: searchParams.get('sort') as 'price_asc' | 'price_desc' | 'newest' | undefined,
@@ -42,6 +44,7 @@ export function PropertiesClient() {
   const { data: amenities = [], isLoading: isLoadingAmenities } = useAmenities();
   const { data: labels = [], isLoading: isLoadingLabels } = useLabels();
   const { data: propertyTypes = [], isLoading: isLoadingPropertyTypes } = usePropertyTypes();
+  const { data: locations = [], isLoading: isLoadingLocations } = useLocations();
 
   const properties = propertiesData?.content || [];
   const totalPages = propertiesData?.totalPages || 0;
@@ -66,6 +69,8 @@ export function PropertiesClient() {
     if (newFilters.minPrice) params.set('minPrice', newFilters.minPrice.toString());
     if (newFilters.maxPrice) params.set('maxPrice', newFilters.maxPrice.toString());
     if (newFilters.bedroomCount) params.set('bedroomCount', newFilters.bedroomCount.toString());
+    if (newFilters.bathroomCount) params.set('bathroomCount', newFilters.bathroomCount.toString());
+    if (newFilters.bedCount) params.set('bedCount', newFilters.bedCount.toString());
     if (newFilters.amenityIds?.length) {
       newFilters.amenityIds.forEach(id => params.append('amenityIds', id.toString()));
     }
@@ -120,7 +125,7 @@ export function PropertiesClient() {
       {/* Sidebar Filters */}
       <aside className={`lg:w-64 shrink-0 transition-all duration-300 ease-in-out ${isFiltersOpen ? 'block' : 'hidden lg:block'}`}>
         <div className="sticky top-20">
-          {isLoadingAmenities || isLoadingPropertyTypes || isLoadingLabels ? (
+          {isLoadingAmenities || isLoadingPropertyTypes || isLoadingLabels || isLoadingLocations ? (
             <div className="space-y-4">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
@@ -133,6 +138,7 @@ export function PropertiesClient() {
               amenities={amenities}
               labels={labels}
               propertyTypes={propertyTypes}
+              locations={locations}
               onClearFilters={handleClearFilters}
             />
           )}

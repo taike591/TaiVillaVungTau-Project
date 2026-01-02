@@ -260,7 +260,7 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
                   id: property.id,
                   code: property.code,
                   name: displayName,
-                  image: allImages[0] || '',
+                  image: getMainImage(property.images) || allImages[0] || '',
                   priceWeekday: property.priceWeekday,
                   bedroomCount: property.bedroomCount,
                 }}

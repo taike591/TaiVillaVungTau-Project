@@ -64,10 +64,16 @@ public class PropertySpecification {
                         root.get("bedroomCount"), request.getMinBedroom()));
             }
 
-            // 4. Lọc theo số phòng tắm (MỚI)
-            if (request.getMaxBathroom() != null) {
+            // 4. Lọc theo số phòng tắm (giống minBedroom)
+            if (request.getMinBathroom() != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("bathroomCount"), request.getMaxBathroom()));
+                        root.get("bathroomCount"), request.getMinBathroom()));
+            }
+
+            // 4.1 Lọc theo số giường (MỚI)
+            if (request.getMinBedCount() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+                        root.get("bedCount"), request.getMinBedCount()));
             }
 
             // 5. Lọc theo số khách tối đa

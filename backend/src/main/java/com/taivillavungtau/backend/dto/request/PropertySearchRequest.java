@@ -26,7 +26,7 @@ public class PropertySearchRequest {
     private Integer minBedroom;
 
     @Min(value = 1, message = "Số phòng tắm tối thiểu là 1")
-    private Integer maxBathroom;
+    private Integer minBathroom;
 
     @Min(value = 1, message = "Số khách tối thiểu là 1")
     private Integer maxGuests;
@@ -34,6 +34,8 @@ public class PropertySearchRequest {
     @Min(value = 1, message = "Số khách tối thiểu là 1")
     private Integer minGuests;
 
+    @Min(value = 1, message = "Số giường tối thiểu là 1")
+    private Integer minBedCount;
     private String area;
     private LocationType location;
     private Long locationId; // Filter by Location entity ID
@@ -80,6 +82,8 @@ public class PropertySearchRequest {
                 ", minPrice=" + minPrice +
                 ", maxPrice=" + maxPrice +
                 ", minBedroom=" + minBedroom +
+                ", minBathroom=" + minBathroom +
+                ", minBedCount=" + minBedCount +
                 ", maxGuests=" + maxGuests +
                 ", minGuests=" + minGuests +
                 ", location=" + location +

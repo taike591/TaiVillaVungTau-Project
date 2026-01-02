@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { X } from 'lucide-react';
 import { PropertyFilters as PropertyFiltersType } from '@/lib/hooks/useProperties';
 import { Amenity, Label as LabelType } from '@/lib/hooks/useProperties';
-import { PropertyType } from '@/lib/hooks/useLocationsAndTypes';
+import { PropertyType, Location } from '@/lib/hooks/useLocationsAndTypes';
 import { useTranslations } from 'next-intl';
 
 interface PropertyFiltersProps {
@@ -18,6 +18,7 @@ interface PropertyFiltersProps {
   amenities: Amenity[];
   labels?: LabelType[]; // Labels for filtering (Sát biển, View biển...)
   propertyTypes?: PropertyType[];
+  locations?: Location[]; // Dynamic locations from API
   onClearFilters: () => void;
 }
 
@@ -27,6 +28,7 @@ export function PropertyFilters({
   amenities,
   labels = [],
   propertyTypes = [],
+  locations = [],
   onClearFilters 
 }: PropertyFiltersProps) {
   const t = useTranslations('common');
@@ -36,9 +38,49 @@ export function PropertyFilters({
   const [localMaxPrice, setLocalMaxPrice] = useState(filters.maxPrice?.toString() || '');
   const [localMinGuests, setLocalMinGuests] = useState(filters.minGuests?.toString() || '');
   const [localMaxGuests, setLocalMaxGuests] = useState(filters.maxGuests?.toString() || '');
+  const [localBedrooms, setLocalBedrooms] = useState(filters.bedroomCount?.toString() || '');
+  const [localBathrooms, setLocalBathrooms] = useState(filters.bathroomCount?.toString() || '');
+  const [localBeds, setLocalBeds] = useState(filters.bedCount?.toString() || '');
+
+  // Ref to track when we're syncing from props (to prevent debounce effects from firing)
+  const isExternalSyncRef = useRef(false);
+
+  // Sync local state with filters prop when filters change externally (e.g., after clear all)
+  useEffect(() => {
+    // Mark as external sync to prevent debounce effects
+    isExternalSyncRef.current = true;
+    
+    setLocalKeyword(filters.keyword || '');
+    setLocalMinPrice(filters.minPrice?.toString() || '');
+    setLocalMaxPrice(filters.maxPrice?.toString() || '');
+    setLocalMinGuests(filters.minGuests?.toString() || '');
+    setLocalMaxGuests(filters.maxGuests?.toString() || '');
+    setLocalBedrooms(filters.bedroomCount?.toString() || '');
+    setLocalBathrooms(filters.bathroomCount?.toString() || '');
+    setLocalBeds(filters.bedCount?.toString() || '');
+    
+    // Reset the flag after a short delay (longer than debounce timeouts)
+    const timer = setTimeout(() => {
+      isExternalSyncRef.current = false;
+    }, 400);
+    
+    return () => clearTimeout(timer);
+  }, [
+    filters.keyword,
+    filters.minPrice,
+    filters.maxPrice,
+    filters.minGuests,
+    filters.maxGuests,
+    filters.bedroomCount,
+    filters.bathroomCount,
+    filters.bedCount,
+  ]);
 
   // Debounce price inputs (300ms)
   useEffect(() => {
+    // Skip if we're syncing from external props
+    if (isExternalSyncRef.current) return;
+    
     const timer = setTimeout(() => {
       const minPrice = localMinPrice ? parseInt(localMinPrice, 10) : undefined;
       const maxPrice = localMaxPrice ? parseInt(localMaxPrice, 10) : undefined;
@@ -57,6 +99,9 @@ export function PropertyFilters({
 
   // Debounce keyword input (500ms)
   useEffect(() => {
+    // Skip if we're syncing from external props
+    if (isExternalSyncRef.current) return;
+    
     const timer = setTimeout(() => {
       const keyword = localKeyword.trim() || undefined;
       
@@ -73,6 +118,9 @@ export function PropertyFilters({
 
   // Debounce guest count inputs (300ms)
   useEffect(() => {
+    // Skip if we're syncing from external props
+    if (isExternalSyncRef.current) return;
+    
     const timer = setTimeout(() => {
       const minGuests = localMinGuests ? parseInt(localMinGuests, 10) : undefined;
       const maxGuests = localMaxGuests ? parseInt(localMaxGuests, 10) : undefined;
@@ -89,6 +137,28 @@ export function PropertyFilters({
     return () => clearTimeout(timer);
   }, [localMinGuests, localMaxGuests]);
 
+  // Debounce bedroom/bathroom/bed inputs (300ms)
+  useEffect(() => {
+    // Skip if we're syncing from external props
+    if (isExternalSyncRef.current) return;
+    
+    const timer = setTimeout(() => {
+      const bedroomCount = localBedrooms ? parseInt(localBedrooms, 10) : undefined;
+      const bathroomCount = localBathrooms ? parseInt(localBathrooms, 10) : undefined;
+      const bedCount = localBeds ? parseInt(localBeds, 10) : undefined;
+      
+      if (bedroomCount !== filters.bedroomCount || bathroomCount !== filters.bathroomCount || bedCount !== filters.bedCount) {
+        onFilterChange({
+          ...filters,
+          bedroomCount,
+          bathroomCount,
+          bedCount,
+        });
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [localBedrooms, localBathrooms, localBeds]);
   const handleLocationChange = (value: string) => {
     onFilterChange({
       ...filters,
@@ -107,6 +177,13 @@ export function PropertyFilters({
     onFilterChange({
       ...filters,
       bedroomCount: value === 'all' ? undefined : parseInt(value, 10),
+    });
+  };
+
+  const handleBathroomChange = (value: string) => {
+    onFilterChange({
+      ...filters,
+      bathroomCount: value === 'all' ? undefined : parseInt(value, 10),
     });
   };
 
@@ -140,6 +217,9 @@ export function PropertyFilters({
     setLocalMaxPrice('');
     setLocalMinGuests('');
     setLocalMaxGuests('');
+    setLocalBedrooms('');
+    setLocalBathrooms('');
+    setLocalBeds('');
     onClearFilters();
   };
 
@@ -159,6 +239,8 @@ export function PropertyFilters({
     filters.minPrice || 
     filters.maxPrice || 
     filters.bedroomCount || 
+    filters.bathroomCount ||
+    filters.bedCount ||
     filters.sort ||
     (filters.amenityIds && filters.amenityIds.length > 0) ||
     (filters.labelIds && filters.labelIds.length > 0);
@@ -261,11 +343,11 @@ export function PropertyFilters({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả</SelectItem>
-              <SelectItem value="1">Bãi Sau</SelectItem>
-              <SelectItem value="2">Bãi Trước</SelectItem>
-              <SelectItem value="3">Long Cung</SelectItem>
-              <SelectItem value="4">Bãi Dâu</SelectItem>
-              <SelectItem value="5">Trung Tâm</SelectItem>
+              {locations.map((location) => (
+                <SelectItem key={location.id} value={location.id.toString()}>
+                  {location.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -348,24 +430,45 @@ export function PropertyFilters({
           <Label htmlFor="bedrooms" className="text-sm font-medium mb-2 block">
             {t('bedroomCount')}
           </Label>
-          <Select
-            value={filters.bedroomCount?.toString() || 'all'}
-            onValueChange={handleBedroomChange}
-          >
-            <SelectTrigger id="bedrooms">
-              <SelectValue placeholder={t('selectBedrooms')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('all')}</SelectItem>
-              <SelectItem value="1">1 {t('rooms')}</SelectItem>
-              <SelectItem value="2">2 {t('rooms')}</SelectItem>
-              <SelectItem value="3">3 {t('rooms')}</SelectItem>
-              <SelectItem value="4">4 {t('rooms')}</SelectItem>
-              <SelectItem value="5">5+ {t('rooms')}</SelectItem>
-            </SelectContent>
-          </Select>
+          <Input
+            id="bedrooms"
+            type="number"
+            min="1"
+            placeholder="Tối thiểu"
+            value={localBedrooms}
+            onChange={(e) => setLocalBedrooms(e.target.value)}
+          />
         </div>
 
+        {/* Bed Count Filter */}
+        <div>
+          <Label htmlFor="beds" className="text-sm font-medium mb-2 block">
+            Số giường
+          </Label>
+          <Input
+            id="beds"
+            type="number"
+            min="1"
+            placeholder="Tối thiểu"
+            value={localBeds}
+            onChange={(e) => setLocalBeds(e.target.value)}
+          />
+        </div>
+
+        {/* Bathroom Count Filter */}
+        <div>
+          <Label htmlFor="bathrooms" className="text-sm font-medium mb-2 block">
+            Số phòng tắm
+          </Label>
+          <Input
+            id="bathrooms"
+            type="number"
+            min="1"
+            placeholder="Tối thiểu"
+            value={localBathrooms}
+            onChange={(e) => setLocalBathrooms(e.target.value)}
+          />
+        </div>
         {/* Amenity Filter */}
         {amenities.length > 0 && (
           <div>

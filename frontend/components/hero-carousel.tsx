@@ -323,7 +323,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       </div>
 
       {/* Right Side - Thumbnail Navigation - Positioned Independently */}
-      <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-[60]" suppressHydrationWarning>
+      <div className="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 z-40" suppressHydrationWarning>
         <div className="flex flex-col gap-3" suppressHydrationWarning>
           {villas.slice(0, 4).map((villa, index) => {
             const isActive = index === currentIndex;

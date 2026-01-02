@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bookmark, X, Trash2, Copy, Check, Facebook } from 'lucide-react';
+import { Bookmark, X, Trash2, Copy, Check, Facebook, MessageCircle } from 'lucide-react';
 import { useWishlistStore } from '@/stores/useWishlistStore';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
@@ -14,14 +14,41 @@ export function WishlistFloatingButton() {
   const [copySuccess, setCopySuccess] = useState(false);
   const pathname = usePathname();
   
-  const { items, removeItem, clearAll, getFormattedMessage, getMessengerUrl } = useWishlistStore();
+  const { items, removeItem, clearAll, getFormattedMessage, getMessengerUrl, getZaloUrl } = useWishlistStore();
   const t = useTranslations('wishlist');
   const tCommon = useTranslations('common');
+
+  // Lock body scroll when panel is open
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent scrolling on html, body
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`; // Prevent layout shift
+      document.body.style.touchAction = 'none'; // Prevent touch scroll
+    } else {
+      // Restore scroll
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.body.style.touchAction = '';
+    }
+
+    return () => {
+      // Cleanup on unmount
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      document.body.style.touchAction = '';
+    };
+  }, [isOpen]);
   
   // Don't show on admin pages
   if (pathname?.startsWith('/taike-manage')) {
     return null;
   }
+
 
   const handleCopy = async () => {
     const message = getFormattedMessage();
@@ -68,7 +95,7 @@ export function WishlistFloatingButton() {
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -76,7 +103,7 @@ export function WishlistFloatingButton() {
       {/* Panel */}
       <div
         className={cn(
-          'fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50',
+          'fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[100] flex flex-col',
           'transform transition-transform duration-300 ease-out',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
@@ -101,8 +128,12 @@ export function WishlistFloatingButton() {
           </button>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto h-[calc(100vh-200px)]">
+
+        {/* Content - with proper flex sizing */}
+        <div 
+          className="flex-1 overflow-y-auto overscroll-contain min-h-0"
+          style={{ touchAction: 'pan-y' }}
+        >
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full p-8 text-center">
               <Bookmark className="w-16 h-16 text-gray-300 mb-4" />
@@ -169,14 +200,14 @@ export function WishlistFloatingButton() {
           )}
         </div>
 
-        {/* Footer Actions */}
+        {/* Footer Actions - compact layout */}
         {items.length > 0 && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t space-y-3">
-            {/* Copy Button */}
+          <div className="flex-shrink-0 p-3 bg-white border-t space-y-2">
+            {/* Copy Button - smaller */}
             <button
               onClick={handleCopy}
               className={cn(
-                'w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all',
+                'w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all',
                 copySuccess
                   ? 'bg-green-100 text-green-700'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -184,30 +215,39 @@ export function WishlistFloatingButton() {
             >
               {copySuccess ? (
                 <>
-                  <Check className="w-5 h-5" />
+                  <Check className="w-4 h-4" />
                   {t('copied')}
                 </>
               ) : (
                 <>
-                  <Copy className="w-5 h-5" />
+                  <Copy className="w-4 h-4" />
                   {t('copyList')}
                 </>
               )}
             </button>
 
-            {/* Messenger Button */}
-            <button
-              onClick={handleMessenger}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium bg-gradient-to-r from-[#0084FF] to-[#0066CC] text-white hover:shadow-lg transition-all"
-            >
-              <Facebook className="w-5 h-5" />
-              {t('sendViaMessenger')}
-            </button>
+            {/* Messenger & Zalo Buttons - side by side */}
+            <div className="flex gap-2">
+              <button
+                onClick={handleMessenger}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium bg-gradient-to-r from-[#0084FF] to-[#0066CC] text-white hover:shadow-md transition-all"
+              >
+                <Facebook className="w-4 h-4" />
+                Gửi qua Messenger
+              </button>
+              <button
+                onClick={() => window.open(getZaloUrl(), '_blank')}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium bg-gradient-to-r from-[#0891b2] to-[#0ea5e9] text-white hover:shadow-md transition-all"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Gửi qua Zalo
+              </button>
+            </div>
 
-            {/* Clear All */}
+            {/* Clear All - smaller */}
             <button
               onClick={clearAll}
-              className="w-full text-sm text-gray-500 hover:text-red-500 transition-colors py-2"
+              className="w-full text-xs text-gray-400 hover:text-red-500 transition-colors py-1"
             >
               {t('clearAll')}
             </button>

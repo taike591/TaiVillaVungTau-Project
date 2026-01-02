@@ -19,6 +19,7 @@ interface WishlistStore {
   isInWishlist: (id: number) => boolean;
   getFormattedMessage: () => string;
   getMessengerUrl: () => string;
+  getZaloUrl: () => string;
 }
 
 export const useWishlistStore = create<WishlistStore>()(
@@ -80,6 +81,13 @@ export const useWishlistStore = create<WishlistStore>()(
         const pageId = '100091682560247'; // Facebook page ID
         const encodedMessage = encodeURIComponent(message);
         return `https://m.me/${pageId}?text=${encodedMessage}`;
+      },
+
+      getZaloUrl: () => {
+        const message = get().getFormattedMessage();
+        const phone = '84868947734'; // Zalo phone number
+        const encodedMessage = encodeURIComponent(message);
+        return `https://zalo.me/${phone}?text=${encodedMessage}`;
       },
     }),
     {

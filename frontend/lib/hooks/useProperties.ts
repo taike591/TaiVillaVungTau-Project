@@ -68,6 +68,8 @@ export interface PropertyFilters {
   minPrice?: number;
   maxPrice?: number;
   bedroomCount?: number;
+  bathroomCount?: number;
+  bedCount?: number;
   amenityIds?: number[];
   labelIds?: number[]; // Filter by label IDs (Sát biển, View biển...)
   sort?: 'price_asc' | 'price_desc' | 'newest'; // Sort option
@@ -99,7 +101,9 @@ export function useProperties(filters?: PropertyFilters) {
       if (filters?.maxGuests) params.append('maxGuests', filters.maxGuests.toString());
       if (filters?.minPrice) params.append('minPrice', filters.minPrice.toString());
       if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
-      if (filters?.bedroomCount) params.append('bedroomCount', filters.bedroomCount.toString());
+      if (filters?.bedroomCount) params.append('minBedroom', filters.bedroomCount.toString());
+      if (filters?.bathroomCount) params.append('minBathroom', filters.bathroomCount.toString());
+      if (filters?.bedCount) params.append('minBedCount', filters.bedCount.toString());
       if (filters?.amenityIds?.length) {
         filters.amenityIds.forEach(id => params.append('amenityIds', id.toString()));
       }
