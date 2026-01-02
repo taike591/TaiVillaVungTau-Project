@@ -92,7 +92,16 @@ jobs:
             echo "🚀 Restarting backend..."
             docker-compose up -d backend
 
-            echo "🧹 Cleaning up..."
+            echo "⏳ Waiting for backend to be healthy..."
+            sleep 30
+
+            echo "🧹 Clearing Redis cache..."
+            docker exec taivilla-redis redis-cli FLUSHDB || echo "Redis flush failed, continuing..."
+
+            echo "🔍 Health check..."
+            curl -sf http://localhost:8080/actuator/health || echo "Health check warning"
+
+            echo "🧹 Cleaning up unused Docker resources..."
             docker system prune -f
 
             echo "✅ Backend deployed successfully at $(date)"
