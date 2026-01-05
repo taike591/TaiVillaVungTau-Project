@@ -39,8 +39,18 @@ public class PropertyController {
     public ResponseEntity<ApiResponse<PageResponse<PropertyDTO>>> getProperties(
             @Valid @ModelAttribute PropertySearchRequest request) {
         PageResponse<PropertyDTO> properties = propertyService.searchProperties(request);
+
+        // Admin requests (with DELETED status) should not be cached for real-time
+        // updates
+        boolean isAdminRequest = request.getStatusList() != null &&
+                request.getStatusList().contains("DELETED");
+
+        CacheControl cacheControl = isAdminRequest
+                ? CacheControl.noCache()
+                : CacheControl.maxAge(5, java.util.concurrent.TimeUnit.MINUTES).cachePublic();
+
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(5, java.util.concurrent.TimeUnit.MINUTES).cachePublic())
+                .cacheControl(cacheControl)
                 .body(ApiResponse.success(properties, "Lấy danh sách thành công"));
     }
 

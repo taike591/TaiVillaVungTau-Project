@@ -106,7 +106,25 @@ public class PropertyServiceImpl implements PropertyService {
 
         property.setStatus("ACTIVE");
         Property savedProperty = propertyRepository.save(property);
-        log.info("Property created successfully with ID: {}", savedProperty.getId());
+
+        // 7. Xử lý Images - Nhận URL từ frontend (đã upload lên Cloudinary)
+        if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+            for (var imageDTO : dto.getImages()) {
+                if (imageDTO.getImageUrl() != null && !imageDTO.getImageUrl().isEmpty()) {
+                    PropertyImage image = PropertyImage.builder()
+                            .imageUrl(imageDTO.getImageUrl())
+                            .isThumbnail(imageDTO.getIsThumbnail() != null ? imageDTO.getIsThumbnail() : false)
+                            .property(savedProperty)
+                            .build();
+                    savedProperty.getImages().add(image);
+                }
+            }
+            // Save property again to persist images
+            savedProperty = propertyRepository.save(savedProperty);
+        }
+
+        log.info("Property created successfully with ID: {} and {} images", savedProperty.getId(),
+                savedProperty.getImages().size());
         return propertyMapper.toDTO(savedProperty);
     }
 

@@ -136,8 +136,9 @@ export default function PropertiesPage() {
       // Only send the isFeatured field to avoid overwriting other fields with null values
       await api.patch(`/api/v1/properties/${id}`, { isFeatured });
     },
-    onSuccess: async () => {
-        await queryClient.refetchQueries({ queryKey: ['admin-properties'] });
+    onSuccess: () => {
+        // Invalidate to force re-fetch with fresh data
+        queryClient.invalidateQueries({ queryKey: ['admin-properties'] });
         showSuccess.updated('Property featured status');
     },
     onError: () => {

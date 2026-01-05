@@ -90,9 +90,11 @@ public class GlobalExceptionHandler {
         // 8. Lỗi JSON sai định dạng (Ví dụ: thiếu dấu phẩy, sai cú pháp)
         @ExceptionHandler(HttpMessageNotReadableException.class)
         public ResponseEntity<ApiResponse<Object>> handleJsonError(HttpMessageNotReadableException ex) {
+                log.error("JSON parsing error: {}", ex.getMessage());
+                String detailMessage = ex.getMostSpecificCause().getMessage();
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(),
-                                                "Định dạng JSON gửi lên không đúng", null));
+                                                "Định dạng JSON không đúng: " + detailMessage, null));
         }
 
         // 9. Lỗi Upload file quá lớn

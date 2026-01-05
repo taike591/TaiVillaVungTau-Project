@@ -137,34 +137,94 @@ export function useProperty(id: number | string) {
 }
 
 /**
+ * Helper function to upload a single image to Cloudinary
+ * Returns null if upload fails (for filtering later)
+ */
+async function uploadSingleImage(image: File | string | { imageUrl: string; isThumbnail?: boolean }, index: number): Promise<{ imageUrl: string; isThumbnail: boolean } | null> {
+  try {
+    if (image instanceof File) {
+      const formData = new FormData();
+      formData.append('file', image);
+      
+      const uploadResponse = await api.post<{ data: string }>('/api/v1/images/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      
+      return {
+        imageUrl: uploadResponse.data.data,
+        isThumbnail: index === 0,
+      };
+    } else if (typeof image === 'string') {
+      return {
+        imageUrl: image,
+        isThumbnail: index === 0,
+      };
+    } else if (image && typeof image === 'object' && 'imageUrl' in image) {
+      return {
+        imageUrl: image.imageUrl,
+        isThumbnail: image.isThumbnail ?? index === 0,
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error(`Failed to upload image at index ${index}:`, error);
+    return null;
+  }
+}
+
+/**
  * Hook to create a new property
+ * Production-grade implementation:
+ * - Parallel image uploads for speed
+ * - Graceful error handling (partial failures don't break everything)
+ * - At least 1 image required to proceed
  */
 export function useCreateProperty() {
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: async (data: PropertyFormData) => {
-      // Transform data to match backend DTO format
-      // Remove location field to avoid Enum deserialization error
-      const { location, ...restData } = data;
+      const { location, images, ...restData } = data;
 
+      // Step 1: Upload images in parallel for speed
+      let uploadedImages: { imageUrl: string; isThumbnail: boolean }[] = [];
+      
+      if (images && images.length > 0) {
+        // Parallel uploads - much faster than sequential
+        const uploadPromises = images.map((img, idx) => uploadSingleImage(img, idx));
+        const results = await Promise.all(uploadPromises);
+        
+        // Filter out failed uploads (null values)
+        uploadedImages = results.filter((img): img is { imageUrl: string; isThumbnail: boolean } => img !== null);
+        
+        // Require at least 1 successful image
+        if (uploadedImages.length === 0 && images.length > 0) {
+          throw new Error('Không thể upload ảnh. Vui lòng thử lại.');
+        }
+        
+        // Warn if some uploads failed but continue
+        if (uploadedImages.length < images.length) {
+          console.warn(`Only ${uploadedImages.length}/${images.length} images uploaded successfully`);
+        }
+      }
+
+      // Step 2: Create property with uploaded image URLs
       const payload = {
         ...restData,
         priceWeekday: data.priceWeekday,
         priceWeekend: data.priceWeekend,
         amenityIds: data.amenityIds || [],
-        labelIds: data.labelIds || [], // Include labels
-        images: data.images || [],
+        labelIds: data.labelIds || [],
+        images: uploadedImages,
       };
       
       const response = await api.post<{ data: Property }>('/api/v1/properties', payload);
       return response.data.data;
     },
     onSuccess: async () => {
-      // Use refetchQueries for faster UI updates
       await Promise.all([
-        queryClient.refetchQueries({ queryKey: ['properties'] }),
-        queryClient.refetchQueries({ queryKey: ['admin-properties'] }),
+        queryClient.invalidateQueries({ queryKey: ['properties'] }),
+        queryClient.invalidateQueries({ queryKey: ['admin-properties'] }),
       ]);
     },
   });

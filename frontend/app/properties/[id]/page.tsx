@@ -316,9 +316,12 @@ export default function PropertyDetailPage() {
                 <Video className="w-5 h-5 text-[#1877F2]" />
               </div>
               <div>
-                <div className="text-slate-800 font-semibold text-base">
-                  📸 Truy cập vào link này để xem đầy đủ hình ảnh và video!
+                <div className="text-red-600 font-bold text-base md:text-lg animate-pulse">
+                  📸 Bấm ngay vào đây để xem đầy đủ Hình Ảnh & Video thực tế!
                 </div>
+                <p className="text-red-500 text-sm font-medium mt-0.5">
+                  (Rất quan trọng - Hãy xem trước khi đặt)
+                </p>
                 
               </div>
             </div>
