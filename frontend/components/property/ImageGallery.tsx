@@ -283,9 +283,10 @@ interface GalleryGridProps {
   images: (string | { imageUrl: string })[];
   propertyName: string;
   onImageClick: (index: number) => void;
+  facebookLink?: string;
 }
 
-export function GalleryGrid({ images, propertyName, onImageClick }: GalleryGridProps) {
+export function GalleryGrid({ images, propertyName, onImageClick, facebookLink }: GalleryGridProps) {
   if (!images || images.length === 0) return null;
 
   const displayImages = images.slice(0, 5);
@@ -319,7 +320,7 @@ export function GalleryGrid({ images, propertyName, onImageClick }: GalleryGridP
         <div 
           key={idx}
           className="hidden md:block col-span-1 row-span-1 relative group cursor-pointer overflow-hidden"
-          onClick={() => onImageClick(idx + 1)}
+          onClick={() => idx !== 3 && onImageClick(idx + 1)}
         >
           <Image 
             src={getImageUrl(img)} 
@@ -329,37 +330,45 @@ export function GalleryGrid({ images, propertyName, onImageClick }: GalleryGridP
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
           />
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-            <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300">
-              <ZoomIn className="w-4 h-4 text-slate-700" />
-            </div>
-          </div>
-
-          {/* "View all" overlay on last image */}
-          {idx === 3 && remainingCount > 0 && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <ZoomIn className="w-4 h-4" />
-                  <span className="font-semibold">Xem tất cả ảnh</span>
-                </div>
+          {/* Hover overlay - only show on non-last images */}
+          {idx !== 3 && (
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300">
+                <ZoomIn className="w-4 h-4 text-slate-700" />
               </div>
             </div>
+          )}
+
+          {/* "View all" overlay on last image - links to Facebook */}
+          {idx === 3 && (
+            <a
+              href={facebookLink || "https://www.facebook.com/TaiVillaVungTau"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 bg-black/40 flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="bg-white text-slate-800 px-6 py-2.5 rounded-lg font-medium shadow-lg hover:bg-slate-50 transition-colors border border-slate-200">
+                Xem thêm
+              </span>
+            </a>
           )}
         </div>
       ))}
 
-      {/* Mobile: Show all button */}
+      {/* Mobile: Link to Facebook for more images */}
       <div className="md:hidden col-span-4 flex justify-center py-2">
-        <button 
-          onClick={() => onImageClick(0)}
+        <a 
+          href={facebookLink || "https://www.facebook.com/TaiVillaVungTau"}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
         >
           <ZoomIn className="w-4 h-4" />
-          Xem tất cả {images.length} ảnh
-        </button>
+          Xem thêm hình ảnh & video
+        </a>
       </div>
     </div>
   );
 }
+

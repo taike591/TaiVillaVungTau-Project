@@ -285,107 +285,198 @@ export default function LabelsPage() {
         )}
       </Card>
 
-      {/* Create Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Thêm label mới</DialogTitle>
-            <DialogDescription>
-              Tạo một label mới cho các villa (VD: Sát biển, View biển)
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleCreateSubmit} className="space-y-4">
-            <div>
-              <FormLabel htmlFor="name">
-                Tên label <span className="text-red-500">*</span>
-              </FormLabel>
-              <Input
-                id="name"
-                value={newLabel.name}
-                onChange={(e) => setNewLabel({ ...newLabel, name: e.target.value })}
-                placeholder="VD: Sát biển, View biển"
-              />
-            </div>
-            <div>
-              <FormLabel htmlFor="color">Màu hiển thị</FormLabel>
-              <div className="flex items-center gap-3">
-                <Input
-                  type="color"
-                  id="color"
-                  value={newLabel.color}
-                  onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })}
-                  className="w-16 h-10 p-1"
-                />
-                <Input
-                  value={newLabel.color}
-                  onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })}
-                  placeholder="#0EA5E9"
-                  className="flex-1"
-                />
-                <span
-                  className="inline-flex items-center px-3 py-1.5 rounded-md text-white text-sm font-semibold"
-                  style={{ backgroundColor: newLabel.color }}
-                >
-                  {newLabel.name || 'Preview'}
-                </span>
+      {/* Create Dialog - Custom Modal like SmartImport */}
+      {isCreateDialogOpen && (
+        <div
+          onClick={() => setIsCreateDialogOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              width: '90%',
+              maxWidth: '500px',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div>
+                <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Thêm label mới</h2>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '4px 0 0 0' }}>
+                  Tạo một label mới cho các villa (VD: Sát biển, View biển)
+                </p>
               </div>
+              <button
+                onClick={() => setIsCreateDialogOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  borderRadius: '4px',
+                }}
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
             </div>
-            <DialogFooter>
+
+            {/* Form */}
+            <form onSubmit={handleCreateSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>
+                  Tên label <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <Input
+                  value={newLabel.name}
+                  onChange={(e) => setNewLabel({ ...newLabel, name: e.target.value })}
+                  placeholder="VD: Sát biển, View biển"
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>
+                  Màu hiển thị
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Input
+                    type="color"
+                    value={newLabel.color}
+                    onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })}
+                    style={{ width: '64px', height: '40px', padding: '4px' }}
+                  />
+                  <Input
+                    value={newLabel.color}
+                    onChange={(e) => setNewLabel({ ...newLabel, color: e.target.value })}
+                    placeholder="#0EA5E9"
+                    style={{ flex: 1 }}
+                  />
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      color: 'white',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      backgroundColor: newLabel.color,
+                    }}
+                  >
+                    {newLabel.name || 'Preview'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsCreateDialogOpen(false)}
+                  disabled={createMutation.isPending}
+                >
+                  Hủy
+                </Button>
+                <Button type="submit" disabled={createMutation.isPending}>
+                  {createMutation.isPending ? 'Đang tạo...' : 'Tạo label'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog - Custom Modal */}
+      {deleteConfirmId !== null && (
+        <div
+          onClick={() => setDeleteConfirmId(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              width: '90%',
+              maxWidth: '400px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            {/* Header */}
+            <div style={{ marginBottom: '16px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Xác nhận xóa</h2>
+              <p style={{ fontSize: '14px', color: '#6b7280', margin: '8px 0 0 0' }}>
+                Bạn có chắc chắn muốn xóa label này? Hành động này không thể hoàn tác.
+              </p>
+              {labels.find((l) => l.id === deleteConfirmId) && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    color: 'white',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    marginTop: '8px',
+                    backgroundColor: labels.find((l) => l.id === deleteConfirmId)?.color || '#0EA5E9',
+                  }}
+                >
+                  {labels.find((l) => l.id === deleteConfirmId)?.name}
+                </span>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsCreateDialogOpen(false)}
-                disabled={createMutation.isPending}
+                onClick={() => setDeleteConfirmId(null)}
+                disabled={deleteMutation.isPending}
               >
                 Hủy
               </Button>
-              <Button type="submit" disabled={createMutation.isPending}>
-                {createMutation.isPending ? 'Đang tạo...' : 'Tạo label'}
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? 'Đang xóa...' : 'Xóa'}
               </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Xác nhận xóa</DialogTitle>
-            <DialogDescription>
-              Bạn có chắc chắn muốn xóa label này? Hành động này không thể hoàn tác.
-              {labels.find((l) => l.id === deleteConfirmId) && (
-                <span className="block mt-2">
-                  <span
-                    className="inline-flex items-center px-2.5 py-1 rounded-md text-white text-xs font-semibold"
-                    style={{ backgroundColor: labels.find((l) => l.id === deleteConfirmId)?.color || '#0EA5E9' }}
-                  >
-                    {labels.find((l) => l.id === deleteConfirmId)?.name}
-                  </span>
-                </span>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDeleteConfirmId(null)}
-              disabled={deleteMutation.isPending}
-            >
-              Hủy
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDelete}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? 'Đang xóa...' : 'Xóa'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

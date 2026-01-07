@@ -269,95 +269,171 @@ export default function AmenitiesPage() {
         )}
       </Card>
 
-      {/* Create Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Thêm tiện ích mới</DialogTitle>
-            <DialogDescription>
-              Tạo một tiện ích mới cho các villa
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleCreateSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">
-                Tên tiện ích <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="name"
-                {...createForm.register('name')}
-                placeholder="VD: Bể bơi"
-              />
-              {createForm.formState.errors.name && (
-                <p className="text-sm text-red-500 mt-1">
-                  {createForm.formState.errors.name.message}
+      {/* Create Dialog - Custom Modal like SmartImport */}
+      {isCreateDialogOpen && (
+        <div
+          onClick={() => setIsCreateDialogOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              width: '90%',
+              maxWidth: '500px',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div>
+                <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Thêm tiện ích mới</h2>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '4px 0 0 0' }}>
+                  Tạo một tiện ích mới cho các villa
+                </p>
+              </div>
+              <button
+                onClick={() => setIsCreateDialogOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  borderRadius: '4px',
+                }}
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleCreateSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>
+                  Tên tiện ích <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <Input
+                  {...createForm.register('name')}
+                  placeholder="VD: Bể bơi"
+                />
+                {createForm.formState.errors.name && (
+                  <p style={{ fontSize: '14px', color: '#ef4444', marginTop: '4px' }}>
+                    {createForm.formState.errors.name.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>
+                  Icon Code (tùy chọn)
+                </label>
+                <Input
+                  {...createForm.register('icon')}
+                  placeholder="VD: wifi, pool, parking"
+                />
+                {createForm.formState.errors.icon && (
+                  <p style={{ fontSize: '14px', color: '#ef4444', marginTop: '4px' }}>
+                    {createForm.formState.errors.icon.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsCreateDialogOpen(false)}
+                  disabled={createMutation.isPending}
+                >
+                  Hủy
+                </Button>
+                <Button type="submit" disabled={createMutation.isPending}>
+                  {createMutation.isPending ? 'Đang tạo...' : 'Tạo tiện ích'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog - Custom Modal */}
+      {deleteConfirmId !== null && (
+        <div
+          onClick={() => setDeleteConfirmId(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              width: '90%',
+              maxWidth: '400px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            }}
+          >
+            {/* Header */}
+            <div style={{ marginBottom: '16px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Xác nhận xóa</h2>
+              <p style={{ fontSize: '14px', color: '#6b7280', margin: '8px 0 0 0' }}>
+                Bạn có chắc chắn muốn xóa tiện ích này? Hành động này không thể hoàn tác.
+              </p>
+              {amenities.find((a) => a.id === deleteConfirmId) && (
+                <p style={{ fontWeight: '500', marginTop: '8px' }}>
+                  Tiện ích: {amenities.find((a) => a.id === deleteConfirmId)?.name}
                 </p>
               )}
             </div>
-            <div>
-              <Label htmlFor="icon">Icon Code (tùy chọn)</Label>
-              <Input
-                id="icon"
-                {...createForm.register('icon')}
-                placeholder="VD: wifi, pool, parking"
-              />
-              {createForm.formState.errors.icon && (
-                <p className="text-sm text-red-500 mt-1">
-                  {createForm.formState.errors.icon.message}
-                </p>
-              )}
-            </div>
-            <DialogFooter>
+
+            {/* Footer */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px', borderTop: '1px solid #e5e7eb' }}>
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsCreateDialogOpen(false)}
-                disabled={createMutation.isPending}
+                onClick={() => setDeleteConfirmId(null)}
+                disabled={deleteMutation.isPending}
               >
                 Hủy
               </Button>
-              <Button type="submit" disabled={createMutation.isPending}>
-                {createMutation.isPending ? 'Đang tạo...' : 'Tạo tiện ích'}
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? 'Đang xóa...' : 'Xóa'}
               </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteConfirmId !== null} onOpenChange={() => setDeleteConfirmId(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Xác nhận xóa</DialogTitle>
-            <DialogDescription>
-              Bạn có chắc chắn muốn xóa tiện ích này? Hành động này không thể hoàn tác.
-              {amenities.find((a) => a.id === deleteConfirmId) && (
-                <span className="block mt-2 font-medium">
-                  Tiện ích: {amenities.find((a) => a.id === deleteConfirmId)?.name}
-                </span>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDeleteConfirmId(null)}
-              disabled={deleteMutation.isPending}
-            >
-              Hủy
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDelete}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? 'Đang xóa...' : 'Xóa'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

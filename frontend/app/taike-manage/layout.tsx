@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { WebSocketProvider } from '@/components/providers/WebSocketProvider';
 import { NotificationBell } from '@/components/admin/NotificationBell';
+import { AdminBreadcrumb } from '@/components/admin/AdminBreadcrumb';
 
 export default function AdminLayout({
   children,
@@ -331,13 +332,8 @@ export default function AdminLayout({
               >
                 <Menu className="h-5 w-5 text-gray-600" />
               </button>
-              {/* Breadcrumb */}
-              <nav className="flex items-center gap-2 text-sm">
-                <span className="text-gray-400">🏠</span>
-                <span className="text-gray-300">/</span>
-                <span className="text-gray-600 font-medium">Dashboards</span>
-                <Menu className="h-4 w-4 text-gray-400 ml-2" />
-              </nav>
+              {/* Dynamic Breadcrumb */}
+              <AdminBreadcrumb />
             </div>
             
             <div className="flex items-center gap-3">

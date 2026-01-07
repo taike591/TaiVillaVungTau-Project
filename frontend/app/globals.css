@@ -2048,7 +2048,7 @@ button.bg-gradient-ocean:focus-visible {
 [role="dialog"],
 [role="alertdialog"] {
   position: fixed;
-  z-index: 1000;
+  z-index: 9999;
   inset: 0;
   display: flex;
   align-items: center;

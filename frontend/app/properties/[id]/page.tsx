@@ -11,7 +11,7 @@ import { WishlistButton } from "@/components/wishlist";
 import { 
   MapPin, Users, Bed, Bath, Home, ChevronRight, 
   Share2, FileText, Star, Waves, Droplets,
-  Wifi, Car, Utensils, Wind, Tv, Coffee, ExternalLink, Camera, Video
+  Wifi, Car, Utensils, Wind, Tv, Coffee, ExternalLink, Camera, Video, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
@@ -203,10 +203,10 @@ export default function PropertyDetailPage() {
               </Link>
               <ChevronRight className="w-4 h-4" />
               <Link href="/properties" className="hover:text-[#0891b2] transition-colors">
-                Chi tiết
+                Danh sách Villa
               </Link>
               <ChevronRight className="w-4 h-4" />
-              <span className="text-slate-800 font-medium">{property.code}</span>
+              <span className="text-slate-800 font-medium">{property.code} - {property.name}</span>
             </nav>
 
             {/* Title Row */}
@@ -284,6 +284,7 @@ export default function PropertyDetailPage() {
             images={sortImagesWithThumbnailFirst(property.images)} 
             propertyName={property.name}
             onImageClick={handleImageClick}
+            facebookLink={property.facebookLink}
           />
         </section>
 
@@ -296,40 +297,7 @@ export default function PropertyDetailPage() {
           />
         )}
 
-        {/* Facebook Link - Eye-catching banner */}
-        {/* Facebook Link - Professional & Prominent */}
-        <div className="container mx-auto px-4 py-3">
-          <Link 
-            href={property.facebookLink || "https://www.facebook.com/TaiVillaVungTau"} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group flex items-center justify-between gap-4 w-full py-4 px-6
-              bg-gradient-to-r from-[#1877F2]/10 via-blue-50 to-cyan-50
-              border-2 border-[#1877F2]/30
-              rounded-xl
-              hover:border-[#1877F2]/50 hover:shadow-md hover:bg-gradient-to-r hover:from-[#1877F2]/15 hover:via-blue-100 hover:to-cyan-100
-              transition-all duration-300"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-[#1877F2]/10 px-3 py-2 rounded-lg">
-                <Camera className="w-5 h-5 text-[#1877F2]" />
-                <Video className="w-5 h-5 text-[#1877F2]" />
-              </div>
-              <div>
-                <div className="text-red-600 font-bold text-base md:text-lg animate-pulse">
-                  📸 Bấm ngay vào đây để xem đầy đủ Hình Ảnh & Video thực tế!
-                </div>
-                <p className="text-red-500 text-sm font-medium mt-0.5">
-                  (Rất quan trọng - Hãy xem trước khi đặt)
-                </p>
-                
-              </div>
-            </div>
-            <div className="bg-[#1877F2]/10 p-2.5 rounded-lg group-hover:bg-[#1877F2]/20 transition-colors">
-              <ExternalLink className="w-5 h-5 text-[#1877F2] group-hover:translate-x-0.5 transition-transform" />
-            </div>
-          </Link>
-        </div>
+
 
         {/* Property Stats */}
         <section className="container mx-auto px-4 pb-3">
