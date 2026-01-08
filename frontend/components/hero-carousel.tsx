@@ -144,7 +144,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               sizes="(max-width: 640px) 200vw, (max-width: 1024px) 150vw, 100vw"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={85}
+              quality={75}
               className={`object-cover ${isActive ? 'md:animate-ken-burns' : ''}`}
             />
           </div>

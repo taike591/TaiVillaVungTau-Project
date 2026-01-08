@@ -49,7 +49,7 @@ export function HeroSection({ images, propertyName, onImageClick }: HeroSectionP
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             priority
-            quality={90}
+            quality={75}
           />
           {/* Ocean gradient overlay on hover */}
           <div className="absolute inset-0 bg-gradient-ocean-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -74,7 +74,7 @@ export function HeroSection({ images, propertyName, onImageClick }: HeroSectionP
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
-                quality={85}
+                quality={75}
               />
               {/* Ocean gradient overlay on hover */}
               <div className="absolute inset-0 bg-gradient-ocean-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -113,7 +113,7 @@ export function HeroSection({ images, propertyName, onImageClick }: HeroSectionP
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
-              quality={85}
+              quality={75}
             />
             {/* Ocean gradient overlay on hover */}
             <div className="absolute inset-0 bg-gradient-ocean-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -134,7 +134,7 @@ export function HeroSection({ images, propertyName, onImageClick }: HeroSectionP
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
-              quality={85}
+              quality={75}
             />
             {/* Ocean gradient overlay on hover */}
             <div className="absolute inset-0 bg-gradient-ocean-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -162,7 +162,7 @@ export function HeroSection({ images, propertyName, onImageClick }: HeroSectionP
                 sizes="50vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 priority={idx === 0}
-                quality={85}
+                quality={75}
               />
               {/* Ocean gradient overlay on hover */}
               <div className="absolute inset-0 bg-gradient-ocean-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -203,7 +203,7 @@ export function HeroSection({ images, propertyName, onImageClick }: HeroSectionP
             sizes="100vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             priority
-            quality={90}
+            quality={75}
           />
           {/* Ocean gradient overlay on hover */}
           <div className="absolute inset-0 bg-gradient-ocean-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

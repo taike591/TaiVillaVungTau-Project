@@ -47,10 +47,10 @@ export const propertySchema = z.object({
     .max(20, 'Số phòng ngủ không được quá 20'),
   
   bathroomCount: z
-    .number({ message: 'Số phòng tắm phải là số' })
-    .int('Số phòng tắm phải là số nguyên')
-    .positive('Số phòng tắm phải lớn hơn 0')
-    .max(20, 'Số phòng tắm không được quá 20'),
+    .number({ message: 'Số WC phải là số' })
+    .int('Số WC phải là số nguyên')
+    .positive('Số WC phải lớn hơn 0')
+    .max(20, 'Số WC không được quá 20'),
   
   bedCount: z
     .number({ message: 'Số giường phải là số' })

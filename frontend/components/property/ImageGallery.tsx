@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAdaptiveImageQuality } from '@/hooks/useAdaptiveImageQuality';
 
 interface ImageGalleryProps {
   images: (string | { imageUrl: string })[];
@@ -21,6 +22,7 @@ export function ImageGallery({ images, initialIndex = 0, onClose }: ImageGallery
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [isZoomed, setIsZoomed] = useState(false);
+  const adaptiveQuality = useAdaptiveImageQuality();
   
   // Touch swipe state
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -218,7 +220,7 @@ export function ImageGallery({ images, initialIndex = 0, onClose }: ImageGallery
                 isZoomed ? "object-contain scale-150" : "object-contain"
               )}
               priority
-              quality={90}
+              quality={adaptiveQuality}
               draggable={false}
             />
           </div>

@@ -14,7 +14,10 @@ import java.util.Optional;
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSpecificationExecutor<Property> {
 
+        // Override findAll to fetch images and amenities eagerly for list views
+        // (prevents N+1 queries)
         @Override
+        @EntityGraph(attributePaths = { "amenities", "images", "location", "labels" })
         Page<Property> findAll(Specification<Property> spec, Pageable pageable);
 
         // Override findById to fetch images and amenities eagerly for detail view

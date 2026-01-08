@@ -436,16 +436,14 @@
   }
 }
 
-/* Warm Float Animation - Requirements 9.1 */
+/* Warm Float Animation - Optimized for performance (GPU only) */
 @keyframes warmFloat {
   0%,
   100% {
     transform: translateY(0px);
-    filter: brightness(1) saturate(1);
   }
   50% {
     transform: translateY(-10px);
-    filter: brightness(1.05) saturate(1.1);
   }
 }
 
@@ -522,7 +520,8 @@
 }
 
 .animate-ken-burns {
-  animation: kenBurns 20s ease-in-out infinite alternate;
+  animation: kenBurns 12s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 /* Ripple Effect Animation - Requirements 4.3 */

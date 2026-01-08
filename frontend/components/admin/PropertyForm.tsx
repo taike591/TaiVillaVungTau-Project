@@ -590,7 +590,7 @@ export function PropertyForm({
               name="bathroomCount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số phòng tắm *</FormLabel>
+                  <FormLabel>Số WC *</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

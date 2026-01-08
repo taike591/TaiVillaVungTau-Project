@@ -458,7 +458,7 @@ export function PropertyFilters({
         {/* Bathroom Count Filter */}
         <div>
           <Label htmlFor="bathrooms" className="text-sm font-medium mb-2 block">
-            Số phòng tắm
+            Số WC
           </Label>
           <Input
             id="bathrooms"

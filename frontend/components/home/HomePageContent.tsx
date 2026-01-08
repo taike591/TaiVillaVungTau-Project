@@ -30,6 +30,11 @@ const FAQSection = dynamic(() => import('./FAQSection'), {
   ssr: true
 });
 
+const TrustSections = dynamic(() => import('./TrustSections'), {
+  loading: () => <div className="h-96 animate-pulse bg-slate-50" />,
+  ssr: true
+});
+
 // Floating Element Components for background accents
 const FloatingDecoration = ({ className, delay = 0, duration = 15, size = 40 }: { className?: string, delay?: number, duration?: number, size?: number }) => (
   <div 
@@ -912,6 +917,7 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
         `}} />
       </section>
 
+      <TrustSections />
       <FeedbackSection />
       <RequestAdviceSection />
       <FAQSection />
