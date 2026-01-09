@@ -6,11 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 import { PropertyFilters as PropertyFiltersType } from '@/lib/hooks/useProperties';
 import { Amenity, Label as LabelType } from '@/lib/hooks/useProperties';
 import { PropertyType, Location } from '@/lib/hooks/useLocationsAndTypes';
 import { useTranslations } from 'next-intl';
+
+// Debounce delay constants
+const DEBOUNCE_DELAY = 500; // 500ms for better UX
+const KEYWORD_DEBOUNCE_DELAY = 600; // Slightly longer for keyword search
 
 interface PropertyFiltersProps {
   filters: PropertyFiltersType;
@@ -41,6 +45,12 @@ export function PropertyFilters({
   const [localBedrooms, setLocalBedrooms] = useState(filters.bedroomCount?.toString() || '');
   const [localBathrooms, setLocalBathrooms] = useState(filters.bathroomCount?.toString() || '');
   const [localBeds, setLocalBeds] = useState(filters.bedCount?.toString() || '');
+
+  // Loading states for debounce indicators
+  const [isKeywordDebouncing, setIsKeywordDebouncing] = useState(false);
+  const [isPriceDebouncing, setIsPriceDebouncing] = useState(false);
+  const [isGuestDebouncing, setIsGuestDebouncing] = useState(false);
+  const [isRoomDebouncing, setIsRoomDebouncing] = useState(false);
 
   // Ref to track when we're syncing from props (to prevent debounce effects from firing)
   const isExternalSyncRef = useRef(false);
@@ -76,12 +86,18 @@ export function PropertyFilters({
     filters.bedCount,
   ]);
 
-  // Debounce price inputs (300ms)
+  // Debounce price inputs
   useEffect(() => {
     // Skip if we're syncing from external props
     if (isExternalSyncRef.current) return;
     
+    // Show loading indicator
+    if (localMinPrice || localMaxPrice) {
+      setIsPriceDebouncing(true);
+    }
+    
     const timer = setTimeout(() => {
+      setIsPriceDebouncing(false);
       const minPrice = localMinPrice ? parseInt(localMinPrice, 10) : undefined;
       const maxPrice = localMaxPrice ? parseInt(localMaxPrice, 10) : undefined;
       
@@ -92,17 +108,26 @@ export function PropertyFilters({
           maxPrice,
         });
       }
-    }, 300);
+    }, DEBOUNCE_DELAY);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setIsPriceDebouncing(false);
+    };
   }, [localMinPrice, localMaxPrice]);
 
-  // Debounce keyword input (500ms)
+  // Debounce keyword input
   useEffect(() => {
     // Skip if we're syncing from external props
     if (isExternalSyncRef.current) return;
     
+    // Show loading indicator when typing
+    if (localKeyword.trim()) {
+      setIsKeywordDebouncing(true);
+    }
+    
     const timer = setTimeout(() => {
+      setIsKeywordDebouncing(false);
       const keyword = localKeyword.trim() || undefined;
       
       if (keyword !== filters.keyword) {
@@ -111,17 +136,26 @@ export function PropertyFilters({
           keyword,
         });
       }
-    }, 500);
+    }, KEYWORD_DEBOUNCE_DELAY);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setIsKeywordDebouncing(false);
+    };
   }, [localKeyword]);
 
-  // Debounce guest count inputs (300ms)
+  // Debounce guest count inputs
   useEffect(() => {
     // Skip if we're syncing from external props
     if (isExternalSyncRef.current) return;
     
+    // Show loading indicator
+    if (localMinGuests || localMaxGuests) {
+      setIsGuestDebouncing(true);
+    }
+    
     const timer = setTimeout(() => {
+      setIsGuestDebouncing(false);
       const minGuests = localMinGuests ? parseInt(localMinGuests, 10) : undefined;
       const maxGuests = localMaxGuests ? parseInt(localMaxGuests, 10) : undefined;
       
@@ -132,17 +166,26 @@ export function PropertyFilters({
           maxGuests,
         });
       }
-    }, 300);
+    }, DEBOUNCE_DELAY);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setIsGuestDebouncing(false);
+    };
   }, [localMinGuests, localMaxGuests]);
 
-  // Debounce bedroom/bathroom/bed inputs (300ms)
+  // Debounce bedroom/bathroom/bed inputs
   useEffect(() => {
     // Skip if we're syncing from external props
     if (isExternalSyncRef.current) return;
     
+    // Show loading indicator
+    if (localBedrooms || localBathrooms || localBeds) {
+      setIsRoomDebouncing(true);
+    }
+    
     const timer = setTimeout(() => {
+      setIsRoomDebouncing(false);
       const bedroomCount = localBedrooms ? parseInt(localBedrooms, 10) : undefined;
       const bathroomCount = localBathrooms ? parseInt(localBathrooms, 10) : undefined;
       const bedCount = localBeds ? parseInt(localBeds, 10) : undefined;
@@ -155,9 +198,12 @@ export function PropertyFilters({
           bedCount,
         });
       }
-    }, 300);
+    }, DEBOUNCE_DELAY);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setIsRoomDebouncing(false);
+    };
   }, [localBedrooms, localBathrooms, localBeds]);
   const handleLocationChange = (value: string) => {
     onFilterChange({
@@ -318,15 +364,25 @@ export function PropertyFilters({
         <div>
           <Label htmlFor="keyword" className="text-sm font-medium mb-2 block">
             Tìm kiếm
+            {isKeywordDebouncing && (
+              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
+            )}
           </Label>
-          <Input
-            id="keyword"
-            type="text"
-            placeholder="Tên villa, địa chỉ..."
-            value={localKeyword}
-            onChange={(e) => setLocalKeyword(e.target.value)}
-            className="w-full"
-          />
+          <div className="relative">
+            <Input
+              id="keyword"
+              type="text"
+              placeholder="Tên villa, địa chỉ..."
+              value={localKeyword}
+              onChange={(e) => setLocalKeyword(e.target.value)}
+              className="w-full pr-8"
+            />
+            {isKeywordDebouncing && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Location Filter */}
@@ -381,6 +437,9 @@ export function PropertyFilters({
         <div>
           <Label className="text-sm font-medium mb-2 block">
             {t('guestCount')}
+            {isGuestDebouncing && (
+              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
+            )}
           </Label>
           <div className="space-y-2">
             <Input
@@ -404,6 +463,9 @@ export function PropertyFilters({
         <div>
           <Label className="text-sm font-medium mb-2 block">
             {t('pricePerNight')}
+            {isPriceDebouncing && (
+              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
+            )}
           </Label>
           <div className="space-y-2">
             <Input
@@ -429,6 +491,9 @@ export function PropertyFilters({
         <div>
           <Label htmlFor="bedrooms" className="text-sm font-medium mb-2 block">
             {t('bedroomCount')}
+            {isRoomDebouncing && (
+              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
+            )}
           </Label>
           <Input
             id="bedrooms"
@@ -444,6 +509,9 @@ export function PropertyFilters({
         <div>
           <Label htmlFor="beds" className="text-sm font-medium mb-2 block">
             Số giường
+            {isRoomDebouncing && (
+              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
+            )}
           </Label>
           <Input
             id="beds"

@@ -7,7 +7,7 @@ import { PropertyFilters } from '@/components/property/PropertyFilters';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Pagination } from '@/components/ui/pagination';
-import { PropertyCardSkeleton } from '@/components/shared/LoadingState';
+import { PropertyCardSkeleton } from '@/components/shared';
 import { useProperties } from '@/lib/hooks/useProperties';
 import { useAmenities } from '@/lib/hooks/useAmenities';
 import { useLabels } from '@/lib/hooks/useLabels';

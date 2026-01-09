@@ -4,6 +4,7 @@ import { Bookmark } from 'lucide-react';
 import { useWishlistStore } from '@/stores/useWishlistStore';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 interface WishlistButtonProps {
   property: {
@@ -52,6 +53,10 @@ export function WishlistButton({ property, size = 'md', className }: WishlistBut
     
     if (isInWishlist(property.id)) {
       removeItem(property.id);
+      toast.success('Đã xóa khỏi danh sách yêu thích', {
+        description: property.name,
+        duration: 2000,
+      });
     } else {
       addItem({
         id: property.id,
@@ -60,6 +65,10 @@ export function WishlistButton({ property, size = 'md', className }: WishlistBut
         image: property.image,
         priceWeekday: property.priceWeekday,
         bedroomCount: property.bedroomCount,
+      });
+      toast.success('Đã thêm vào danh sách yêu thích', {
+        description: property.name,
+        duration: 2000,
       });
     }
   };

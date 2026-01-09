@@ -6,8 +6,6 @@ import com.taivillavungtau.backend.dto.response.PageResponse;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-
 public interface PropertyService {
     PropertyDTO createProperty(PropertyDTO propertyDTO);
 
