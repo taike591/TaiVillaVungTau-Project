@@ -20,6 +20,7 @@ interface ScrollToTopProps {
  * - Show "Back to position" button after scrolling to top
  * - Premium glassmorphism design
  * - Smooth animations
+ * - Fixed touch event issues on Android devices
  */
 export function ScrollToTop({ threshold = 300, className }: ScrollToTopProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -85,42 +86,46 @@ export function ScrollToTop({ threshold = 300, className }: ScrollToTopProps) {
   if (!isVisible && !showBackButton) return null;
 
   return (
-    <div 
-      className={cn(
-        // Container positioning - center bottom using transform
-        'fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-40',
-        // Flex container for buttons
-        'flex items-center justify-center gap-2 sm:gap-3',
-        // Prevent blocking page interactions
-        'pointer-events-none',
-        className
-      )}
-    >
-      {/* Back to Position Button */}
+    <>
+      {/* Back to Position Button - Rendered as sibling, not nested */}
       {showBackButton && savedPosition !== null && (
         <button
           onClick={scrollToSavedPosition}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            scrollToSavedPosition();
+          }}
           aria-label="Quay lại vị trí cũ"
           className={cn(
-            // Base styles - same size as main button
-            'group relative flex items-center justify-center gap-2 pointer-events-auto',
+            // Fixed positioning - left of center button
+            'fixed bottom-20 sm:bottom-6 z-50',
+            // Position: slightly left of center
+            'left-1/2 -translate-x-[calc(50%+60px)] sm:-translate-x-[calc(50%+80px)]',
+            // Base styles
+            'flex items-center justify-center gap-2',
             'p-3.5 sm:px-5 sm:py-3 rounded-full',
-            // Glassmorphism effect
-            'bg-white/90 backdrop-blur-md',
-            'border border-slate-200/60',
-            'shadow-lg shadow-slate-200/50',
+            // Solid background for better touch on Android
+            'bg-white',
+            'border border-slate-200',
+            'shadow-lg',
             // Text
             'text-slate-700 text-sm font-medium',
-            // Hover effects
-            'hover:bg-white hover:shadow-xl hover:border-cyan-300',
+            // Hover effects (desktop only)
+            'hover:bg-slate-50 hover:shadow-xl hover:border-cyan-300',
             'hover:text-cyan-600',
+            // Touch feedback
+            'active:scale-95 active:bg-slate-100',
             // Transitions
-            'transition-all duration-300 ease-out',
+            'transition-all duration-200 ease-out',
             // Entrance animation
-            'animate-in fade-in-0 slide-in-from-bottom-4 duration-300'
+            'animate-in fade-in-0 slide-in-from-bottom-4 duration-300',
+            // Ensure touch works
+            'touch-manipulation',
+            'select-none',
+            className
           )}
         >
-          <ArrowDown className="h-5 w-5 sm:h-4 sm:w-4 group-hover:translate-y-0.5 transition-transform" />
+          <ArrowDown className="h-5 w-5 sm:h-4 sm:w-4" />
           <span className="hidden sm:inline">Quay lại</span>
         </button>
       )}
@@ -129,10 +134,16 @@ export function ScrollToTop({ threshold = 300, className }: ScrollToTopProps) {
       {isVisible && (
         <button
           onClick={scrollToTop}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            scrollToTop();
+          }}
           aria-label="Cuộn lên đầu trang"
           className={cn(
+            // Fixed positioning - center bottom
+            'fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50',
             // Base styles - circle on mobile, pill on desktop
-            'group relative flex items-center justify-center pointer-events-auto',
+            'flex items-center justify-center',
             // Mobile: circle with equal padding
             'p-3.5 sm:px-5 sm:py-3',
             'rounded-full',
@@ -142,29 +153,27 @@ export function ScrollToTop({ threshold = 300, className }: ScrollToTopProps) {
             'shadow-lg shadow-teal-500/30',
             // Text
             'text-white text-sm font-semibold',
-            // Hover effects
+            // Hover effects (desktop only)
             'hover:shadow-xl hover:shadow-teal-500/40',
             'hover:scale-105',
-            // Active state
-            'active:scale-95',
+            // Touch feedback - more responsive
+            'active:scale-95 active:brightness-90',
             // Transitions
-            'transition-all duration-300 ease-out',
+            'transition-all duration-200 ease-out',
             // Entrance animation
             'animate-in fade-in-0 slide-in-from-bottom-4 duration-300',
-            // Pulse animation hint
-            'hover:animate-none'
+            // Ensure touch works on all devices
+            'touch-manipulation',
+            'select-none',
+            // Prevent any text selection or context menu
+            '-webkit-tap-highlight-color-transparent',
+            className
           )}
         >
-          {/* Animated ring effect on hover */}
-          <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 group-hover:animate-ping" />
-          
-          <ArrowUp className="h-5 w-5 sm:h-4 sm:w-4 group-hover:-translate-y-0.5 transition-transform relative z-10" />
-          <span className="hidden sm:inline sm:ml-2 relative z-10">Lên đầu</span>
-          
-          {/* Shimmer effect */}
-          <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full" />
+          <ArrowUp className="h-5 w-5 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline sm:ml-2">Lên đầu</span>
         </button>
       )}
-    </div>
+    </>
   );
 }
