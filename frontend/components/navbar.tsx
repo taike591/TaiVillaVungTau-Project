@@ -8,7 +8,7 @@ import { ZaloCTAButton } from "./zalo-cta-button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useNavigationLoading } from "@/components/providers/NavigationLoadingProvider";
+
 interface NavbarProps {
   transparent?: boolean;
 }
@@ -18,7 +18,6 @@ export function Navbar({ transparent = false }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const t = useTranslations("nav");
-  const { startNavigation } = useNavigationLoading();
 
   // Track client-side mounting - MUST happen after hydration
   useEffect(() => {
@@ -70,7 +69,6 @@ export function Navbar({ transparent = false }: NavbarProps) {
             <Link
               href="/"
               className="flex items-center gap-2 group"
-              onClick={startNavigation}
               suppressHydrationWarning
             >
               <div
