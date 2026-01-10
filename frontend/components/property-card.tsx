@@ -9,6 +9,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { WishlistButton } from './wishlist';
 import { useInView } from '@/lib/hooks';
+import { useNavigationLoading } from '@/components/providers/NavigationLoadingProvider';
 import { PriceDisplay } from './price-display';
 import { 
   getDisplayName as getDisplayNameUtil, 
@@ -124,6 +125,7 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
   
   const isFeatured = property.featured || property.priceWeekday >= 7000000;
   const { ref, isInView } = useInView({ threshold: 0.1, triggerOnce: true });
+  const { startNavigation } = useNavigationLoading();
   const displayName = getDisplayNameUtil(property);
   const villaCode = getVillaCode(property.code);
   const missingPrice = hasMissingPrice(property.priceWeekday);
@@ -145,7 +147,12 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
   
   return (
     <div ref={ref} className={`card-fade-in ${isInView ? 'in-view' : ''} h-full property-card-container`} suppressHydrationWarning>
-      <Link href={`/properties/${property.id}`} className="block h-full" suppressHydrationWarning>
+      <Link 
+        href={`/properties/${property.id}`} 
+        className="block h-full" 
+        onClick={startNavigation}
+        suppressHydrationWarning
+      >
         <Card className="p-0 gap-0 overflow-hidden h-full flex flex-col transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_22px_45px_-12px_rgba(0,0,0,0.15)] shadow-lg rounded-2xl group bg-white border-0 property-card-glow" suppressHydrationWarning>
           {/* Image Section with Navigation Arrows */}
           <div className="relative h-52 md:h-56 overflow-hidden">

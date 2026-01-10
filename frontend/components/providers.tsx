@@ -1,9 +1,10 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, Suspense } from 'react';
 import { ServerStatusProvider } from '@/components/providers/ServerStatusProvider';
-import { ScrollToTop } from '@/components/shared';
+import { NavigationLoadingProvider } from '@/components/providers/NavigationLoadingProvider';
+import { ScrollToTop, PageLoadingIndicator } from '@/components/shared';
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -21,10 +22,19 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ServerStatusProvider>
-        {children}
-        {/* Global Scroll to Top Button - visible on all pages */}
-        <ScrollToTop />
+        <NavigationLoadingProvider>
+          {/* Global Page Loading Indicator - Progress Bar */}
+          <Suspense fallback={null}>
+            <PageLoadingIndicator />
+          </Suspense>
+          
+          {children}
+          
+          {/* Global Scroll to Top Button - visible on all pages */}
+          <ScrollToTop />
+        </NavigationLoadingProvider>
       </ServerStatusProvider>
     </QueryClientProvider>
   );
 }
+

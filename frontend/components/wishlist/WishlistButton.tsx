@@ -1,6 +1,6 @@
 'use client';
 
-import { Bookmark } from 'lucide-react';
+import { Bookmark, Loader2 } from 'lucide-react';
 import { useWishlistStore } from '@/stores/useWishlistStore';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -22,6 +22,7 @@ interface WishlistButtonProps {
 export function WishlistButton({ property, size = 'md', className }: WishlistButtonProps) {
   const { addItem, removeItem, isInWishlist } = useWishlistStore();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   
   // Fix hydration mismatch - only check wishlist state after component mounts
@@ -48,29 +49,37 @@ export function WishlistButton({ property, size = 'md', className }: WishlistBut
     e.preventDefault();
     e.stopPropagation();
     
-    setIsAnimating(true);
-    setTimeout(() => setIsAnimating(false), 300);
+    // Prevent double-click
+    if (isLoading) return;
     
-    if (isInWishlist(property.id)) {
-      removeItem(property.id);
-      toast.success('Đã xóa khỏi danh sách yêu thích', {
-        description: property.name,
-        duration: 2000,
-      });
-    } else {
-      addItem({
-        id: property.id,
-        code: property.code,
-        name: property.name,
-        image: property.image,
-        priceWeekday: property.priceWeekday,
-        bedroomCount: property.bedroomCount,
-      });
-      toast.success('Đã thêm vào danh sách yêu thích', {
-        description: property.name,
-        duration: 2000,
-      });
-    }
+    setIsLoading(true);
+    setIsAnimating(true);
+    
+    // Simulate brief loading for visual feedback
+    setTimeout(() => {
+      if (isInWishlist(property.id)) {
+        removeItem(property.id);
+        toast.success('Đã xóa khỏi danh sách yêu thích', {
+          description: property.name,
+          duration: 2000,
+        });
+      } else {
+        addItem({
+          id: property.id,
+          code: property.code,
+          name: property.name,
+          image: property.image,
+          priceWeekday: property.priceWeekday,
+          bedroomCount: property.bedroomCount,
+        });
+        toast.success('Đã thêm vào danh sách yêu thích', {
+          description: property.name,
+          duration: 2000,
+        });
+      }
+      setIsLoading(false);
+      setIsAnimating(false);
+    }, 150); // Brief delay for loading feedback
   };
 
   return (
@@ -81,12 +90,15 @@ export function WishlistButton({ property, size = 'md', className }: WishlistBut
         e.stopPropagation();
         handleClick(e as unknown as React.MouseEvent);
       }}
+      disabled={isLoading}
       className={cn(
         'flex items-center justify-center rounded-full transition-all duration-300',
         'bg-white/90 hover:bg-white shadow-lg hover:shadow-xl',
         'backdrop-blur-sm border border-white/50',
         // Touch optimization for Android
         'touch-manipulation select-none',
+        // Disabled state
+        isLoading && 'cursor-wait opacity-80',
         sizeClasses[size],
         isAnimating && 'scale-125',
         className
@@ -95,17 +107,24 @@ export function WishlistButton({ property, size = 'md', className }: WishlistBut
       title={isSaved ? 'Bỏ lưu' : 'Lưu lại'}
       suppressHydrationWarning
     >
-      <Bookmark
-        className={cn(
-          iconSizes[size],
-          'transition-all duration-300',
-          isSaved 
-            ? 'text-amber-500 fill-amber-500 drop-shadow-sm' 
-            : 'text-gray-600 hover:text-amber-400'
-        )}
-      />
+      {isLoading ? (
+        <Loader2
+          className={cn(
+            iconSizes[size],
+            'animate-spin text-amber-500'
+          )}
+        />
+      ) : (
+        <Bookmark
+          className={cn(
+            iconSizes[size],
+            'transition-all duration-300',
+            isSaved 
+              ? 'text-amber-500 fill-amber-500 drop-shadow-sm' 
+              : 'text-gray-600 hover:text-amber-400'
+          )}
+        />
+      )}
     </button>
   );
 }
-
-
