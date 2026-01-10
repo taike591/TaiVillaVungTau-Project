@@ -152,7 +152,7 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
       })}
 
       {/* Gradient Overlays - Lighter for clearer image */}
-      <div className="absolute inset-0 z-[2]" suppressHydrationWarning>
+      <div className="absolute inset-0 z-[2] pointer-events-none" suppressHydrationWarning>
         {/* Bottom gradient for content readability - reduced opacity */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" suppressHydrationWarning />
         {/* Top gradient for navbar - lighter */}

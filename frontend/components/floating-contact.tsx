@@ -17,11 +17,11 @@ export function FloatingContact() {
   return (
     <>
       {/* Floating Button - more responsive positioning */}
-      <div className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2 sm:gap-3">
+      <div className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2 sm:gap-3 pointer-events-none">
         <div
           className={cn(
             "flex flex-col gap-3 transition-all duration-300 origin-bottom-right",
-            isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
+            isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-0 opacity-0 pointer-events-none"
           )}
         >
           {/* Zalo */}
@@ -31,7 +31,7 @@ export function FloatingContact() {
             rel="noopener noreferrer"
             suppressHydrationWarning
             aria-label="Chat qua Zalo"
-            className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-[#0891b2]"
+            className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-[#0891b2] touch-manipulation"
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#0891b2] to-[#0ea5e9] flex items-center justify-center shadow-lg">
               <MessageCircle className="w-6 h-6 text-white" />
@@ -46,7 +46,7 @@ export function FloatingContact() {
           <a
             href="tel:0868947734"
             aria-label="Gọi điện thoại 0868-947-734"
-            className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-green-500"
+            className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-green-500 touch-manipulation"
             suppressHydrationWarning
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg">
@@ -65,7 +65,7 @@ export function FloatingContact() {
             rel="noopener noreferrer"
             suppressHydrationWarning
             aria-label="Nhắn tin qua Facebook"
-            className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-[#1877F2]"
+            className="group flex items-center gap-3 bg-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 pr-5 pl-4 py-3 border-2 border-[#1877F2] touch-manipulation"
           >
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1877F2] to-[#0e5fd8] flex items-center justify-center shadow-lg">
               <Facebook className="w-6 h-6 text-white" />
@@ -81,18 +81,18 @@ export function FloatingContact() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            "group relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center",
+            "group relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center pointer-events-auto touch-manipulation select-none",
             isOpen 
               ? "bg-gradient-to-br from-red-500 to-red-600 rotate-90" 
               : "bg-gradient-to-br from-[#0891b2] to-[#0ea5e9]"
           )}
           aria-label={isOpen ? "Đóng menu liên hệ" : "Mở menu liên hệ"}
         >
-          {/* Pulse animation when closed */}
+          {/* Pulse animation when closed - MUST have pointer-events-none */}
           {!isOpen && (
             <>
-              <span className="absolute inset-0 rounded-full bg-[#0891b2] animate-ping opacity-75"></span>
-              <span className="absolute inset-0 rounded-full bg-[#0891b2] animate-pulse opacity-50"></span>
+              <span className="absolute inset-0 rounded-full bg-[#0891b2] animate-ping opacity-75 pointer-events-none"></span>
+              <span className="absolute inset-0 rounded-full bg-[#0891b2] animate-pulse opacity-50 pointer-events-none"></span>
             </>
           )}
           

@@ -77,10 +77,16 @@ export function WishlistFloatingButton() {
       {/* Floating Button - Left side */}
       <button
         onClick={() => setIsOpen(true)}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          setIsOpen(true);
+        }}
         className={cn(
-          'fixed bottom-24 left-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full',
+          'fixed bottom-4 sm:bottom-6 left-6 z-[60] flex items-center gap-2 px-4 py-3 rounded-full',
           'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-2xl',
           'hover:shadow-3xl hover:scale-105 transition-all duration-300',
+          // Touch optimization for Android
+          'touch-manipulation select-none',
           items.length === 0 && 'opacity-0 pointer-events-none scale-0'
         )}
         aria-label="Mở danh sách đã lưu"
@@ -89,7 +95,7 @@ export function WishlistFloatingButton() {
         <span className="font-bold">{items.length}</span>
         
         {/* Pulse animation */}
-        <span className="absolute inset-0 rounded-full bg-amber-500 animate-ping opacity-25" />
+        <span className="absolute inset-0 rounded-full bg-amber-500 animate-ping opacity-25 pointer-events-none" />
       </button>
 
       {/* Backdrop */}

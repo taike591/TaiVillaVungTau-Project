@@ -97,10 +97,8 @@ export function ScrollToTop({ threshold = 300, className }: ScrollToTopProps) {
           }}
           aria-label="Quay lại vị trí cũ"
           className={cn(
-            // Fixed positioning - left of center button
-            'fixed bottom-20 sm:bottom-6 z-50',
-            // Position: slightly left of center
-            'left-1/2 -translate-x-[calc(50%+60px)] sm:-translate-x-[calc(50%+80px)]',
+            // Fixed positioning - center bottom (same as Scroll to Top)
+            'fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50',
             // Base styles
             'flex items-center justify-center gap-2',
             'p-3.5 sm:px-5 sm:py-3 rounded-full',
@@ -141,7 +139,7 @@ export function ScrollToTop({ threshold = 300, className }: ScrollToTopProps) {
           aria-label="Cuộn lên đầu trang"
           className={cn(
             // Fixed positioning - center bottom
-            'fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50',
+            'fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50',
             // Base styles - circle on mobile, pill on desktop
             'flex items-center justify-center',
             // Mobile: circle with equal padding
