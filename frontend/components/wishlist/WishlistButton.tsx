@@ -76,10 +76,17 @@ export function WishlistButton({ property, size = 'md', className }: WishlistBut
   return (
     <button
       onClick={handleClick}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleClick(e as unknown as React.MouseEvent);
+      }}
       className={cn(
         'flex items-center justify-center rounded-full transition-all duration-300',
         'bg-white/90 hover:bg-white shadow-lg hover:shadow-xl',
         'backdrop-blur-sm border border-white/50',
+        // Touch optimization for Android
+        'touch-manipulation select-none',
         sizeClasses[size],
         isAnimating && 'scale-125',
         className

@@ -149,8 +149,8 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
         <Card className="p-0 gap-0 overflow-hidden h-full flex flex-col transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_22px_45px_-12px_rgba(0,0,0,0.15)] shadow-lg rounded-2xl group bg-white border-0 property-card-glow" suppressHydrationWarning>
           {/* Image Section with Navigation Arrows */}
           <div className="relative h-52 md:h-56 overflow-hidden">
-            {/* Gradient overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+            {/* Gradient overlay on hover - pointer-events-none to not block touches */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none" />
             
             {mainImage ? (
               <Image
@@ -177,14 +177,14 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
               <>
                 <button
                   onClick={handlePrevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 md:w-8 md:h-8 rounded-full bg-white/90 hover:bg-white shadow-lg flex items-center justify-center transition-all opacity-80 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 md:w-8 md:h-8 rounded-full bg-white/90 hover:bg-white shadow-lg flex items-center justify-center transition-all opacity-80 md:opacity-0 md:group-hover:opacity-100 active:scale-95 touch-manipulation"
                   aria-label="Ảnh trước"
                 >
                   <ChevronLeft className="h-5 w-5 text-slate-700" />
                 </button>
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 md:w-8 md:h-8 rounded-full bg-white/90 hover:bg-white shadow-lg flex items-center justify-center transition-all opacity-80 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 md:w-8 md:h-8 rounded-full bg-white/90 hover:bg-white shadow-lg flex items-center justify-center transition-all opacity-80 md:opacity-0 md:group-hover:opacity-100 active:scale-95 touch-manipulation"
                   aria-label="Ảnh tiếp"
                 >
                   <ChevronRight className="h-5 w-5 text-slate-700" />
