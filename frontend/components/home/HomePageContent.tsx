@@ -35,11 +35,6 @@ const TrustSections = dynamic(() => import('./TrustSections'), {
   ssr: true
 });
 
-// Lazy load recently viewed - client-side only, no SSR needed
-const RecentlyViewedSection = dynamic(() => import('./RecentlyViewedSection'), {
-  loading: () => null,
-  ssr: false // No SSR - depends on localStorage
-});
 
 // Floating Element Components for background accents
 const FloatingDecoration = ({ className, delay = 0, duration = 15, size = 40 }: { className?: string, delay?: number, duration?: number, size?: number }) => (
@@ -351,6 +346,7 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
     <>
       {/* Hero Section */}
       <HeroSection villas={featuredVillas} />
+
 
       {/* Property Grid Section - Coastal Cool Design */}
       <section 
@@ -923,8 +919,6 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
         `}} />
       </section>
 
-      {/* Recently Viewed - only shows if user has viewed properties */}
-      <RecentlyViewedSection />
 
       <TrustSections />
       <FeedbackSection />

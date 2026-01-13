@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { sortImagesWithThumbnailFirst, getMainImage } from "@/lib/error-handling";
-import { useTrackRecentlyViewed } from "@/stores/useRecentlyViewedStore";
+
 
 // Amenity icon mapping
 const AMENITY_ICONS: Record<string, any> = {
@@ -86,8 +86,7 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
-  // Track this property as recently viewed
-  useTrackRecentlyViewed(property);
+
 
   const handleImageClick = (index: number) => {
     setGalleryIndex(index);
