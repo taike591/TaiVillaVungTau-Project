@@ -17,14 +17,26 @@ export default function NewPropertyPage() {
   const [initialData, setInitialData] = useState<Partial<PropertyFormData> | undefined>(undefined);
   const [formKey, setFormKey] = useState(0); // Force form re-render on import
 
+  /**
+   * Handle property creation
+   * UNIFIED FLOW:
+   * 1. PropertyForm calls onSubmit to create property (metadata only)
+   * 2. This function returns created property with ID
+   * 3. PropertyForm uploads images using that ID
+   * 4. PropertyForm calls onComplete when done
+   * 5. We redirect in onComplete
+   */
   const handleSubmit = async (data: PropertyFormData) => {
-    try {
-      await createProperty.mutateAsync(data);
-      showSuccess.created('Property');
-      router.push('/taike-manage/properties');
-    } catch (error: any) {
-      showError.create('property');
-    }
+    const createdProperty = await createProperty.mutateAsync(data);
+    return createdProperty; // Return for PropertyForm to use the ID for image upload
+  };
+
+  /**
+   * Called after all steps complete (including image upload)
+   */
+  const handleComplete = () => {
+    showSuccess.created('Property');
+    router.push('/taike-manage/properties');
   };
 
   const handleSmartImport = (data: ParsedPropertyData) => {
@@ -86,6 +98,7 @@ export default function NewPropertyPage() {
         initialData={initialData}
         onSubmit={handleSubmit}
         isLoading={createProperty.isPending}
+        onComplete={handleComplete}
       />
     </div>
   );

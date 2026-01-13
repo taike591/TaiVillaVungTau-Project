@@ -34,9 +34,18 @@ import { UpdateProgressOverlay, UpdateStep } from './UpdateProgressOverlay';
 
 export interface PropertyFormProps {
   initialData?: Partial<PropertyFormData>;
-  onSubmit: (data: PropertyFormData) => Promise<void>;
+  /**
+   * For Create mode: Should return the created property with ID
+   * For Edit mode: Can return void
+   */
+  onSubmit: (data: PropertyFormData) => Promise<{ id: number } | void>;
   isLoading: boolean;
   propertyId?: number;
+  /**
+   * Called after all steps complete successfully (Create: after images uploaded, Edit: after save)
+   * Use this for redirect or other post-submit actions
+   */
+  onComplete?: () => void;
 }
 
 export function PropertyForm({
@@ -44,6 +53,7 @@ export function PropertyForm({
   onSubmit,
   isLoading,
   propertyId,
+  onComplete,
 }: PropertyFormProps) {
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -169,24 +179,61 @@ export function PropertyForm({
     }
 
     // Reset and show progress overlay
+    // UNIFIED FLOW: Same steps for both Create and Edit
     setUpdateError(undefined);
-    setUpdateSteps([
+    
+    // Build steps based on mode
+    const steps: UpdateStep[] = [];
+    if (!propertyId) {
+      // Create mode: need to create property first
+      steps.push({ id: 'create', label: 'Tạo property mới', status: 'pending', icon: 'database' });
+    }
+    steps.push(
       { id: 'upload', label: 'Tải ảnh lên server', status: 'pending', icon: 'upload' },
       { id: 'thumbnail', label: 'Cập nhật ảnh đại diện', status: 'pending', icon: 'image' },
-      { id: 'save', label: 'Lưu thông tin property', status: 'pending', icon: 'database' },
-    ]);
+    );
+    if (propertyId) {
+      // Edit mode: need to save property data
+      steps.push({ id: 'save', label: 'Lưu thông tin property', status: 'pending', icon: 'database' });
+    }
+    
+    setUpdateSteps(steps);
     setCurrentStepIndex(0);
     setShowProgressOverlay(true);
 
     try {
-      // If we have a propertyId (Edit Mode), upload new images first
-      if (propertyId) {
-        // Step 1: Upload images
+      // Track current property ID (for Create mode, this will be set after creation)
+      let currentPropertyId = propertyId;
+
+      // ===== CREATE MODE: Create property first to get ID =====
+      if (!propertyId) {
+        updateStepStatus('create', 'in-progress');
+        
+        try {
+          const createdProperty = await onSubmit(data);
+          if (createdProperty && 'id' in createdProperty) {
+            currentPropertyId = createdProperty.id;
+          } else {
+            throw new Error('Property creation did not return an ID');
+          }
+        } catch (error: any) {
+          updateStepStatus('create', 'error');
+          setUpdateError(error?.message || 'Có lỗi khi tạo property. Vui lòng thử lại.');
+          setTimeout(() => setShowProgressOverlay(false), 3000);
+          return;
+        }
+        
+        updateStepStatus('create', 'completed');
+        setCurrentStepIndex(1);
+      }
+
+      // ===== UPLOAD IMAGES (same for both Create and Edit) =====
+      if (currentPropertyId) {
         updateStepStatus('upload', 'in-progress');
         
         const hasPendingImages = images.some(img => !img.isUploaded);
         if (hasPendingImages) {
-          const uploadResult = await uploadAllImages(propertyId);
+          const uploadResult = await uploadAllImages(currentPropertyId);
           if (!uploadResult.success && uploadResult.uploadedUrls.length === 0) {
             const stillHasPending = images.some(img => !img.isUploaded);
             if (stillHasPending) {
@@ -198,81 +245,76 @@ export function PropertyForm({
           }
         }
         updateStepStatus('upload', 'completed');
-        setCurrentStepIndex(1);
+        setCurrentStepIndex(propertyId ? 1 : 2);
 
-        // Step 2: Update thumbnail
+        // ===== SET THUMBNAIL =====
         updateStepStatus('thumbnail', 'in-progress');
         
-        if (thumbnailId) {
-          const selectedImage = images.find(img => img.id === thumbnailId);
-          if (selectedImage?.backendId && selectedImage.backendId !== originalThumbnailBackendId) {
-            try {
-              await api.put(`/api/v1/properties/${propertyId}/images/${selectedImage.backendId}/thumbnail`);
-            } catch (error) {
-              console.error('Failed to update thumbnail:', error);
-            }
-          }
-        } else {
-          // If no thumbnail selected, set first image as thumbnail
-          const firstImage = images[0];
-          if (firstImage?.backendId && firstImage.backendId !== originalThumbnailBackendId) {
-            try {
-              await api.put(`/api/v1/properties/${propertyId}/images/${firstImage.backendId}/thumbnail`);
-            } catch (error) {
-              console.error('Failed to set first image as thumbnail:', error);
-            }
+        // For create mode, images were just uploaded - need to refresh to get backendIds
+        // The uploadAllImages function should have updated the images state with backendIds
+        const targetThumbnailId = thumbnailId || images[0]?.id;
+        const selectedImage = images.find(img => img.id === targetThumbnailId);
+        
+        if (selectedImage?.backendId && selectedImage.backendId !== originalThumbnailBackendId) {
+          try {
+            await api.put(`/api/v1/properties/${currentPropertyId}/images/${selectedImage.backendId}/thumbnail`);
+          } catch (error) {
+            console.error('Failed to update thumbnail:', error);
+            // Don't fail the whole operation for thumbnail error
           }
         }
-        updateStepStatus('thumbnail', 'completed');
-        setCurrentStepIndex(2);
         
-        // Wait briefly for DB transaction to fully commit before next update
-        await new Promise(resolve => setTimeout(resolve, 500));
-      } else {
-        // For create mode, skip image upload and thumbnail steps
-        updateStepStatus('upload', 'completed');
         updateStepStatus('thumbnail', 'completed');
-        setCurrentStepIndex(2);
+        setCurrentStepIndex(propertyId ? 2 : 3);
+        
+        // Wait briefly for DB transaction to fully commit
+        await new Promise(resolve => setTimeout(resolve, 300));
       }
 
-      // Step 3: Save property data with retry mechanism
-      updateStepStatus('save', 'in-progress');
-      
-      // Retry logic for transient lock errors
-      const maxRetries = 3;
-      let lastError: any = null;
-      
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          await onSubmit(data);
-          updateStepStatus('save', 'completed');
-          lastError = null;
-          break; // Success, exit retry loop
-        } catch (error: any) {
-          lastError = error;
-          const isLockError = error?.message?.includes('Lock') || 
-                             error?.response?.data?.message?.includes('Lock') ||
-                             error?.response?.status === 500;
-          
-          if (isLockError && attempt < maxRetries) {
-            // Wait before retry with exponential backoff
-            const waitTime = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
-            console.warn(`Lock timeout, retrying in ${waitTime}ms (attempt ${attempt}/${maxRetries})`);
-            await new Promise(resolve => setTimeout(resolve, waitTime));
-          } else {
-            // Either not a lock error or last attempt - throw
-            throw error;
+      // ===== SAVE PROPERTY DATA (Edit mode only) =====
+      // Create mode already saved the property in the 'create' step
+      if (propertyId) {
+        updateStepStatus('save', 'in-progress');
+        
+        // Retry logic for transient lock errors
+        const maxRetries = 3;
+        let lastError: any = null;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            await onSubmit(data);
+            updateStepStatus('save', 'completed');
+            lastError = null;
+            break; // Success, exit retry loop
+          } catch (error: any) {
+            lastError = error;
+            const isLockError = error?.message?.includes('Lock') || 
+                               error?.response?.data?.message?.includes('Lock') ||
+                               error?.response?.status === 500;
+            
+            if (isLockError && attempt < maxRetries) {
+              // Wait before retry with exponential backoff
+              const waitTime = 1000 * Math.pow(2, attempt - 1); // 1s, 2s, 4s
+              console.warn(`Lock timeout, retrying in ${waitTime}ms (attempt ${attempt}/${maxRetries})`);
+              await new Promise(resolve => setTimeout(resolve, waitTime));
+            } else {
+              // Either not a lock error or last attempt - throw
+              throw error;
+            }
           }
         }
-      }
-      
-      if (lastError) {
-        throw lastError;
+        
+        if (lastError) {
+          throw lastError;
+        }
       }
       
       // Keep overlay visible briefly to show completion (reduced from 800ms)
       await new Promise(resolve => setTimeout(resolve, 300));
       setShowProgressOverlay(false);
+      
+      // Call onComplete callback for parent to handle redirect
+      onComplete?.();
       
     } catch (error: any) {
       updateStepStatus('save', 'error');

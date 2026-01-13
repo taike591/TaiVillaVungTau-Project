@@ -59,13 +59,18 @@ export default function EditPropertyPage() {
 
   const handleSubmit = async (data: PropertyFormData) => {
     // Note: PropertyForm handles the progress overlay and step tracking
-    // This function is called during the "save" step
+    // This function is called during the "save" step for Edit mode
     await updateProperty.mutateAsync({
       id: Number(propertyId),
       data,
     });
-    // Show success notification and redirect
-    // The redirect happens after the overlay shows completion (handled by PropertyForm)
+    // Don't redirect here - onComplete callback handles it
+  };
+
+  /**
+   * Called after all steps complete (including image upload and save)
+   */
+  const handleComplete = () => {
     showSuccess.updated('Property');
     router.push(`/taike-manage/properties?page=${returnPage}`);
   };
@@ -152,6 +157,7 @@ export default function EditPropertyPage() {
         onSubmit={handleSubmit}
         isLoading={updateProperty.isPending}
         propertyId={Number(propertyId)}
+        onComplete={handleComplete}
       />
     </div>
   );
