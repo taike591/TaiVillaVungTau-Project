@@ -157,7 +157,8 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
                 src={mainImage}
                 alt={`${displayName} - Villa ${property.bedroomCount} phòng ngủ tại ${property.area || 'Vũng Tàu'}`}
                 fill
-                sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
+                sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+                quality={70}
                 className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                 loading="lazy"
                 placeholder="blur"

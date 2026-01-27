@@ -16,22 +16,22 @@ import dynamic from 'next/dynamic';
 
 // Dynamic imports for below-the-fold sections
 const FeedbackSection = dynamic(() => import('./FeedbackSection'), {
-  loading: () => <div className="h-96 animate-pulse bg-slate-50" />,
+  loading: () => <div className="h-96 bg-slate-50" />,
   ssr: true
 });
 
 const RequestAdviceSection = dynamic(() => import('./RequestAdviceSection'), {
-  loading: () => <div className="h-96 animate-pulse bg-slate-50" />,
+  loading: () => <div className="h-96 bg-slate-50" />,
   ssr: true
 });
 
 const FAQSection = dynamic(() => import('./FAQSection'), {
-  loading: () => <div className="h-96 animate-pulse bg-slate-50" />,
+  loading: () => <div className="h-96 bg-slate-50" />,
   ssr: true
 });
 
 const TrustSections = dynamic(() => import('./TrustSections'), {
-  loading: () => <div className="h-96 animate-pulse bg-slate-50" />,
+  loading: () => <div className="h-96 bg-slate-50" />,
   ssr: true
 });
 
@@ -39,7 +39,7 @@ const TrustSections = dynamic(() => import('./TrustSections'), {
 // Floating Element Components for background accents
 const FloatingDecoration = ({ className, delay = 0, duration = 15, size = 40 }: { className?: string, delay?: number, duration?: number, size?: number }) => (
   <div 
-    className={cn("absolute pointer-events-none opacity-[0.05] z-0", className)}
+    className={cn("hidden md:block absolute pointer-events-none opacity-[0.05] z-0", className)}
     style={{ 
       animation: `warmFloat ${duration}s ease-in-out ${delay}s infinite alternate`,
       width: size,
@@ -54,7 +54,7 @@ const FloatingDecoration = ({ className, delay = 0, duration = 15, size = 40 }: 
 
 const BubbleDecoration = ({ className, delay = 0, duration = 8, size = 20 }: { className?: string, delay?: number, duration?: number, size?: number }) => (
   <div 
-    className={cn("absolute pointer-events-none opacity-[0.08] z-0", className)}
+    className={cn("hidden md:block absolute pointer-events-none opacity-[0.08] z-0", className)}
     style={{ 
       animation: `riseAndFade ${duration}s ease-in-out ${delay}s infinite`,
       width: size,
@@ -182,7 +182,7 @@ function HeroSkeleton() {
   return (
     <section className="relative h-[80vh] min-h-[600px] w-full overflow-hidden bg-gradient-to-b from-slate-800 to-slate-900">
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center space-y-6 animate-pulse">
+        <div className="text-center space-y-6">
           <div className="h-24 w-24 mx-auto bg-slate-700 rounded-2xl" />
           <div className="h-12 w-80 mx-auto bg-slate-700 rounded-lg" />
           <div className="h-6 w-96 mx-auto bg-slate-700 rounded-lg" />
@@ -255,7 +255,7 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
         <section className="py-12 md:py-16 lg:py-20 bg-gray-50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px]">
             <div className="flex items-center justify-between mb-8 md:mb-12">
-              <div className="animate-pulse">
+              <div>
                 <div className="h-10 w-64 bg-slate-200 rounded-lg" />
               </div>
             </div>
@@ -408,10 +408,10 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
           </svg>
         </div>
 
-        {/* Floating particles - Beach sand effect */}
-        <div className="absolute bottom-20 left-10 w-2 h-2 rounded-full bg-amber-300/20 animate-pulse hidden sm:block" />
-        <div className="absolute bottom-32 right-20 w-1.5 h-1.5 rounded-full bg-cyan-400/20 animate-pulse hidden sm:block" style={{ animationDelay: '0.5s' }} />
-        <div className="absolute top-1/2 left-1/4 w-1 h-1 rounded-full bg-teal-400/15 animate-pulse hidden md:block" style={{ animationDelay: '1s' }} />
+        {/* Static floating particles - no animation */}
+        <div className="absolute bottom-20 left-10 w-2 h-2 rounded-full bg-amber-300/20 hidden sm:block" />
+        <div className="absolute bottom-32 right-20 w-1.5 h-1.5 rounded-full bg-cyan-400/20 hidden sm:block" />
+        <div className="absolute top-1/2 left-1/4 w-1 h-1 rounded-full bg-teal-400/15 hidden md:block" />
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px] relative z-10">
           {/* Section Header with Premium Typography */}
@@ -424,8 +424,8 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
             </div>
             <h2 
               id="properties-heading"
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight animate-fade-in-up"
-              style={{ fontFamily: 'var(--font-heading), "Playfair Display", serif', animationDelay: '100ms' }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight"
+              style={{ fontFamily: 'var(--font-heading), "Playfair Display", serif' }}
             >
               <span className="text-[#0c4a6e]">Villa & Homestay</span>
               <br />
@@ -681,13 +681,13 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
           </svg>
         </div>
 
-        {/* Floating subtle decorations */}
-        <div className="absolute top-20 right-20 w-32 h-32 opacity-[0.03] pointer-events-none animate-pulse">
+        {/* Static decorations - no animation */}
+        <div className="absolute top-20 right-20 w-32 h-32 opacity-[0.03] pointer-events-none">
           <svg viewBox="0 0 100 100" fill="#0891b2">
             <path d="M50,10 C70,10 80,25 80,40 C80,55 65,70 50,90 C35,70 20,55 20,40 C20,25 30,10 50,10 M30,45 Q50,35 70,45 M35,55 Q50,45 65,55"/>
           </svg>
         </div>
-        <div className="absolute bottom-40 left-16 w-24 h-24 opacity-[0.03] pointer-events-none" style={{ animation: 'warmFloat 4s ease-in-out infinite' }}>
+        <div className="absolute bottom-40 left-16 w-24 h-24 opacity-[0.03] pointer-events-none">
           <svg viewBox="0 0 100 100" fill="#0891b2">
             <circle cx="50" cy="50" r="20"/>
             <path d="M50,25 L50,5 M75,50 L95,50 M50,75 L50,95 M25,50 L5,50"/>
@@ -697,7 +697,7 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1400px] relative z-10">
           {/* Section Header - Premium White */}
           <div className="text-center mb-16 md:mb-20 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 rounded-full bg-white shadow-sm border border-cyan-100 animate-fade-in-up">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 rounded-full bg-white shadow-sm border border-cyan-100">
               <svg className="w-5 h-5 text-cyan-500" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
               </svg>
@@ -705,11 +705,10 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
             </div>
             <h2 
               id="locations-heading"
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up relative"
-              style={{ animationDelay: '200ms' }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 relative"
             >
               <span 
-                className="bg-gradient-to-r from-[#0c4a6e] via-[#0891b2] to-[#14b8a6] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x"
+                className="bg-gradient-to-r from-[#0c4a6e] via-[#0891b2] to-[#14b8a6] bg-clip-text text-transparent"
               >
                 {t('bestAreas')}
               </span>
@@ -720,8 +719,7 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
           <div 
             className="relative rounded-2xl sm:rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden border border-slate-200"
             style={{
-              background: 'rgba(255,255,255,0.8)',
-              backdropFilter: 'blur(24px)',
+              background: 'rgba(255,255,255,0.95)',
               boxShadow: '0 20px 40px -10px rgba(0,0,0,0.05)',
             }}
           >
@@ -730,13 +728,14 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
               
               {/* Image Section - Shows first on mobile */}
               <div className="relative w-full h-[200px] sm:h-[280px] lg:h-[600px] lg:flex-1 lg:order-2 overflow-hidden">
-                <div className="absolute inset-0 animate-slow-zoom">
+                <div className="absolute inset-0">
                   <Image
                     src={showcaseLocations[showcaseIndex]?.showcaseImage}
                     alt={showcaseLocations[showcaseIndex]?.name}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover transition-all duration-1000"
+                    quality={70}
+                    className="object-cover transition-opacity duration-500"
                     priority={showcaseIndex === 0}
                   />
                 </div>
@@ -906,17 +905,6 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
             <path d="M0,50 C360,100 720,0 1080,50 L1440,50 L1440,100 L0,100 Z"/>
           </svg>
         </div>
-
-        {/* Ken Burns animation style */}
-        <style dangerouslySetInnerHTML={{__html: `
-          @keyframes slow-zoom {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-          }
-          .animate-slow-zoom {
-            animation: slow-zoom 20s ease-in-out infinite;
-          }
-        `}} />
       </section>
 
 
@@ -924,20 +912,6 @@ export function HomePageContent({ initialData }: HomePageContentProps) {
       <FeedbackSection />
       <RequestAdviceSection />
       <FAQSection />
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes warmFloat {
-          0% { transform: translate(0, 0) rotate(0deg); }
-          50% { transform: translate(15px, -20px) rotate(5deg); }
-          100% { transform: translate(-10px, -40px) rotate(-5deg); }
-        }
-        @keyframes riseAndFade {
-          0% { transform: translateY(0) scale(0.5); opacity: 0; }
-          20% { opacity: 0.1; }
-          80% { opacity: 0.05; }
-          100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
-        }
-      `}} />
     </>
   );
 }

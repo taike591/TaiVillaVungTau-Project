@@ -51,61 +51,44 @@ interface HeroCarouselProps {
 export function HeroCarousel({ villas }: HeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [progress, setProgress] = useState(0);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  // progress state removed - using CSS animation
   const t = useTranslations('common');
   const tHero = useTranslations('hero');
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<number>(0);
 
   const SLIDE_DURATION = 6000;
 
   const maxSlides = Math.min(villas.length, 4);
 
-  // Progress animation
+  // Auto-advance logic using simple timeout instead of rAF loop
   useEffect(() => {
     if (!isAutoPlaying || villas.length === 0 || isHovered) {
       return;
     }
 
-    const startTime = Date.now();
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const newProgress = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
-      setProgress(newProgress);
-      
-      if (newProgress < 100) {
-        progressRef.current = requestAnimationFrame(animate);
-      } else {
-        setCurrentIndex((prev) => (prev + 1) % maxSlides);
-        setProgress(0);
-      }
-    };
+    const timer = setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % maxSlides);
+    }, SLIDE_DURATION);
 
-    progressRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(progressRef.current);
-  }, [isAutoPlaying, maxSlides, currentIndex, isHovered]);
+    return () => clearTimeout(timer);
+  }, [isAutoPlaying, maxSlides, currentIndex, isHovered, villas.length]);
 
   const goToSlide = useCallback((index: number) => {
     if (index === currentIndex) return;
     setCurrentIndex(index);
-    setProgress(0);
   }, [currentIndex]);
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + maxSlides) % maxSlides);
-    setProgress(0);
   }, [maxSlides]);
 
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % maxSlides);
-    setProgress(0);
   }, [maxSlides]);
 
   const toggleAutoPlay = useCallback(() => {
     setIsAutoPlaying((prev) => !prev);
-    setProgress(0);
   }, []);
 
   if (villas.length === 0) return null;
@@ -141,11 +124,11 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
               src={image}
               alt={villa.name}
               fill
-              sizes="(max-width: 640px) 200vw, (max-width: 1024px) 150vw, 100vw"
+              sizes="100vw"
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              quality={75}
-              className={`object-cover ${isActive ? 'md:animate-ken-burns' : ''}`}
+              quality={70}
+              className="object-cover"
             />
           </div>
         );
@@ -382,11 +365,14 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
                 
                 {/* Progress bar for active thumbnail */}
                 {isActive && (
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20" suppressHydrationWarning>
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
                     <div 
-                      className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 transition-all duration-100"
-                      style={{ width: `${progress}%` }}
-                      suppressHydrationWarning
+                      className="h-full bg-gradient-to-r from-cyan-400 to-teal-400 origin-left"
+                      style={{ 
+                        transform: isAutoPlaying && !isHovered ? 'scaleX(1)' : 'scaleX(0)',
+                        transition: isAutoPlaying && !isHovered ? `transform ${SLIDE_DURATION}ms linear` : 'none',
+                        transformOrigin: 'left'
+                      }}
                     />
                   </div>
                 )}
@@ -456,12 +442,12 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
             >
               {index === currentIndex && (
                 <span 
-                  className="absolute inset-0 rounded-full bg-white/50"
+                  className="absolute inset-0 rounded-full bg-white/50 origin-left"
                   style={{ 
-                    width: `${progress}%`,
-                    transition: 'width 100ms linear'
+                    transform: isAutoPlaying && !isHovered ? 'scaleX(1)' : 'scaleX(0)',
+                    transition: isAutoPlaying && !isHovered ? `transform ${SLIDE_DURATION}ms linear` : 'none',
+                    transformOrigin: 'left'
                   }}
-                  suppressHydrationWarning
                 />
               )}
             </button>
@@ -477,7 +463,6 @@ export function HeroCarousel({ villas }: HeroCarouselProps) {
             <div 
               className="h-full bg-cyan-400 transition-all duration-300 rounded-full"
               style={{ width: `${((currentIndex + 1) / villas.length) * 100}%` }}
-              suppressHydrationWarning
             />
           </div>
         </div>

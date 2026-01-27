@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { PropertyCard } from '@/components/property-card';
 import { PropertyFilters } from '@/components/property/PropertyFilters';
+import { QuickFilters } from '@/components/property/QuickFilters';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Pagination } from '@/components/ui/pagination';
@@ -102,9 +103,29 @@ export function PropertiesClient() {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      {/* Mobile Filter Toggle */}
-      <div className="lg:hidden mb-2">
+    <div className="flex flex-col">
+      {/* Quick Filters - Always visible */}
+      {(isLoadingPropertyTypes || isLoadingLabels || isLoadingLocations) ? (
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-wrap gap-2">
+            <Skeleton className="h-10 w-20 rounded-full" />
+            <Skeleton className="h-10 w-24 rounded-full" />
+            <Skeleton className="h-10 w-28 rounded-full" />
+            <Skeleton className="h-10 w-20 rounded-full" />
+          </div>
+        </div>
+      ) : (
+        <QuickFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          locations={locations}
+          propertyTypes={propertyTypes}
+          labels={labels}
+        />
+      )}
+
+      {/* Advanced Filters Toggle - Accordion style */}
+      <div className="mb-6">
         <Button 
           onClick={() => setIsFiltersOpen(!isFiltersOpen)}
           className="w-full flex justify-between items-center bg-white text-slate-800 border border-slate-200 hover:bg-slate-50 shadow-sm"
@@ -112,7 +133,7 @@ export function PropertiesClient() {
         >
           <span className="flex items-center gap-2 font-medium">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sliders-horizontal"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg>
-            Bộ Lọc Tìm Kiếm
+            Bộ Lọc Nâng Cao
           </span>
           {isFiltersOpen ? (
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"/></svg>
@@ -120,12 +141,10 @@ export function PropertiesClient() {
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
           )}
         </Button>
-      </div>
-
-      {/* Sidebar Filters */}
-      <aside className={`lg:w-64 shrink-0 transition-all duration-300 ease-in-out ${isFiltersOpen ? 'block' : 'hidden lg:block'}`}>
-        <div className="sticky top-20">
-          {isLoadingAmenities || isLoadingPropertyTypes || isLoadingLabels || isLoadingLocations ? (
+        
+        {/* Collapsible Advanced Filters */}
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${isFiltersOpen ? 'max-h-[2000px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
+          {(isLoadingAmenities || isLoadingPropertyTypes || isLoadingLabels || isLoadingLocations) ? (
             <div className="space-y-4">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
@@ -143,20 +162,20 @@ export function PropertiesClient() {
             />
           )}
         </div>
-      </aside>
+      </div>
 
-      {/* Property Grid */}
+      {/* Property Grid - Full width */}
       <div className="flex-1" ref={contentRef}>
         {isLoadingProperties ? (
           <div>
             <div className="mb-4 text-sm text-gray-500">Đang tải villa...</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <PropertyCardSkeleton count={6} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <PropertyCardSkeleton count={8} />
             </div>
           </div>
         ) : properties.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}

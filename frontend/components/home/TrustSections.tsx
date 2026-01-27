@@ -2,9 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState, useRef } from 'react';
 
-// Stats data with numeric values for animation
+// Stats data
 const STATS = [
   { 
     numericValue: 5,
@@ -29,56 +28,13 @@ const STATS = [
   },
 ];
 
-// Hook for counting animation
-function useCountUp(target: number, duration: number = 2000, startCounting: boolean = false) {
-  const [count, setCount] = useState(0);
-  
-  useEffect(() => {
-    if (!startCounting) {
-      setCount(0);
-      return;
-    }
-    
-    const startTime = Date.now();
-    const timer = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Easing function for smooth deceleration
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentValue = Math.floor(easeOut * target);
-      
-      setCount(currentValue);
-      
-      if (progress >= 1) {
-        setCount(target);
-        clearInterval(timer);
-      }
-    }, 16);
-    
-    return () => clearInterval(timer);
-  }, [target, duration, startCounting]);
-  
-  return count;
-}
-
-// Calculate duration based on value - smaller values finish faster
-function getDuration(value: number): number {
-  if (value <= 10) return 800;      // 5+ finishes in 0.8s
-  if (value <= 500) return 1500;    // 200+ finishes in 1.5s
-  return 2500;                       // 2000+ finishes in 2.5s
-}
-
-// Individual stat card component with its own counter
-function StatCard({ stat, isVisible }: { stat: typeof STATS[0], isVisible: boolean }) {
-  const duration = getDuration(stat.numericValue);
-  const count = useCountUp(stat.numericValue, duration, isVisible);
-  
+// Individual stat card component - Static display (no animation for better performance)
+function StatCard({ stat }: { stat: typeof STATS[0] }) {
   return (
     <div
       className="group relative p-8 rounded-3xl transition-all duration-500 hover:-translate-y-2 cursor-default"
       style={{
-        background: 'rgba(255, 255, 255, 0.7)',
-        backdropFilter: 'blur(20px)',
+        background: 'rgba(255, 255, 255, 0.85)',
         boxShadow: '0 8px 32px rgba(8, 145, 178, 0.08), inset 0 1px 0 rgba(255,255,255,0.8)',
         border: '1px solid rgba(255, 255, 255, 0.8)',
       }}
@@ -88,7 +44,7 @@ function StatCard({ stat, isVisible }: { stat: typeof STATS[0], isVisible: boole
       
       <div className="relative text-center">
         <div className={`text-6xl md:text-7xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-3 tabular-nums`}>
-          {count.toLocaleString()}{stat.suffix}
+          {stat.numericValue.toLocaleString()}{stat.suffix}
         </div>
         <div className="text-slate-600 font-semibold text-lg">
           {stat.label}
@@ -102,36 +58,14 @@ function StatCard({ stat, isVisible }: { stat: typeof STATS[0], isVisible: boole
 }
 
 export default function TrustSections() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  
-  // Intersection Observer to detect when section is in view
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect(); // Only animate once
-        }
-      },
-      { threshold: 0.3 } // Trigger when 30% visible
-    );
-    
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section ref={sectionRef} className="relative py-16 md:py-20 overflow-hidden bg-[#e0f2fe]">
+    <section className="relative py-16 md:py-20 overflow-hidden bg-[#e0f2fe]">
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative z-10">
-        {/* Stats Cards with count-up animation */}
+        {/* Stats Cards - Static display */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {STATS.map((stat, index) => (
-            <StatCard key={index} stat={stat} isVisible={isVisible} />
+            <StatCard key={index} stat={stat} />
           ))}
         </div>
 
@@ -139,8 +73,7 @@ export default function TrustSections() {
         <div 
           className="relative rounded-[2.5rem] overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,253,250,0.9) 100%)',
-            backdropFilter: 'blur(24px)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,250,0.95) 100%)',
             boxShadow: '0 25px 50px -12px rgba(8, 145, 178, 0.15), 0 0 0 1px rgba(255,255,255,0.8)',
           }}
         >
@@ -150,13 +83,10 @@ export default function TrustSections() {
 
           <div className="relative p-8 md:p-12 lg:p-16">
             <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-              {/* Logo Section - Enhanced */}
+              {/* Logo Section - Optimized for performance */}
               <div className="relative flex-shrink-0">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 -m-6 rounded-full bg-gradient-to-br from-cyan-400/20 via-teal-400/20 to-blue-400/20 blur-xl animate-pulse" />
-                
-                {/* Rotating border effect */}
-                <div className="absolute inset-0 -m-1 rounded-full bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-400 opacity-30 animate-spin" style={{ animationDuration: '8s' }} />
+                {/* Static gradient ring - no animation */}
+                <div className="absolute inset-0 -m-2 rounded-full bg-gradient-to-br from-cyan-300/30 via-teal-300/30 to-blue-300/30" />
                 
                 {/* Main logo */}
                 <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden border-4 border-white shadow-2xl shadow-cyan-200/50">
@@ -169,12 +99,9 @@ export default function TrustSections() {
                   />
                 </div>
 
-                {/* Status badge */}
+                {/* Status badge - static green dot */}
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-2 bg-white rounded-full shadow-lg border border-slate-100 flex items-center gap-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
-                  </span>
+                  <span className="inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
                   <span className="text-sm font-semibold text-slate-700">Online</span>
                 </div>
               </div>

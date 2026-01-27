@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 
 interface MaintenancePageProps {
   onRetry?: () => void;
@@ -12,46 +11,34 @@ export default function MaintenancePage({
   onRetry,
   message = 'Hệ thống đang được bảo trì để phục vụ bạn tốt hơn!'
 }: MaintenancePageProps) {
-  const [dots, setDots] = useState('');
-  
-  // Animated loading dots
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots(prev => prev.length >= 3 ? '' : prev + '.');
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#e0f2fe] via-[#f0f9ff] to-[#e0f2fe] flex items-center justify-center p-4">
-      {/* Background decorations */}
+      {/* Static background decorations - no animations */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 text-6xl animate-bounce" style={{ animationDuration: '3s' }}>🌴</div>
-        <div className="absolute top-40 right-20 text-5xl animate-bounce" style={{ animationDuration: '2.5s', animationDelay: '0.5s' }}>🏖️</div>
-        <div className="absolute bottom-32 left-1/4 text-4xl animate-bounce" style={{ animationDuration: '2s', animationDelay: '1s' }}>🐚</div>
-        <div className="absolute bottom-20 right-1/3 text-5xl animate-bounce" style={{ animationDuration: '2.8s', animationDelay: '0.3s' }}>🌊</div>
-        <div className="absolute top-1/3 left-1/3 text-3xl animate-pulse">⭐</div>
-        <div className="absolute bottom-1/3 right-1/4 text-3xl animate-pulse" style={{ animationDelay: '0.7s' }}>✨</div>
+        <div className="absolute top-20 left-10 text-6xl">🌴</div>
+        <div className="absolute top-40 right-20 text-5xl">🏖️</div>
+        <div className="absolute bottom-32 left-1/4 text-4xl">🐚</div>
+        <div className="absolute bottom-20 right-1/3 text-5xl">🌊</div>
+        <div className="absolute top-1/3 left-1/3 text-3xl">⭐</div>
+        <div className="absolute bottom-1/3 right-1/4 text-3xl">✨</div>
       </div>
 
       <div className="relative z-10 max-w-lg w-full">
-        {/* Main card */}
-        <div 
-          className="bg-white/90 backdrop-blur-xl rounded-[2rem] p-8 md:p-12 text-center shadow-2xl shadow-cyan-200/30 border border-white"
-        >
+        {/* Main card - no backdrop blur */}
+        <div className="bg-white rounded-[2rem] p-8 md:p-12 text-center shadow-2xl shadow-cyan-200/30 border border-slate-100">
           {/* Cute villa illustration */}
           <div className="relative w-32 h-32 mx-auto mb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-teal-400/20 rounded-full animate-pulse" />
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-100 to-teal-100 rounded-full" />
             <div className="relative flex items-center justify-center h-full">
               <span className="text-7xl">🏠</span>
             </div>
-            {/* Sleeping z's */}
-            <div className="absolute -top-2 -right-2 text-2xl animate-bounce" style={{ animationDuration: '1s' }}>💤</div>
+            {/* Sleeping z's - static */}
+            <div className="absolute -top-2 -right-2 text-2xl">💤</div>
           </div>
 
           {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-3">
-            Đang nghỉ ngơi chút xíu{dots}
+            Đang nghỉ ngơi chút xíu...
           </h1>
 
           {/* Message */}
@@ -65,10 +52,10 @@ export default function MaintenancePage({
             <span className="text-amber-700 text-sm font-medium">Đội ngũ kỹ thuật đang xử lý</span>
           </div>
 
-          {/* Progress bar */}
+          {/* Progress bar - static */}
           <div className="w-full h-2 bg-slate-100 rounded-full mb-8 overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full animate-pulse"
+              className="h-full bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full"
               style={{ width: '60%' }}
             />
           </div>

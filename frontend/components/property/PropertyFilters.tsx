@@ -276,6 +276,36 @@ export function PropertyFilters({
     });
   };
 
+  // Get current price range value for dropdown
+  const getPriceRangeValue = (): string => {
+    if (!filters.minPrice && !filters.maxPrice) return 'all';
+    if (filters.minPrice === 0 && filters.maxPrice === 3000000) return '0-3000000';
+    if (filters.minPrice === 3000000 && filters.maxPrice === 5000000) return '3000000-5000000';
+    if (filters.minPrice === 5000000 && filters.maxPrice === 10000000) return '5000000-10000000';
+    if (filters.minPrice === 10000000 && filters.maxPrice === 15000000) return '10000000-15000000';
+    if (filters.minPrice === 15000000 && filters.maxPrice === 20000000) return '15000000-20000000';
+    if (filters.minPrice === 20000000 && !filters.maxPrice) return '20000000-';
+    return 'all';
+  };
+
+  // Handle price range dropdown change
+  const handlePriceRangeChange = (value: string) => {
+    if (value === 'all') {
+      onFilterChange({
+        ...filters,
+        minPrice: undefined,
+        maxPrice: undefined,
+      });
+    } else {
+      const [min, max] = value.split('-');
+      onFilterChange({
+        ...filters,
+        minPrice: min ? parseInt(min, 10) : undefined,
+        maxPrice: max ? parseInt(max, 10) : undefined,
+      });
+    }
+  };
+
   const hasActiveFilters = 
     filters.keyword ||
     filters.locationId || 
@@ -309,35 +339,6 @@ export function PropertyFilters({
       </div>
 
       <div className="space-y-4">
-        {/* Label Filter (Sát biển, View biển...) - Đặc điểm nổi bật lên đầu */}
-        {labels.length > 0 && (
-          <div>
-            <Label className="text-sm font-medium mb-2 block">
-              Đặc điểm nổi bật
-            </Label>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {labels.map((label) => (
-                <label
-                  key={label.id}
-                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    checked={filters.labelIds?.includes(label.id) || false}
-                    onChange={() => handleLabelToggle(label.id)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span 
-                    className="text-xs px-2 py-0.5 rounded text-white font-medium"
-                    style={{ backgroundColor: label.color || '#0EA5E9' }}
-                  >
-                    {label.name}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Sort Dropdown */}
         <div>
@@ -385,53 +386,6 @@ export function PropertyFilters({
           </div>
         </div>
 
-        {/* Location Filter */}
-        <div>
-          <Label htmlFor="location" className="text-sm font-medium mb-2 block">
-            {t('location')}
-          </Label>
-          <Select
-            value={filters.locationId?.toString() || 'all'}
-            onValueChange={handleLocationChange}
-          >
-            <SelectTrigger id="location">
-              <SelectValue placeholder={t('selectLocation')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả</SelectItem>
-              {locations.map((location) => (
-                <SelectItem key={location.id} value={location.id.toString()}>
-                  {location.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Property Type Filter */}
-        {propertyTypes && propertyTypes.length > 0 && (
-          <div>
-            <Label htmlFor="propertyType" className="text-sm font-medium mb-2 block">
-              {t('propertyType')}
-            </Label>
-            <Select
-              value={filters.propertyTypeId?.toString() || 'all'}
-              onValueChange={handlePropertyTypeChange}
-            >
-              <SelectTrigger id="propertyType">
-                <SelectValue placeholder={t('selectType')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                {propertyTypes.map((type) => (
-                  <SelectItem key={type.id} value={type.id.toString()}>
-                    {type.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
 
         {/* Guest Count Filter */}
         <div>
@@ -459,32 +413,28 @@ export function PropertyFilters({
           </div>
         </div>
 
-        {/* Price Range Filter */}
+        {/* Price Range Filter - Dropdown */}
         <div>
-          <Label className="text-sm font-medium mb-2 block">
+          <Label htmlFor="priceRange" className="text-sm font-medium mb-2 block">
             {t('pricePerNight')}
-            {isPriceDebouncing && (
-              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
-            )}
           </Label>
-          <div className="space-y-2">
-            <Input
-              type="number"
-              min="0"
-              step="100000"
-              placeholder={t('minPrice')}
-              value={localMinPrice}
-              onChange={(e) => setLocalMinPrice(e.target.value)}
-            />
-            <Input
-              type="number"
-              min="0"
-              step="100000"
-              placeholder={t('maxPrice')}
-              value={localMaxPrice}
-              onChange={(e) => setLocalMaxPrice(e.target.value)}
-            />
-          </div>
+          <Select
+            value={getPriceRangeValue()}
+            onValueChange={handlePriceRangeChange}
+          >
+            <SelectTrigger id="priceRange">
+              <SelectValue placeholder="Chọn khoảng giá" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả mức giá</SelectItem>
+              <SelectItem value="0-3000000">Dưới 3 triệu</SelectItem>
+              <SelectItem value="3000000-5000000">3 - 5 triệu</SelectItem>
+              <SelectItem value="5000000-10000000">5 - 10 triệu</SelectItem>
+              <SelectItem value="10000000-15000000">10 - 15 triệu</SelectItem>
+              <SelectItem value="15000000-20000000">15 - 20 triệu</SelectItem>
+              <SelectItem value="20000000-">Trên 20 triệu</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Bedroom Count Filter */}
