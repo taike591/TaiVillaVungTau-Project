@@ -38,8 +38,6 @@ export function PropertyFilters({
   const t = useTranslations('common');
   // Local state for debounced inputs
   const [localKeyword, setLocalKeyword] = useState(filters.keyword || '');
-  const [localMinPrice, setLocalMinPrice] = useState(filters.minPrice?.toString() || '');
-  const [localMaxPrice, setLocalMaxPrice] = useState(filters.maxPrice?.toString() || '');
   const [localMinGuests, setLocalMinGuests] = useState(filters.minGuests?.toString() || '');
   const [localMaxGuests, setLocalMaxGuests] = useState(filters.maxGuests?.toString() || '');
   const [localBedrooms, setLocalBedrooms] = useState(filters.bedroomCount?.toString() || '');
@@ -48,7 +46,6 @@ export function PropertyFilters({
 
   // Loading states for debounce indicators
   const [isKeywordDebouncing, setIsKeywordDebouncing] = useState(false);
-  const [isPriceDebouncing, setIsPriceDebouncing] = useState(false);
   const [isGuestDebouncing, setIsGuestDebouncing] = useState(false);
   const [isRoomDebouncing, setIsRoomDebouncing] = useState(false);
 
@@ -61,8 +58,6 @@ export function PropertyFilters({
     isExternalSyncRef.current = true;
     
     setLocalKeyword(filters.keyword || '');
-    setLocalMinPrice(filters.minPrice?.toString() || '');
-    setLocalMaxPrice(filters.maxPrice?.toString() || '');
     setLocalMinGuests(filters.minGuests?.toString() || '');
     setLocalMaxGuests(filters.maxGuests?.toString() || '');
     setLocalBedrooms(filters.bedroomCount?.toString() || '');
@@ -77,8 +72,6 @@ export function PropertyFilters({
     return () => clearTimeout(timer);
   }, [
     filters.keyword,
-    filters.minPrice,
-    filters.maxPrice,
     filters.minGuests,
     filters.maxGuests,
     filters.bedroomCount,
@@ -86,35 +79,6 @@ export function PropertyFilters({
     filters.bedCount,
   ]);
 
-  // Debounce price inputs
-  useEffect(() => {
-    // Skip if we're syncing from external props
-    if (isExternalSyncRef.current) return;
-    
-    // Show loading indicator
-    if (localMinPrice || localMaxPrice) {
-      setIsPriceDebouncing(true);
-    }
-    
-    const timer = setTimeout(() => {
-      setIsPriceDebouncing(false);
-      const minPrice = localMinPrice ? parseInt(localMinPrice, 10) : undefined;
-      const maxPrice = localMaxPrice ? parseInt(localMaxPrice, 10) : undefined;
-      
-      if (minPrice !== filters.minPrice || maxPrice !== filters.maxPrice) {
-        onFilterChange({
-          ...filters,
-          minPrice,
-          maxPrice,
-        });
-      }
-    }, DEBOUNCE_DELAY);
-
-    return () => {
-      clearTimeout(timer);
-      setIsPriceDebouncing(false);
-    };
-  }, [localMinPrice, localMaxPrice]);
 
   // Debounce keyword input
   useEffect(() => {
@@ -259,8 +223,6 @@ export function PropertyFilters({
 
   const handleClearAll = () => {
     setLocalKeyword('');
-    setLocalMinPrice('');
-    setLocalMaxPrice('');
     setLocalMinGuests('');
     setLocalMaxGuests('');
     setLocalBedrooms('');
@@ -274,36 +236,6 @@ export function PropertyFilters({
       ...filters,
       sort: value === 'default' ? undefined : value as 'price_asc' | 'price_desc' | 'newest',
     });
-  };
-
-  // Get current price range value for dropdown
-  const getPriceRangeValue = (): string => {
-    if (!filters.minPrice && !filters.maxPrice) return 'all';
-    if (filters.minPrice === 0 && filters.maxPrice === 3000000) return '0-3000000';
-    if (filters.minPrice === 3000000 && filters.maxPrice === 5000000) return '3000000-5000000';
-    if (filters.minPrice === 5000000 && filters.maxPrice === 10000000) return '5000000-10000000';
-    if (filters.minPrice === 10000000 && filters.maxPrice === 15000000) return '10000000-15000000';
-    if (filters.minPrice === 15000000 && filters.maxPrice === 20000000) return '15000000-20000000';
-    if (filters.minPrice === 20000000 && !filters.maxPrice) return '20000000-';
-    return 'all';
-  };
-
-  // Handle price range dropdown change
-  const handlePriceRangeChange = (value: string) => {
-    if (value === 'all') {
-      onFilterChange({
-        ...filters,
-        minPrice: undefined,
-        maxPrice: undefined,
-      });
-    } else {
-      const [min, max] = value.split('-');
-      onFilterChange({
-        ...filters,
-        minPrice: min ? parseInt(min, 10) : undefined,
-        maxPrice: max ? parseInt(max, 10) : undefined,
-      });
-    }
   };
 
   const hasActiveFilters = 
@@ -413,29 +345,6 @@ export function PropertyFilters({
           </div>
         </div>
 
-        {/* Price Range Filter - Dropdown */}
-        <div>
-          <Label htmlFor="priceRange" className="text-sm font-medium mb-2 block">
-            {t('pricePerNight')}
-          </Label>
-          <Select
-            value={getPriceRangeValue()}
-            onValueChange={handlePriceRangeChange}
-          >
-            <SelectTrigger id="priceRange">
-              <SelectValue placeholder="Chọn khoảng giá" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tất cả mức giá</SelectItem>
-              <SelectItem value="0-3000000">Dưới 3 triệu</SelectItem>
-              <SelectItem value="3000000-5000000">3 - 5 triệu</SelectItem>
-              <SelectItem value="5000000-10000000">5 - 10 triệu</SelectItem>
-              <SelectItem value="10000000-15000000">10 - 15 triệu</SelectItem>
-              <SelectItem value="15000000-20000000">15 - 20 triệu</SelectItem>
-              <SelectItem value="20000000-">Trên 20 triệu</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
 
         {/* Bedroom Count Filter */}
         <div>

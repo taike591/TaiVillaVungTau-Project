@@ -5,6 +5,16 @@ import { PropertyType, Location } from '@/lib/hooks/useLocationsAndTypes';
 import { Label as LabelType } from '@/lib/hooks/useProperties';
 import { cn } from '@/lib/utils';
 
+// Price range options (in VND)
+const PRICE_RANGES = [
+  { label: 'Tất cả', min: undefined, max: undefined },
+  { label: 'Dưới 3 triệu', min: undefined, max: 3000000 },
+  { label: '3 - 5 triệu', min: 3000000, max: 5000000 },
+  { label: '5 - 8 triệu', min: 5000000, max: 8000000 },
+  { label: '8 - 12 triệu', min: 8000000, max: 12000000 },
+  { label: 'Trên 12 triệu', min: 12000000, max: undefined },
+];
+
 interface QuickFiltersProps {
   filters: PropertyFiltersType;
   onFilterChange: (filters: PropertyFiltersType) => void;
@@ -53,6 +63,23 @@ export function QuickFilters({
     });
   };
 
+  const handlePriceRangeChange = (min: number | undefined, max: number | undefined) => {
+    onFilterChange({
+      ...filters,
+      minPrice: min,
+      maxPrice: max,
+    });
+  };
+
+  // Get current price range index
+  const getCurrentPriceRangeIndex = () => {
+    const { minPrice, maxPrice } = filters;
+    if (minPrice === undefined && maxPrice === undefined) return 0;
+    return PRICE_RANGES.findIndex(range => 
+      range.min === minPrice && range.max === maxPrice
+    );
+  };
+
   // Calculate counts - use provided counts or show nothing
   const totalCount = propertyCounts?.total || 0;
   const getLocationCount = (id: number) => propertyCounts?.byLocation[id] || 0;
@@ -60,6 +87,7 @@ export function QuickFilters({
   const getLabelCount = (id: number) => propertyCounts?.byLabel[id] || 0;
 
   const hasActiveLabels = filters.labelIds && filters.labelIds.length > 0;
+  const currentPriceRangeIndex = getCurrentPriceRangeIndex();
 
   return (
     <div 
@@ -198,7 +226,7 @@ export function QuickFilters({
 
       {/* Labels/Features Filter */}
       {labels.length > 0 && (
-        <div>
+        <div className="mb-6">
           <span className="text-sm text-[#0c4a6e]/70 font-medium block mb-3">Đặc điểm:</span>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {labels.map((label) => {
@@ -254,6 +282,30 @@ export function QuickFilters({
           </div>
         </div>
       )}
+
+      {/* Price Range Filter */}
+      <div>
+        <span className="text-sm text-[#0c4a6e]/70 font-medium block mb-3">Khoảng giá:</span>
+        <div className="flex flex-wrap gap-2 sm:gap-3">
+          {PRICE_RANGES.map((range, index) => {
+            const isActive = currentPriceRangeIndex === index;
+            return (
+              <button
+                key={index}
+                onClick={() => handlePriceRangeChange(range.min, range.max)}
+                className={cn(
+                  "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300",
+                  isActive
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/25"
+                    : "bg-white/80 text-[#0c4a6e] hover:bg-white border border-[#0c4a6e]/10"
+                )}
+              >
+                {range.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
