@@ -272,53 +272,6 @@ export function PropertyFilters({
 
       <div className="space-y-4">
 
-        {/* Sort Dropdown */}
-        <div>
-          <Label htmlFor="sort" className="text-sm font-medium mb-2 block">
-            Sắp xếp theo
-          </Label>
-          <Select
-            value={filters.sort || 'default'}
-            onValueChange={handleSortChange}
-          >
-            <SelectTrigger id="sort">
-              <SelectValue placeholder="Chọn cách sắp xếp" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">Mặc định</SelectItem>
-              <SelectItem value="price_asc">Giá: Thấp → Cao</SelectItem>
-              <SelectItem value="price_desc">Giá: Cao → Thấp</SelectItem>
-              <SelectItem value="newest">Mới nhất</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Keyword Search */}
-        <div>
-          <Label htmlFor="keyword" className="text-sm font-medium mb-2 block">
-            Tìm kiếm
-            {isKeywordDebouncing && (
-              <Loader2 className="inline-block h-3 w-3 ml-2 animate-spin text-blue-500" />
-            )}
-          </Label>
-          <div className="relative">
-            <Input
-              id="keyword"
-              type="text"
-              placeholder="Tên villa, địa chỉ..."
-              value={localKeyword}
-              onChange={(e) => setLocalKeyword(e.target.value)}
-              className="w-full pr-8"
-            />
-            {isKeywordDebouncing && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
-              </div>
-            )}
-          </div>
-        </div>
-
-
         {/* Guest Count Filter */}
         <div>
           <Label className="text-sm font-medium mb-2 block">

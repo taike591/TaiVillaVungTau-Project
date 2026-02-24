@@ -57,6 +57,7 @@ interface PropertyCardProps {
     poolArea?: string;
     location?: string;
     locationName?: string; // For location badge
+    propertyTypeName?: string; // For property type badge (Villa, Homestay...)
     address?: string;
     area?: string;
     distanceToBeach?: string;
@@ -217,32 +218,42 @@ function PropertyCardComponent({ property, variant = 'default' }: PropertyCardPr
               </span>
             </div>
             
-            {/* Labels - Top left (replacing Featured badge) */}
-            {property.labels && property.labels.length > 0 ? (
-              <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-1 max-w-[60%]">
-                {property.labels.slice(0, 2).map(label => (
-                  <span
-                    key={label.id}
-                    style={{ backgroundColor: label.color || '#0EA5E9' }}
-                    className="px-2 py-1 rounded-md text-white text-xs font-semibold shadow-lg"
-                  >
-                    {label.name}
-                  </span>
-                ))}
-                {property.labels.length > 2 && (
-                  <span className="px-2 py-1 rounded-md bg-black/60 text-white text-xs font-semibold">
-                    +{property.labels.length - 2}
-                  </span>
-                )}
-              </div>
-            ) : isFeatured && (
-              <div className="absolute top-3 left-3 z-20">
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-400 text-white text-sm font-bold shadow-lg">
+            {/* Property Type + Labels - Top left */}
+            <div className="absolute top-3 left-3 z-20 flex flex-col gap-1 max-w-[60%]">
+              {/* Property Type Badge */}
+              {property.propertyTypeName && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold shadow-lg w-fit">
+                  <Building2 className="h-3 w-3 text-[#0891b2]" />
+                  {property.propertyTypeName}
+                </span>
+              )}
+              {/* Labels */}
+              {property.labels && property.labels.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {property.labels.slice(0, 2).map(label => (
+                    <span
+                      key={label.id}
+                      style={{ backgroundColor: label.color || '#0EA5E9' }}
+                      className="px-2 py-1 rounded-md text-white text-xs font-semibold shadow-lg"
+                    >
+                      {label.name}
+                    </span>
+                  ))}
+                  {property.labels.length > 2 && (
+                    <span className="px-2 py-1 rounded-md bg-black/60 text-white text-xs font-semibold">
+                      +{property.labels.length - 2}
+                    </span>
+                  )}
+                </div>
+              )}
+              {/* Featured badge - only if no property type and no labels */}
+              {!property.propertyTypeName && (!property.labels || property.labels.length === 0) && isFeatured && (
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-orange-400 text-white text-sm font-bold shadow-lg w-fit">
                   <Star className="h-3.5 w-3.5 fill-current" />
                   {t('featured')}
                 </span>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Location - Bottom right of image */}
             {(property.locationName || property.area) && (

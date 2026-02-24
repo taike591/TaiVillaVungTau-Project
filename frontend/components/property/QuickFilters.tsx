@@ -4,6 +4,9 @@ import { PropertyFilters as PropertyFiltersType } from '@/lib/hooks/usePropertie
 import { PropertyType, Location } from '@/lib/hooks/useLocationsAndTypes';
 import { Label as LabelType } from '@/lib/hooks/useProperties';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Loader2, SlidersHorizontal } from 'lucide-react';
 
 // Price range options (in VND)
 const PRICE_RANGES = [
@@ -27,6 +30,10 @@ interface QuickFiltersProps {
     byPropertyType: Record<number, number>;
     byLabel: Record<number, number>;
   };
+  localKeyword?: string;
+  onKeywordChange?: (value: string) => void;
+  isSearching?: boolean;
+  onSortChange?: (value: string) => void;
 }
 
 export function QuickFilters({
@@ -36,19 +43,17 @@ export function QuickFilters({
   propertyTypes,
   labels,
   propertyCounts,
+  localKeyword = '',
+  onKeywordChange,
+  isSearching = false,
+  onSortChange,
 }: QuickFiltersProps) {
   const handleLocationChange = (locationId: number | undefined) => {
-    onFilterChange({
-      ...filters,
-      locationId,
-    });
+    onFilterChange({ ...filters, locationId });
   };
 
   const handlePropertyTypeChange = (propertyTypeId: number | undefined) => {
-    onFilterChange({
-      ...filters,
-      propertyTypeId,
-    });
+    onFilterChange({ ...filters, propertyTypeId });
   };
 
   const handleLabelToggle = (labelId: number) => {
@@ -56,31 +61,19 @@ export function QuickFilters({
     const newLabels = currentLabels.includes(labelId)
       ? currentLabels.filter(id => id !== labelId)
       : [...currentLabels, labelId];
-    
-    onFilterChange({
-      ...filters,
-      labelIds: newLabels.length > 0 ? newLabels : undefined,
-    });
+    onFilterChange({ ...filters, labelIds: newLabels.length > 0 ? newLabels : undefined });
   };
 
   const handlePriceRangeChange = (min: number | undefined, max: number | undefined) => {
-    onFilterChange({
-      ...filters,
-      minPrice: min,
-      maxPrice: max,
-    });
+    onFilterChange({ ...filters, minPrice: min, maxPrice: max });
   };
 
-  // Get current price range index
   const getCurrentPriceRangeIndex = () => {
     const { minPrice, maxPrice } = filters;
     if (minPrice === undefined && maxPrice === undefined) return 0;
-    return PRICE_RANGES.findIndex(range => 
-      range.min === minPrice && range.max === maxPrice
-    );
+    return PRICE_RANGES.findIndex(range => range.min === minPrice && range.max === maxPrice);
   };
 
-  // Calculate counts - use provided counts or show nothing
   const totalCount = propertyCounts?.total || 0;
   const getLocationCount = (id: number) => propertyCounts?.byLocation[id] || 0;
   const getPropertyTypeCount = (id: number) => propertyCounts?.byPropertyType[id] || 0;
@@ -89,39 +82,81 @@ export function QuickFilters({
   const hasActiveLabels = filters.labelIds && filters.labelIds.length > 0;
   const currentPriceRangeIndex = getCurrentPriceRangeIndex();
 
+  // Shared horizontal scroll container classes (hide scrollbar)
+  const scrollContainerClass = "flex gap-2 overflow-x-auto pb-1 scrollbar-hide";
+
   return (
     <div 
-      className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 mb-6 border border-slate-200"
+      className="rounded-2xl p-4 sm:p-6 md:p-8 mb-6 border border-slate-200"
       style={{
-        background: 'rgba(255,255,255,0.9)',
+        background: 'rgba(255,255,255,0.95)',
         backdropFilter: 'blur(12px)',
-        boxShadow: '0 8px 32px -8px rgba(0,0,0,0.08)',
+        boxShadow: '0 4px 24px -4px rgba(0,0,0,0.06)',
       }}
     >
-      {/* Location Filter */}
+      {/* Search + Sort Row - Most important, always on top */}
+      {onKeywordChange && (
+        <div className="mb-5">
+          <div className="flex gap-2 sm:gap-3">
+            <div className="relative flex-1 min-w-0">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+              <Input
+                type="text"
+                placeholder="Tìm villa theo tên, địa chỉ, mã..."
+                value={localKeyword}
+                onChange={(e) => onKeywordChange(e.target.value)}
+                className="pl-9 pr-9 h-10 sm:h-11 rounded-xl border-slate-200 bg-white text-sm shadow-sm focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400"
+              />
+              {isSearching && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
+                </div>
+              )}
+            </div>
+
+            {onSortChange && (
+              <div className="w-[130px] sm:w-48 flex-shrink-0">
+                <Select
+                  value={filters.sort || 'default'}
+                  onValueChange={onSortChange}
+                >
+                  <SelectTrigger className="h-10 sm:h-11 rounded-xl border-slate-200 bg-white shadow-sm text-sm">
+                    <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-slate-400 flex-shrink-0" />
+                    <SelectValue placeholder="Sắp xếp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Mặc định</SelectItem>
+                    <SelectItem value="price_asc">Giá: Thấp → Cao</SelectItem>
+                    <SelectItem value="price_desc">Giá: Cao → Thấp</SelectItem>
+                    <SelectItem value="newest">Mới nhất</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Location Filter - Horizontal scroll on mobile */}
       {locations.length > 0 && (
-        <div className="mb-6">
-          <span className="text-sm text-[#0c4a6e]/70 font-medium block mb-3">Vị trí</span>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            {/* All Button */}
+        <div className="mb-4">
+          <span className="text-xs sm:text-sm text-slate-500 font-medium block mb-2">Vị trí</span>
+          <div className={scrollContainerClass}>
             <button
               onClick={() => handleLocationChange(undefined)}
               className={cn(
-                "px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-sm font-medium transition-all duration-300",
-                "border-2 hover:shadow-md hover:-translate-y-0.5",
-                !filters.locationId 
-                  ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white border-transparent shadow-lg shadow-amber-500/25" 
-                  : "bg-white text-[#0c4a6e] border-[#0c4a6e]/20 hover:border-amber-400"
+                "px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0",
+                !filters.locationId
+                  ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300"
               )}
             >
-              <span className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5">
                 Tất cả
                 {propertyCounts && (
                   <span className={cn(
-                    "px-2 py-0.5 rounded-full text-xs font-bold",
-                    !filters.locationId 
-                      ? "bg-white/20 text-white" 
-                      : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
+                    "px-1.5 py-0.5 rounded-full text-[10px] font-bold",
+                    !filters.locationId ? "bg-white/25 text-white" : "bg-slate-200 text-slate-600"
                   )}>
                     {totalCount}
                   </span>
@@ -129,7 +164,6 @@ export function QuickFilters({
               </span>
             </button>
             
-            {/* Location Chips */}
             {locations.map((location) => {
               const isActive = filters.locationId === location.id;
               return (
@@ -137,21 +171,18 @@ export function QuickFilters({
                   key={location.id}
                   onClick={() => handleLocationChange(location.id)}
                   className={cn(
-                    "px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-sm font-medium transition-all duration-300",
-                    "border-2 hover:shadow-md hover:-translate-y-0.5",
-                    isActive 
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white border-transparent shadow-lg shadow-amber-500/25" 
-                      : "bg-white text-[#0c4a6e] border-[#0c4a6e]/20 hover:border-amber-400"
+                    "px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0",
+                    isActive
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300"
                   )}
                 >
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5">
                     {location.name}
                     {propertyCounts && (
                       <span className={cn(
-                        "px-2 py-0.5 rounded-full text-xs font-bold",
-                        isActive 
-                          ? "bg-white/20 text-white" 
-                          : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
+                        "px-1.5 py-0.5 rounded-full text-[10px] font-bold",
+                        isActive ? "bg-white/25 text-white" : "bg-slate-200 text-slate-600"
                       )}>
                         {getLocationCount(location.id)}
                       </span>
@@ -166,33 +197,21 @@ export function QuickFilters({
 
       {/* Property Type Filter */}
       {propertyTypes.length > 0 && (
-        <div className="mb-6">
-          <span className="text-sm text-[#0c4a6e]/70 font-medium block mb-3">Loại hình:</span>
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            {/* All Button */}
+        <div className="mb-4">
+          <span className="text-xs sm:text-sm text-slate-500 font-medium block mb-2">Loại hình</span>
+          <div className={scrollContainerClass}>
             <button
               onClick={() => handlePropertyTypeChange(undefined)}
               className={cn(
-                "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300",
+                "px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0",
                 !filters.propertyTypeId
-                  ? "bg-amber-500 text-white shadow-md shadow-amber-500/25"
-                  : "bg-white/80 text-[#0c4a6e] hover:bg-white border border-[#0c4a6e]/10"
+                  ? "bg-amber-500 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               )}
             >
               Tất cả
-              {propertyCounts && (
-                <span className={cn(
-                  "ml-1.5 px-1.5 py-0.5 rounded-full text-xs font-bold",
-                  !filters.propertyTypeId
-                    ? "bg-white/20 text-white"
-                    : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
-                )}>
-                  {totalCount}
-                </span>
-              )}
             </button>
             
-            {/* Property Type Chips */}
             {propertyTypes.map((type) => {
               const isActive = filters.propertyTypeId === type.id;
               return (
@@ -200,23 +219,13 @@ export function QuickFilters({
                   key={type.id}
                   onClick={() => handlePropertyTypeChange(type.id)}
                   className={cn(
-                    "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300",
+                    "px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0",
                     isActive
-                      ? "bg-amber-500 text-white shadow-md shadow-amber-500/25"
-                      : "bg-white/80 text-[#0c4a6e] hover:bg-white border border-[#0c4a6e]/10"
+                      ? "bg-amber-500 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                   )}
                 >
                   {type.name}
-                  {propertyCounts && (
-                    <span className={cn(
-                      "ml-1.5 px-1.5 py-0.5 rounded-full text-xs font-bold",
-                      isActive
-                        ? "bg-white/20 text-white"
-                        : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
-                    )}>
-                      {getPropertyTypeCount(type.id)}
-                    </span>
-                  )}
                 </button>
               );
             })}
@@ -226,67 +235,55 @@ export function QuickFilters({
 
       {/* Labels/Features Filter */}
       {labels.length > 0 && (
-        <div className="mb-6">
-          <span className="text-sm text-[#0c4a6e]/70 font-medium block mb-3">Đặc điểm:</span>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            {labels.map((label) => {
-              const isActive = filters.labelIds?.includes(label.id) || false;
-              return (
+        <div className="mb-4">
+          <span className="text-xs sm:text-sm text-slate-500 font-medium block mb-2">Đặc điểm</span>
+            <div className={cn(scrollContainerClass, "items-center")}>
+              {labels.map((label) => {
+                const isActive = filters.labelIds?.includes(label.id) || false;
+                return (
+                  <button
+                    key={label.id}
+                    onClick={() => handleLabelToggle(label.id)}
+                    className={cn(
+                      "px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 border",
+                      isActive
+                        ? "text-white shadow-sm"
+                        : "bg-white text-slate-700 hover:bg-slate-50"
+                    )}
+                    style={{
+                      backgroundColor: isActive ? (label.color || '#0EA5E9') : undefined,
+                      borderColor: isActive ? (label.color || '#0EA5E9') : `${label.color || '#0EA5E9'}30`,
+                    }}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      {!isActive && (
+                        <span 
+                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: label.color || '#0EA5E9' }}
+                        />
+                      )}
+                      {label.name}
+                    </span>
+                  </button>
+                );
+              })}
+              
+              {hasActiveLabels && (
                 <button
-                  key={label.id}
-                  onClick={() => handleLabelToggle(label.id)}
-                  className={cn(
-                    "px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 border-2",
-                    isActive
-                      ? "text-white shadow-md scale-105"
-                      : "bg-white/80 hover:bg-white text-[#0c4a6e]"
-                  )}
-                  style={{
-                    backgroundColor: isActive ? (label.color || '#0EA5E9') : undefined,
-                    borderColor: isActive ? (label.color || '#0EA5E9') : `${label.color || '#0EA5E9'}40`,
-                    boxShadow: isActive ? `0 4px 12px ${label.color || '#0EA5E9'}40` : undefined,
-                  }}
+                  onClick={() => onFilterChange({ ...filters, labelIds: undefined })}
+                  className="px-2.5 py-1.5 rounded-full text-[10px] sm:text-xs font-medium text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all whitespace-nowrap flex-shrink-0"
                 >
-                  <span className="flex items-center gap-1 sm:gap-1.5">
-                    {!isActive && (
-                      <span 
-                        className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full"
-                        style={{ backgroundColor: label.color || '#0EA5E9' }}
-                      />
-                    )}
-                    {label.name}
-                    {propertyCounts && (
-                      <span className={cn(
-                        "px-1 sm:px-1.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold",
-                        isActive
-                          ? "bg-white/20 text-white"
-                          : "bg-[#0c4a6e]/10 text-[#0c4a6e]"
-                      )}>
-                        {getLabelCount(label.id)}
-                      </span>
-                    )}
-                  </span>
+                  ✕ Xóa
                 </button>
-              );
-            })}
-            
-            {/* Clear Labels Button */}
-            {hasActiveLabels && (
-              <button
-                onClick={() => onFilterChange({ ...filters, labelIds: undefined })}
-                className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-all duration-200"
-              >
-                ✕ Xóa lọc
-              </button>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Price Range Filter */}
+      {/* Price Range Filter - Horizontal scroll */}
       <div>
-        <span className="text-sm text-[#0c4a6e]/70 font-medium block mb-3">Khoảng giá:</span>
-        <div className="flex flex-wrap gap-2 sm:gap-3">
+        <span className="text-xs sm:text-sm text-slate-500 font-medium block mb-2">Khoảng giá</span>
+        <div className={scrollContainerClass}>
           {PRICE_RANGES.map((range, index) => {
             const isActive = currentPriceRangeIndex === index;
             return (
@@ -294,10 +291,10 @@ export function QuickFilters({
                 key={index}
                 onClick={() => handlePriceRangeChange(range.min, range.max)}
                 className={cn(
-                  "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300",
+                  "px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0",
                   isActive
-                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/25"
-                    : "bg-white/80 text-[#0c4a6e] hover:bg-white border border-[#0c4a6e]/10"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-sm shadow-emerald-500/20"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                 )}
               >
                 {range.label}

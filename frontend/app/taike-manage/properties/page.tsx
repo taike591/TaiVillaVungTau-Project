@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Pagination } from '@/components/ui/pagination';
 import { TableSkeleton } from '@/components/shared/LoadingState';
 import { showSuccess, showError } from '@/lib/notifications';
-import { Plus, Edit, Eye, ArrowUpDown, X, MapPin, Power, Trash2, Search, ImageIcon, ExternalLink, FileText } from 'lucide-react';
+import { Plus, Edit, Eye, ArrowUpDown, X, MapPin, Power, Trash2, Search, ImageIcon, ExternalLink, FileText, Facebook, Check } from 'lucide-react';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
 import { useLocations, usePropertyTypes } from '@/lib/hooks/useLocationsAndTypes';
@@ -55,6 +55,7 @@ export default function PropertiesPage() {
   // Permanent delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [propertyToDelete, setPropertyToDelete] = useState<any>(null);
+  const [copiedFbId, setCopiedFbId] = useState<number | null>(null);
 
   // Default Sort: Code Descending (Newest logic)
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ 
@@ -542,6 +543,27 @@ export default function PropertiesPage() {
                             <Edit className="h-4 w-4" />
                           </Link>
                         </Button>
+                        {property.facebookLink && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            title={copiedFbId === property.id ? 'Đã copy!' : 'Copy link Facebook'}
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(property.facebookLink);
+                                setCopiedFbId(property.id);
+                                setTimeout(() => setCopiedFbId(null), 2000);
+                              } catch {
+                                // fallback
+                              }
+                            }}
+                          >
+                            {copiedFbId === property.id
+                              ? <Check className="h-4 w-4 text-green-600" />
+                              : <Facebook className="h-4 w-4 text-blue-600" />
+                            }
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"

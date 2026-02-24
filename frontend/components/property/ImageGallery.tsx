@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, ZoomIn, Facebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAdaptiveImageQuality } from '@/hooks/useAdaptiveImageQuality';
@@ -11,13 +11,14 @@ interface ImageGalleryProps {
   images: (string | { imageUrl: string })[];
   initialIndex?: number;
   onClose: () => void;
+  facebookLink?: string;
 }
 
 function getImageUrl(img: string | { imageUrl: string }): string {
   return typeof img === 'string' ? img : img?.imageUrl;
 }
 
-export function ImageGallery({ images, initialIndex = 0, onClose }: ImageGalleryProps) {
+export function ImageGallery({ images, initialIndex = 0, onClose, facebookLink }: ImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
@@ -251,7 +252,7 @@ export function ImageGallery({ images, initialIndex = 0, onClose }: ImageGallery
       {/* Thumbnail Strip */}
       {!isZoomed && (
         <div className="bg-black/50 backdrop-blur-sm py-4 px-4">
-          <div className="flex justify-center gap-2 overflow-x-auto max-w-4xl mx-auto">
+          <div className="flex justify-center gap-2 overflow-x-auto max-w-4xl mx-auto items-center">
             {images.map((img, idx) => (
               <button
                 key={idx}
@@ -273,6 +274,17 @@ export function ImageGallery({ images, initialIndex = 0, onClose }: ImageGallery
                 />
               </button>
             ))}
+            {/* Facebook CTA after thumbnails */}
+            <a
+              href={facebookLink || "https://www.facebook.com/TaiVillaVungTau"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white hover:bg-slate-100 text-slate-800 text-xs md:text-sm font-semibold transition-colors whitespace-nowrap"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Facebook className="w-4 h-4 text-blue-600" />
+              Xem đầy đủ hình ảnh bằng Facebook
+            </a>
           </div>
         </div>
       )}
@@ -350,8 +362,9 @@ export function GalleryGrid({ images, propertyName, onImageClick, facebookLink }
               className="absolute inset-0 bg-black/40 flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <span className="bg-white text-slate-800 px-6 py-2.5 rounded-lg font-medium shadow-lg hover:bg-slate-50 transition-colors border border-slate-200">
-                Xem thêm
+              <span className="inline-flex items-center gap-2 bg-white text-slate-800 px-5 py-2.5 rounded-lg font-medium shadow-lg hover:bg-slate-50 transition-colors border border-slate-200 text-sm">
+                <Facebook className="w-4 h-4 text-blue-600" />
+                Xem đầy đủ hình ảnh bằng Facebook
               </span>
             </a>
           )}
@@ -364,10 +377,10 @@ export function GalleryGrid({ images, propertyName, onImageClick, facebookLink }
           href={facebookLink || "https://www.facebook.com/TaiVillaVungTau"}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full text-sm font-medium text-slate-700 hover:bg-slate-200 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-full text-sm font-medium text-slate-800 hover:bg-slate-100 transition-colors border border-slate-200"
         >
-          <ZoomIn className="w-4 h-4" />
-          Xem thêm hình ảnh & video
+          <Facebook className="w-4 h-4 text-blue-600" />
+          Xem đầy đủ hình ảnh bằng Facebook
         </a>
       </div>
     </div>

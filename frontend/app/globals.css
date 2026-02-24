@@ -551,6 +551,15 @@
 
 /* Utility Classes for Animations - Requirements 4.1, 4.2, 4.3 */
 @layer utilities {
+  /* Hide scrollbar for horizontal scroll containers */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Tropical Gradient Backgrounds - Requirements 1.4 */
   .bg-gradient-sunset {
     background: var(--gradient-sunset);

@@ -11,10 +11,10 @@ import { WishlistButton } from "@/components/wishlist";
 import { 
   MapPin, Users, Bed, Bath, Home, ChevronRight, 
   Share2, FileText, Star, Waves, Droplets,
-  Wifi, Car, Utensils, Wind, Tv, Coffee
+  Wifi, Car, Utensils, Wind, Tv, Coffee, Facebook, Check
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { sortImagesWithThumbnailFirst, getMainImage } from "@/lib/error-handling";
 
@@ -85,8 +85,26 @@ interface PropertyDetailClientProps {
 export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [fbCopied, setFbCopied] = useState(false);
 
-
+  const handleCopyFbLink = useCallback(async () => {
+    if (!property.facebookLink) return;
+    try {
+      await navigator.clipboard.writeText(property.facebookLink);
+      setFbCopied(true);
+      setTimeout(() => setFbCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = property.facebookLink;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setFbCopied(true);
+      setTimeout(() => setFbCopied(false), 2000);
+    }
+  }, [property.facebookLink]);
 
   const handleImageClick = (index: number) => {
     setGalleryIndex(index);
@@ -152,6 +170,26 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
                   }}
                   size="md"
                 />
+                {/* Copy Facebook Link Button */}
+                {property.facebookLink && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={cn(
+                      "rounded-full w-10 h-10 transition-all duration-300",
+                      fbCopied 
+                        ? "border-green-500 bg-green-50 text-green-600" 
+                        : "hover:border-blue-400 hover:bg-blue-50"
+                    )}
+                    onClick={handleCopyFbLink}
+                    title={fbCopied ? "Đã copy!" : "Copy link Facebook"}
+                  >
+                    {fbCopied 
+                      ? <Check className="w-5 h-5" /> 
+                      : <Facebook className="w-5 h-5 text-blue-600" />
+                    }
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="icon"
@@ -198,6 +236,7 @@ export function PropertyDetailClient({ property }: PropertyDetailClientProps) {
             images={sortImagesWithThumbnailFirst(property.images)}
             initialIndex={galleryIndex}
             onClose={() => setGalleryOpen(false)}
+            facebookLink={property.facebookLink}
           />
         )}
 

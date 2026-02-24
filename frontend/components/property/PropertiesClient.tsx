@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { PropertyCard } from '@/components/property-card';
 import { PropertyFilters } from '@/components/property/PropertyFilters';
 import { QuickFilters } from '@/components/property/QuickFilters';
@@ -20,6 +20,11 @@ export function PropertiesClient() {
   const searchParams = useSearchParams();
   const contentRef = useRef<HTMLDivElement>(null);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+
+  // Inline search & sort state
+  const [localKeyword, setLocalKeyword] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const isExternalSync = useRef(false);
 
   // Parse filters from URL
   const filters: PropertyFiltersType = {
@@ -50,6 +55,36 @@ export function PropertiesClient() {
   const properties = propertiesData?.content || [];
   const totalPages = propertiesData?.totalPages || 0;
   const currentPage = filters.page || 0;
+
+  // Sync localKeyword with URL params
+  useEffect(() => {
+    isExternalSync.current = true;
+    setLocalKeyword(filters.keyword || '');
+    const t = setTimeout(() => { isExternalSync.current = false; }, 400);
+    return () => clearTimeout(t);
+  }, [filters.keyword]);
+
+  // Debounce keyword search
+  useEffect(() => {
+    if (isExternalSync.current) return;
+    if (localKeyword.trim()) setIsSearching(true);
+    const timer = setTimeout(() => {
+      setIsSearching(false);
+      const keyword = localKeyword.trim() || undefined;
+      if (keyword !== filters.keyword) {
+        handleFilterChange({ ...filters, keyword });
+      }
+    }, 600);
+    return () => { clearTimeout(timer); setIsSearching(false); };
+  }, [localKeyword]);
+
+  // Sort handler
+  const handleSortChange = useCallback((value: string) => {
+    handleFilterChange({
+      ...filters,
+      sort: value === 'default' ? undefined : value as 'price_asc' | 'price_desc' | 'newest',
+    });
+  }, [filters]);
 
   // Scroll to top when page changes
   useEffect(() => {
@@ -92,6 +127,7 @@ export function PropertiesClient() {
 
   // Clear all filters
   const handleClearFilters = () => {
+    setLocalKeyword('');
     router.push('/properties');
   };
 
@@ -121,6 +157,10 @@ export function PropertiesClient() {
           locations={locations}
           propertyTypes={propertyTypes}
           labels={labels}
+          localKeyword={localKeyword}
+          onKeywordChange={setLocalKeyword}
+          isSearching={isSearching}
+          onSortChange={handleSortChange}
         />
       )}
 
